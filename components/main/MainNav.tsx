@@ -9,6 +9,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "Academy", href: "/academy" },
   { label: "Foundation", href: "/ngo" },
+  { label: "Tournaments", href: "/tournaments" },
   { label: "Shop", href: "/shop" },
   { label: "News", href: "/news" },
   { label: "About", href: "/about" },
@@ -31,8 +32,8 @@ export default function MainNav() {
     <header
       className={`fixed top-0 left-0 right-0 w-full transition-all duration-300 ${
         scrolled
-          ? "bg-white/95 shadow-lg shadow-black/5 backdrop-blur-xl"
-          : "bg-white/80 backdrop-blur-lg border-b border-gray-200"
+          ? "bg-white shadow-md shadow-black/8 backdrop-blur-xl"
+          : "bg-white backdrop-blur-lg border-b border-gray-200"
       }`}
       style={{ zIndex: 99999 }}
     >
