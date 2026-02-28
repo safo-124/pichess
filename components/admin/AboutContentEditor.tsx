@@ -5,9 +5,9 @@ import { useState, useTransition, useRef, useCallback } from "react";
 import { saveSiteContent } from "@/lib/actions/admin";
 import {
   type AboutHero, type AboutStory, type AboutPillar, type AboutStat,
-  type AboutMission, type AboutValue, type AboutTimeline,
+  type AboutMission, type AboutValue, type AboutTimeline, type AboutTeamMember,
   defaultHero, defaultStory, defaultPillars, defaultStats,
-  defaultMission, defaultValues, defaultTimeline,
+  defaultMission, defaultValues, defaultTimeline, defaultTeam,
 } from "@/lib/about-content";
 import { ChevronDown, ChevronUp, Plus, Trash2, Save, Image as ImageIcon, Upload, Loader2, CheckCircle } from "lucide-react";
 
@@ -106,11 +106,12 @@ interface Props {
   initialMission?: AboutMission;
   initialValues?: AboutValue[];
   initialTimeline?: AboutTimeline[];
+  initialTeam?: AboutTeamMember[];
 }
 
 export default function AboutContentEditor({
   initialHero, initialStory, initialPillars, initialStats,
-  initialMission, initialValues, initialTimeline,
+  initialMission, initialValues, initialTimeline, initialTeam,
 }: Props) {
   const [isPending, startTransition] = useTransition();
   const [saved, setSaved] = useState<string | null>(null);
@@ -122,6 +123,7 @@ export default function AboutContentEditor({
   const [mission, setMission] = useState<AboutMission>(initialMission ?? defaultMission);
   const [values, setValues] = useState<AboutValue[]>(initialValues ?? defaultValues);
   const [timeline, setTimeline] = useState<AboutTimeline[]>(initialTimeline ?? defaultTimeline);
+  const [team, setTeam] = useState<AboutTeamMember[]>(initialTeam ?? defaultTeam);
 
   const save = (key: string, val: any) => {
     startTransition(async () => {
@@ -337,6 +339,42 @@ export default function AboutContentEditor({
           </button>
         </div>
         <SaveBtn sKey="about_timeline" val={timeline} />
+      </Section>
+
+      {/* ─── Team Members ──────────────────────────────── */}
+      <Section title="Team / Leadership" icon="👥">
+        <p className="text-xs text-zinc-400 -mt-2 mb-3">Add your CEO, directors, coaches, and key people. Photos are recommended.</p>
+        <div className="space-y-5">
+          {team.map((m, i) => (
+            <div key={i} className="rounded-xl bg-zinc-50 p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-zinc-400 uppercase">Member {i + 1}</span>
+                <button onClick={() => setTeam(team.filter((_, j) => j !== i))} className={btnDanger}><Trash2 className="w-3.5 h-3.5" /> Remove</button>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className={labelCls}>Full Name</label>
+                  <input value={m.name} onChange={(e) => { const u = [...team]; u[i] = { ...m, name: e.target.value }; setTeam(u); }} className={inputCls} placeholder="e.g. John Doe" />
+                </div>
+                <div>
+                  <label className={labelCls}>Role / Title</label>
+                  <input value={m.role} onChange={(e) => { const u = [...team]; u[i] = { ...m, role: e.target.value }; setTeam(u); }} className={inputCls} placeholder="e.g. Founder & CEO" />
+                </div>
+                <div className="col-span-full">
+                  <label className={labelCls}>Short Bio</label>
+                  <textarea value={m.bio} onChange={(e) => { const u = [...team]; u[i] = { ...m, bio: e.target.value }; setTeam(u); }} className={`${inputCls} resize-none`} rows={2} placeholder="A brief description of this person..." />
+                </div>
+                <div className="col-span-full">
+                  <ImageField label="Photo" value={m.image} onChange={(url) => { const u = [...team]; u[i] = { ...m, image: url }; setTeam(u); }} />
+                </div>
+              </div>
+            </div>
+          ))}
+          <button onClick={() => setTeam([...team, { name: "", role: "", bio: "", image: "" }])} className={btnAdd}>
+            <Plus className="w-3.5 h-3.5" /> Add Team Member
+          </button>
+        </div>
+        <SaveBtn sKey="about_team" val={team} />
       </Section>
     </div>
   );

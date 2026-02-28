@@ -47,6 +47,7 @@ export interface AboutTimeline {
 export interface AboutTeamMember {
   name: string;
   role: string;
+  bio: string;
   image: string;
 }
 
@@ -103,7 +104,8 @@ export const defaultTimeline: AboutTimeline[] = [
 ];
 
 export const defaultTeam: AboutTeamMember[] = [
-  { name: "Grandmaster Coach", role: "Head of Academy", image: "" },
-  { name: "Foundation Director", role: "NGO Lead", image: "" },
-  { name: "Tournament Director", role: "Events Manager", image: "" },
+  { name: "John Doe", role: "Founder & CEO", bio: "Visionary leader who founded PiChess with a passion for using chess to empower Ghana's youth.", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" },
+  { name: "Jane Smith", role: "Head of Academy", bio: "International chess master and educator with over 15 years of coaching experience.", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80" },
+  { name: "Michael Owusu", role: "Foundation Director", bio: "Dedicated to expanding chess access to underserved communities across Ghana.", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80" },
+  { name: "Sarah Mensah", role: "Tournament Director", bio: "Organizes world-class chess events that bring together the best players nationwide.", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80" },
 ];

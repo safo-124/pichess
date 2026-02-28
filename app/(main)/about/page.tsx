@@ -7,16 +7,16 @@ import StatsCounter from "@/components/shared/StatsCounter";
 import { getSiteContent } from "@/lib/actions/admin";
 import {
   type AboutHero, type AboutStory, type AboutPillar, type AboutStat,
-  type AboutMission, type AboutValue, type AboutTimeline,
+  type AboutMission, type AboutValue, type AboutTimeline, type AboutTeamMember,
   defaultHero, defaultStory, defaultPillars, defaultStats,
-  defaultMission, defaultValues, defaultTimeline,
+  defaultMission, defaultValues, defaultTimeline, defaultTeam,
 } from "@/lib/about-content";
 import AboutAnimations from "@/components/about/AboutAnimations";
 
 export const metadata = { title: "About | PiChess" };
 
 async function getContent() {
-  const keys = ["about_hero", "about_story", "about_pillars", "about_stats", "about_mission", "about_values", "about_timeline"];
+  const keys = ["about_hero", "about_story", "about_pillars", "about_stats", "about_mission", "about_values", "about_timeline", "about_team"];
   const results = await Promise.all(keys.map(k => getSiteContent(k)));
   return {
     hero: results[0] ? JSON.parse(results[0]) as AboutHero : defaultHero,
@@ -26,11 +26,12 @@ async function getContent() {
     mission: results[4] ? JSON.parse(results[4]) as AboutMission : defaultMission,
     values: results[5] ? JSON.parse(results[5]) as AboutValue[] : defaultValues,
     timeline: results[6] ? JSON.parse(results[6]) as AboutTimeline[] : defaultTimeline,
+    team: results[7] ? JSON.parse(results[7]) as AboutTeamMember[] : defaultTeam,
   };
 }
 
 export default async function AboutPage() {
-  const { hero, story, pillars, stats, mission, values, timeline } = await getContent();
+  const { hero, story, pillars, stats, mission, values, timeline, team } = await getContent();
 
   return (
     <div className="min-h-screen bg-white">
@@ -287,6 +288,66 @@ export default async function AboutPage() {
                     <h3 className="text-lg font-bold text-gray-900 mb-2">{v.title}</h3>
                     <p className="text-gray-500 text-sm leading-relaxed">{v.description}</p>
                   </div>
+                </div>
+              </AnimatedSection>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          TEAM — Leadership & People
+      ═══════════════════════════════════════════════════════ */}
+      <section className="py-24 sm:py-32 bg-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#c9a84c]/5 rounded-full blur-[150px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#2e7d5b]/5 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 relative">
+          <div className="text-center mb-16">
+            <AnimatedSection>
+              <span className="text-xs font-bold text-[#c9a84c] uppercase tracking-[0.3em]">The People Behind PiChess</span>
+              <h2 className="text-3xl sm:text-5xl font-black text-gray-900 mt-3 tracking-tight">
+                Meet Our Team
+              </h2>
+              <p className="text-gray-500 mt-4 max-w-2xl mx-auto leading-relaxed">
+                Passionate leaders, coaches, and organizers working together to grow chess across Ghana.
+              </p>
+            </AnimatedSection>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {team.map((member, i) => (
+              <AnimatedSection key={i} delay={i * 0.12}>
+                <div className="group text-center">
+                  {/* Photo */}
+                  <div className="relative w-48 h-48 mx-auto mb-6 rounded-3xl overflow-hidden border-2 border-gray-100 group-hover:border-[#c9a84c]/40 transition-all duration-500 group-hover:shadow-xl group-hover:shadow-[#c9a84c]/10">
+                    {member.image ? (
+                      <Image
+                        src={member.image}
+                        alt={member.name}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                        <span className="text-5xl text-gray-300">👤</span>
+                      </div>
+                    )}
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    {/* Gold accent corner */}
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#c9a84c] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  </div>
+                  {/* Info */}
+                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#c9a84c] transition-colors duration-300">
+                    {member.name}
+                  </h3>
+                  <p className="text-sm font-semibold text-[#c9a84c] mt-1">{member.role}</p>
+                  {member.bio && (
+                    <p className="text-gray-500 text-sm mt-2 leading-relaxed max-w-[220px] mx-auto">
+                      {member.bio}
+                    </p>
+                  )}
                 </div>
               </AnimatedSection>
             ))}

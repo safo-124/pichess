@@ -6,7 +6,7 @@ export const metadata = { title: "About Page | Admin" };
 export default async function AdminAboutPage() {
   const keys = [
     "about_hero", "about_story", "about_pillars", "about_stats",
-    "about_mission", "about_values", "about_timeline",
+    "about_mission", "about_values", "about_timeline", "about_team",
   ];
   const results = await Promise.all(keys.map((k) => getSiteContent(k)));
 
@@ -33,6 +33,7 @@ export default async function AdminAboutPage() {
         initialMission={parse(results[4])}
         initialValues={parse(results[5])}
         initialTimeline={parse(results[6])}
+        initialTeam={parse(results[7])}
       />
     </div>
   );
