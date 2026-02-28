@@ -1,4 +1,5 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
+import Link from "next/link";
 import prisma from "@/lib/prisma";
 
 export const metadata = { title: "Learning Tools" };
@@ -103,11 +104,11 @@ export default async function LearningToolsPage() {
             { icon: "📺", title: "Video Lessons", desc: "Watch instructional chess videos from top coaches.", href: "#" },
           ].map((r, i) => (
             <AnimatedSection key={r.title} delay={0.3 + i * 0.1}>
-              <a href={r.href} target="_blank" rel="noopener noreferrer" className="group block rounded-2xl border border-white/10 bg-zinc-900 p-6 hover-lift h-full">
+              <Link href={r.href} target="_blank" rel="noopener noreferrer" className="group block rounded-2xl border border-white/10 bg-zinc-900 p-6 hover-lift h-full">
                 <span className="text-3xl">{r.icon}</span>
                 <h3 className="font-bold text-white text-lg mt-3 mb-1 group-hover:text-[#c9a84c] transition-colors">{r.title}</h3>
                 <p className="text-white/40 text-sm">{r.desc}</p>
-              </a>
+              </Link>
             </AnimatedSection>
           ))}
         </div>

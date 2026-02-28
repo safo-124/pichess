@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export const metadata = { title: "Login | PiChess" };
 
 export default function LoginPage() {
@@ -54,7 +56,7 @@ export default function LoginPage() {
                 <input type="checkbox" name="remember" className="rounded border-zinc-700 bg-zinc-800" />
                 Remember me
               </label>
-              <a href="#" className="text-zinc-400 text-sm hover:text-white transition-colors">Forgot password?</a>
+              <Link href="#" className="text-zinc-400 text-sm hover:text-white transition-colors">Forgot password?</Link>
             </div>
 
             <button
@@ -74,9 +76,9 @@ export default function LoginPage() {
 
         {/* Back link */}
         <div className="text-center mt-6">
-          <a href="/" className="text-zinc-500 text-sm hover:text-white transition-colors">
+          <Link href="/" className="text-zinc-500 text-sm hover:text-white transition-colors">
             ← Back to PiChess
-          </a>
+          </Link>
         </div>
       </div>
     </div>

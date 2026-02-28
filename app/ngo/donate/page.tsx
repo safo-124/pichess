@@ -66,7 +66,7 @@ export default function DonatePage() {
               </div>
 
               {/* WhatsApp */}
-              <a
+              <Link
                 href="https://wa.me/233000000000?text=I'd like to make a donation to PiChess Foundation"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -78,13 +78,13 @@ export default function DonatePage() {
                   <p className="text-zinc-500 text-sm">Contact us on WhatsApp to discuss your donation.</p>
                 </div>
                 <span className="ml-auto text-[#25D366] font-semibold text-sm">→</span>
-              </a>
+              </Link>
             </div>
 
             <div className="p-6 border-t border-zinc-100 bg-zinc-50 text-center">
               <p className="text-zinc-400 text-sm">
                 For donation receipts or questions, contact{" "}
-                <a href="mailto:donate@pichess.com" className="text-[#2e7d5b] hover:underline font-medium">donate@pichess.com</a>
+                <Link href="mailto:donate@pichess.com" className="text-[#2e7d5b] hover:underline font-medium">donate@pichess.com</Link>
               </p>
             </div>
           </div>

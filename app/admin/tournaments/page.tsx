@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import prisma from "@/lib/prisma";
+import Link from "next/link";
 
 export const metadata = { title: "Tournaments | Admin" };
 
@@ -28,9 +29,9 @@ export default async function AdminTournamentsPage() {
           <h1 className="text-3xl font-black text-zinc-900">Tournaments</h1>
           <p className="text-zinc-400 mt-1">Manage all chess tournaments.</p>
         </div>
-        <a href="#add" className="px-4 py-2.5 rounded-xl bg-zinc-900 text-white text-sm font-semibold hover:bg-zinc-700 transition-colors">
+        <Link href="#add" className="px-4 py-2.5 rounded-xl bg-zinc-900 text-white text-sm font-semibold hover:bg-zinc-700 transition-colors">
           + Add Tournament
-        </a>
+        </Link>
       </div>
 
       {/* Summary */}
@@ -117,7 +118,7 @@ export default async function AdminTournamentsPage() {
       <div id="add" className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-8 text-center">
         <p className="text-zinc-400 text-sm">Tournament creation form coming soon.</p>
         <p className="text-zinc-400 text-xs mt-1">Use Prisma Studio or the API to add tournaments for now.</p>
-        <a href="/admin/studio" className="inline-block mt-3 text-xs text-zinc-600 underline">Open Prisma Studio →</a>
+        <Link href="/admin/studio" className="inline-block mt-3 text-xs text-zinc-600 underline">Open Prisma Studio →</Link>
       </div>
     </div>
   );
