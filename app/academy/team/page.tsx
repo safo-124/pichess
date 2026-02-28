@@ -41,7 +41,7 @@ export default async function AcademyTeamPage() {
       </section>
 
       {/* Team grid */}
-      <section className="py-8 pb-28 px-4">
+      <section className="py-8 pb-0 px-4">
         <div className="max-w-7xl mx-auto">
           {team.length === 0 ? (
             <AnimatedSection>
@@ -90,6 +90,25 @@ export default async function AcademyTeamPage() {
               </Link>
             </MagneticButton>
           </AnimatedSection>
+        </div>
+      </section>
+
+      {/* Dark CTA band */}
+      <section className="py-20 bg-gray-900 px-4 relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.08),transparent_60%)]" />
+        <div className="max-w-3xl mx-auto text-center relative">
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-4">Join the Academy</h2>
+          <p className="text-gray-400 mb-8 max-w-md mx-auto">Our coaches are ready to help you reach your full potential. Start your chess journey today.</p>
+          <MagneticButton>
+            <Link
+              href="/academy/enquire"
+              className="group relative inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-bold transition-all overflow-hidden"
+            >
+              <span className="absolute inset-0 bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#dbb95d] group-hover:from-[#dbb95d] group-hover:to-[#c9a84c] transition-all" />
+              <span className="relative z-10 text-white font-bold">Enquire Now</span>
+              <span className="relative z-10 text-white/60 group-hover:translate-x-1 transition-transform">→</span>
+            </Link>
+          </MagneticButton>
         </div>
       </section>
     </div>

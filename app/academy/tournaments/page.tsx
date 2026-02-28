@@ -101,7 +101,7 @@ export default async function AcademyTournamentsPage() {
                 { value: eventCount, label: "Events", icon: "🎪" },
               ].map((stat) => (
                 <div key={stat.label} className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-base">
+                  <div className="w-10 h-10 rounded-xl bg-gray-900 border border-gray-700 flex items-center justify-center text-base">
                     {stat.icon}
                   </div>
                   <div className="text-left">
@@ -130,20 +130,20 @@ export default async function AcademyTournamentsPage() {
       {/* ═══════════════════════════════════════════════════════
           CTA
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 px-4 bg-white relative">
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#c9a84c]/15 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(201,168,76,0.04),transparent_50%)]" />
+      <section className="py-24 px-4 bg-gray-900 relative">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#c9a84c]/20 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(201,168,76,0.08),transparent_50%)]" />
         <div className="max-w-2xl mx-auto text-center relative">
           <AnimatedSection>
-            <div className="relative rounded-3xl border border-[#c9a84c]/15 bg-gray-50 p-12 sm:p-16 overflow-hidden">
-              <div className="absolute inset-0 chess-bg opacity-[0.015] pointer-events-none" />
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-gradient-to-b from-[#c9a84c]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+            <div className="relative rounded-3xl border border-gray-700 bg-gray-800/50 p-12 sm:p-16 overflow-hidden">
+              <div className="absolute inset-0 chess-bg opacity-[0.03] pointer-events-none" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-gradient-to-b from-[#c9a84c]/15 to-transparent rounded-full blur-3xl pointer-events-none" />
 
               <div className="relative">
                 <div className="text-5xl mb-4">🏆</div>
                 <TextReveal
                   text="Ready to Compete?"
-                  className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight"
+                  className="text-3xl sm:text-4xl font-black text-white tracking-tight"
                 />
                 <AnimatedSection delay={0.2}>
                   <p className="text-gray-400 mt-4 mb-8 max-w-md mx-auto">

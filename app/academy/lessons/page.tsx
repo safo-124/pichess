@@ -117,18 +117,18 @@ export default async function LessonsPage() {
       {/* ═══════════════════════════════════════════════════════
           HOW IT WORKS — Simple 3-step strip
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 bg-white px-4 relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.03),transparent_60%)]" />
+      <section className="py-24 bg-gray-900 px-4 relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.05),transparent_60%)]" />
         <div className="max-w-5xl mx-auto relative">
           <div className="text-center mb-14">
             <AnimatedSection>
-              <span className="inline-block px-3 py-1 rounded-full bg-gray-100 border border-gray-200 text-gray-500 text-xs font-semibold uppercase tracking-widest mb-4">
+              <span className="inline-block px-3 py-1 rounded-full bg-white/10 border border-white/10 text-gray-300 text-xs font-semibold uppercase tracking-widest mb-4">
                 How It Works
               </span>
             </AnimatedSection>
             <TextReveal
               text="Start in 3 Simple Steps"
-              className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight"
+              className="text-3xl sm:text-4xl font-black text-white tracking-tight"
             />
           </div>
 
@@ -154,14 +154,14 @@ export default async function LessonsPage() {
               },
             ].map((item, i) => (
               <AnimatedSection key={item.step} delay={i * 0.12}>
-                <div className="group relative rounded-2xl border border-gray-200 bg-white p-8 transition-all duration-500 hover:border-[#c9a84c]/30 hover:shadow-lg hover:shadow-[#c9a84c]/10 hover:-translate-y-1 text-center">
+                <div className="group relative rounded-2xl border border-gray-700 bg-gray-800/50 p-8 transition-all duration-500 hover:border-[#c9a84c]/30 hover:shadow-lg hover:shadow-[#c9a84c]/10 hover:-translate-y-1 text-center">
                   <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
                     {item.icon}
                   </div>
                   <div className="text-xs font-bold text-[#c9a84c]/60 uppercase tracking-widest mb-2">
                     Step {item.step}
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#c9a84c] transition-colors">
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#c9a84c] transition-colors">
                     {item.title}
                   </h3>
                   <p className="text-gray-400 text-sm leading-relaxed">
@@ -177,19 +177,19 @@ export default async function LessonsPage() {
       {/* ═══════════════════════════════════════════════════════
           CTA
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 px-4 bg-gray-50 relative">
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#c9a84c]/15 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(201,168,76,0.05),transparent_60%)]" />
+      <section className="py-24 px-4 bg-gray-900 relative">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#c9a84c]/20 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(201,168,76,0.08),transparent_60%)]" />
         <div className="max-w-2xl mx-auto text-center relative">
           <AnimatedSection>
-            <div className="relative rounded-3xl border border-[#c9a84c]/15 bg-white p-12 sm:p-16 overflow-hidden">
-              <div className="absolute inset-0 chess-bg opacity-[0.015] pointer-events-none" />
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-gradient-to-b from-[#c9a84c]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+            <div className="relative rounded-3xl border border-gray-700 bg-gray-800/50 p-12 sm:p-16 overflow-hidden">
+              <div className="absolute inset-0 chess-bg opacity-[0.03] pointer-events-none" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-gradient-to-b from-[#c9a84c]/15 to-transparent rounded-full blur-3xl pointer-events-none" />
 
               <div className="relative">
                 <TextReveal
                   text="Found the Right Fit?"
-                  className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight"
+                  className="text-3xl sm:text-4xl font-black text-white tracking-tight"
                 />
                 <AnimatedSection delay={0.2}>
                   <p className="text-gray-400 mt-4 mb-8 max-w-md mx-auto">

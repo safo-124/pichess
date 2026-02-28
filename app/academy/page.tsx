@@ -156,15 +156,15 @@ export default async function AcademyPage() {
       {/* ═══════════════════════════════════════════════════════
           FEATURES — Quick horizontal strip
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-6 bg-gradient-to-r from-[#c9a84c]/5 via-gray-50 to-[#c9a84c]/5 border-y border-gray-200">
+      <section className="py-6 bg-gray-900 border-y border-gray-800">
         <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-center gap-8 sm:gap-14">
           {features.map((f, i) => (
             <AnimatedSection key={f.title} delay={i * 0.08}>
-              <div className="flex items-center gap-3 text-gray-600">
+              <div className="flex items-center gap-3 text-gray-300">
                 <span className="text-xl">{f.icon}</span>
                 <div>
-                  <div className="text-sm font-bold text-gray-700">{f.title}</div>
-                  <div className="text-xs text-gray-400">{f.desc}</div>
+                  <div className="text-sm font-bold text-white">{f.title}</div>
+                  <div className="text-xs text-gray-500">{f.desc}</div>
                 </div>
               </div>
             </AnimatedSection>
@@ -175,8 +175,8 @@ export default async function AcademyPage() {
       {/* ═══════════════════════════════════════════════════════
           STATS — Bold numbers
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 bg-white relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.04),transparent_70%)]" />
+      <section className="py-24 bg-gray-900 relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.08),transparent_70%)]" />
         <div className="max-w-7xl mx-auto px-4 relative">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
             {stats.map((s, i) => (
@@ -306,22 +306,22 @@ export default async function AcademyPage() {
           TESTIMONIALS — Refined cards
       ═══════════════════════════════════════════════════════ */}
       {testimonials.length > 0 && (
-        <section id="testimonials" className="py-28 bg-gray-50 px-4 relative">
-          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+        <section id="testimonials" className="py-28 bg-gray-900 px-4 relative">
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent" />
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-14">
               <AnimatedSection>
-                <span className="inline-block px-3 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-600 text-xs font-semibold uppercase tracking-widest mb-4">
+                <span className="inline-block px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold uppercase tracking-widest mb-4">
                   Testimonials
                 </span>
               </AnimatedSection>
-              <TextReveal text="What Students Say" className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tight" />
+              <TextReveal text="What Students Say" className="text-3xl sm:text-5xl font-black text-white tracking-tight" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {testimonials.map((t, i) => (
                 <AnimatedSection key={t.id} delay={i * 0.12}>
-                  <div className="group rounded-2xl border border-gray-200 bg-white p-7 transition-all duration-500 hover:border-[#c9a84c]/30 hover:shadow-lg hover:shadow-[#c9a84c]/10 hover:-translate-y-1 h-full flex flex-col">
+                  <div className="group rounded-2xl border border-gray-700 bg-gray-800/50 p-7 transition-all duration-500 hover:border-[#c9a84c]/30 hover:shadow-lg hover:shadow-[#c9a84c]/10 hover:-translate-y-1 h-full flex flex-col">
                     {/* Stars */}
                     <div className="flex gap-0.5 mb-5">
                       {Array.from({ length: t.rating }).map((_, j) => (
@@ -329,17 +329,17 @@ export default async function AcademyPage() {
                       ))}
                     </div>
                     {/* Quote */}
-                    <p className="text-gray-600 text-sm leading-relaxed mb-6 flex-1 italic">
+                    <p className="text-gray-300 text-sm leading-relaxed mb-6 flex-1 italic">
                       &ldquo;{t.content}&rdquo;
                     </p>
                     {/* Author */}
-                    <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#c9a84c]/15 to-[#dbb95d]/10 flex items-center justify-center text-[#c9a84c] font-black text-sm border border-[#c9a84c]/20">
+                    <div className="flex items-center gap-3 pt-4 border-t border-gray-700">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#c9a84c]/20 to-[#dbb95d]/10 flex items-center justify-center text-[#c9a84c] font-black text-sm border border-[#c9a84c]/25">
                         {t.name[0]}
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
-                        {t.program && <p className="text-gray-400 text-xs">{t.program}</p>}
+                        <p className="font-semibold text-white text-sm">{t.name}</p>
+                        {t.program && <p className="text-gray-500 text-xs">{t.program}</p>}
                       </div>
                     </div>
                   </div>
@@ -353,18 +353,18 @@ export default async function AcademyPage() {
       {/* ═══════════════════════════════════════════════════════
           CTA — Bold final card
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-28 px-4 bg-white relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(201,168,76,0.06),transparent_60%)]" />
+      <section className="py-28 px-4 bg-gray-900 relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(201,168,76,0.08),transparent_60%)]" />
         <div className="max-w-3xl mx-auto text-center relative">
           <AnimatedSection>
-            <div className="relative rounded-3xl border border-[#c9a84c]/15 bg-gray-50 p-12 sm:p-16 overflow-hidden">
+            <div className="relative rounded-3xl border border-gray-700 bg-gray-800/50 p-12 sm:p-16 overflow-hidden">
               {/* Decorative grid */}
-              <div className="absolute inset-0 chess-bg opacity-[0.015] pointer-events-none" />
+              <div className="absolute inset-0 chess-bg opacity-[0.03] pointer-events-none" />
               {/* Glow */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-gradient-to-b from-[#c9a84c]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-gradient-to-b from-[#c9a84c]/15 to-transparent rounded-full blur-3xl pointer-events-none" />
 
               <div className="relative">
-                <TextReveal text={cta.title1} className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight" />
+                <TextReveal text={cta.title1} className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight" />
                 <TextReveal text={cta.title2} className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#dbb95d] bg-clip-text text-transparent tracking-tight" delay={0.15} />
                 <AnimatedSection delay={0.3}>
                   <p className="text-gray-400 mt-4 mb-10 max-w-md mx-auto">
