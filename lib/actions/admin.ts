@@ -350,8 +350,10 @@ export async function saveSiteContent(key: string, value: string) {
   revalidatePath("/admin");
   if (zone === "academy") {
     revalidatePath("/academy");
+    revalidatePath("/academy/lessons");
     revalidatePath("/academy/team");
     revalidatePath("/academy/tournaments");
+    revalidatePath("/academy/enquire");
   } else if (zone === "ngo") {
     revalidatePath("/ngo");
   } else {
