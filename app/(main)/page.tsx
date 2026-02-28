@@ -11,9 +11,10 @@ import prisma from "@/lib/prisma";
 async function getTournaments() {
   try {
     return await prisma.tournament.findMany({
-      where: { status: "UPCOMING", featured: true },
+      where: { featured: true, status: { in: ["UPCOMING", "ONGOING"] } },
+      include: { photos: { take: 1 } },
       orderBy: { date: "asc" },
-      take: 3,
+      take: 4,
     });
   } catch { return []; }
 }
@@ -563,60 +564,129 @@ export default async function HomePage() {
 
 
       {/* ═══════════════════════════════════════════════════════
-          TOURNAMENTS — Upcoming events
+          TOURNAMENTS — Featured events & tournaments
       ═══════════════════════════════════════════════════════ */}
       {tournaments.length > 0 && (
         <section className="py-24 sm:py-32 bg-zinc-950 relative overflow-hidden noise-bg">
+          {/* Decorative glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] rounded-full bg-[#c9a84c]/[0.03] blur-[180px] pointer-events-none" />
+
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimatedSection className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-14 gap-4">
               <div>
-                <span className="text-xs font-bold text-[#c9a84c] uppercase tracking-[0.25em]">Events</span>
+                <span className="text-xs font-bold text-[#c9a84c] uppercase tracking-[0.25em]">Featured</span>
                 <h2 className="text-3xl sm:text-5xl font-black text-white mt-2 tracking-tight">
-                  Upcoming Tournaments
+                  Tournaments & Events
                 </h2>
-                <p className="text-white/35 mt-2 text-base">Register early — limited spots available.</p>
+                <p className="text-white/35 mt-2 text-base max-w-lg">Don&apos;t miss out — register early for limited spots.</p>
               </div>
               <Link href="/academy/tournaments" className="text-[#c9a84c] text-sm font-bold hover:underline hidden sm:block whitespace-nowrap">
                 See all events →
               </Link>
             </AnimatedSection>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {tournaments.map((t, i) => (
-                <AnimatedSection key={t.id} delay={i * 0.12}>
-                  <div className="group rounded-3xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm p-6 sm:p-7 hover:border-[#c9a84c]/25 transition-all duration-500 hover-lift h-full flex flex-col spotlight">
-                    <div className="flex items-center gap-2 mb-4">
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                        t.status === "UPCOMING"
-                          ? "bg-[#c9a84c]/10 text-[#c9a84c] border border-[#c9a84c]/20"
-                          : "bg-green-500/10 text-green-400 border border-green-500/20"
-                      }`}>
-                        {t.status}
-                      </span>
-                      {t.featured && (
-                        <span className="text-xs text-amber-400 font-bold">★ Featured</span>
-                      )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {tournaments.map((t, i) => {
+                const eventDate = new Date(t.date);
+                const now = new Date();
+                const daysUntil = Math.ceil((eventDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+                const isLive = t.status === "ONGOING";
+
+                return (
+                  <AnimatedSection key={t.id} delay={i * 0.1}>
+                    <div className="group rounded-3xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm overflow-hidden hover:border-[#c9a84c]/30 transition-all duration-500 hover-lift h-full flex flex-col spotlight">
+                      {/* Flyer / Image Hero */}
+                      <div className="relative aspect-[4/3] overflow-hidden bg-zinc-900/60">
+                        {t.flyer ? (
+                          <img
+                            src={t.flyer}
+                            alt={t.title}
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#c9a84c]/10 via-zinc-900 to-zinc-950 flex items-center justify-center">
+                            <span className="text-7xl opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-700">
+                              {t.type === "EVENT" ? "🎪" : "♔"}
+                            </span>
+                          </div>
+                        )}
+                        {/* Gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                        {/* Top badges */}
+                        <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider backdrop-blur-md ${
+                            isLive
+                              ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                              : "bg-[#c9a84c]/15 text-[#c9a84c] border border-[#c9a84c]/25"
+                          }`}>
+                            {isLive ? "● Live Now" : t.status}
+                          </span>
+                          <span className="text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-white/10 text-white/70 border border-white/10 backdrop-blur-md">
+                            {t.type === "EVENT" ? "Event" : "Tournament"}
+                          </span>
+                        </div>
+
+                        {/* Countdown badge */}
+                        {!isLive && daysUntil > 0 && daysUntil <= 60 && (
+                          <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
+                            <span className="text-[10px] font-bold text-white/80">
+                              {daysUntil === 1 ? "Tomorrow" : `${daysUntil}d`}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Featured star */}
+                        <div className="absolute bottom-3 right-3">
+                          <span className="text-lg text-amber-400 drop-shadow-lg animate-pulse-dot">★</span>
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-5 flex flex-col flex-1">
+                        <h3 className="font-black text-white text-base mb-2.5 group-hover:text-[#c9a84c] transition-colors leading-tight line-clamp-2">
+                          {t.title}
+                        </h3>
+
+                        <div className="space-y-1.5 mb-5 flex-1">
+                          <p className="text-white/35 text-xs flex items-center gap-1.5">
+                            <span className="text-sm">📅</span>
+                            {eventDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                            {t.endDate && (
+                              <span className="text-white/20">
+                                {" "}– {new Date(t.endDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-white/35 text-xs flex items-center gap-1.5">
+                            <span className="text-sm">📍</span>
+                            {t.location}
+                          </p>
+                          {t.venue && (
+                            <p className="text-white/25 text-xs flex items-center gap-1.5">
+                              <span className="text-sm">🏛</span>
+                              {t.venue}
+                            </p>
+                          )}
+                        </div>
+
+                        {t.registrationLink ? (
+                          <a
+                            href={t.registrationLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#c9a84c]/8 hover:bg-[#c9a84c] hover:text-black text-[#c9a84c] text-xs font-bold transition-all w-full border border-[#c9a84c]/15 hover:border-[#c9a84c] hover:shadow-[0_0_20px_rgba(201,168,76,0.25)]"
+                          >
+                            {isLive ? "Join Now →" : "Register Now →"}
+                          </a>
+                        ) : (
+                          <span className="text-white/15 text-xs font-medium text-center block py-2.5">Registration opening soon</span>
+                        )}
+                      </div>
                     </div>
-                    <h3 className="font-black text-white text-lg mb-2 group-hover:text-[#c9a84c] transition-colors">{t.title}</h3>
-                    <p className="text-white/30 text-sm mb-6 flex-1 leading-relaxed">
-                      📅 {new Date(t.date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
-                      <br />📍 {t.location}
-                    </p>
-                    {t.registrationLink ? (
-                      <a
-                        href={t.registrationLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#c9a84c]/8 hover:bg-[#c9a84c] hover:text-black text-[#c9a84c] text-xs font-bold transition-all w-fit border border-[#c9a84c]/15 hover:border-[#c9a84c]"
-                      >
-                        Register Now →
-                      </a>
-                    ) : (
-                      <span className="text-white/15 text-xs font-medium">Registration opening soon</span>
-                    )}
-                  </div>
-                </AnimatedSection>
-              ))}
+                  </AnimatedSection>
+                );
+              })}
             </div>
 
             <div className="mt-8 text-center sm:hidden">
