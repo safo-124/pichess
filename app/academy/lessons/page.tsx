@@ -44,7 +44,7 @@ export default async function LessonsPage() {
       {/* ═══════════════════════════════════════════════════════
           HERO
       ═══════════════════════════════════════════════════════ */}
-      <section className="relative pt-32 pb-24 bg-[#060a14] overflow-hidden">
+      <section className="relative pt-32 pb-24 bg-white overflow-hidden">
         {/* Background image */}
         {lessonsHero.bgImage && (
           <>
@@ -55,47 +55,46 @@ export default async function LessonsPage() {
               className="object-cover"
               priority
             />
-            <div className="absolute inset-0 bg-[#060a14]/75" />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#060a14]/60 via-transparent to-[#060a14]" />
+            <div className="absolute inset-0 bg-white/80" />
+            <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-white" />
           </>
         )}
 
         {/* Decorative elements */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(245,158,11,0.06),transparent_60%)]" />
-        <div className="absolute top-1/3 right-0 w-[500px] h-[500px] rounded-full bg-blue-500/[0.03] blur-[160px] pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-[400px] h-[300px] rounded-full bg-purple-500/[0.03] blur-[140px] pointer-events-none" />
-        <div className="absolute inset-0 chess-bg opacity-[0.015] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(201,168,76,0.06),transparent_60%)]" />
+        <div className="absolute top-1/3 right-0 w-[500px] h-[500px] rounded-full bg-blue-200/[0.1] blur-[160px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[400px] h-[300px] rounded-full bg-purple-200/[0.08] blur-[140px] pointer-events-none" />
 
         <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
           <AnimatedSection>
-            <span className="inline-block px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-6">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/20 text-[#c9a84c] text-xs font-semibold uppercase tracking-widest mb-6">
               {lessonsHero.badge}
             </span>
           </AnimatedSection>
 
           <TextReveal
             text={lessonsHero.title}
-            className="text-5xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight"
+            className="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 tracking-tight"
           />
 
           <AnimatedSection delay={0.2}>
-            <p className="text-white/40 mt-6 max-w-2xl mx-auto text-lg leading-relaxed">
+            <p className="text-gray-500 mt-6 max-w-2xl mx-auto text-lg leading-relaxed">
               {lessonsHero.description}
             </p>
           </AnimatedSection>
 
           <AnimatedSection delay={0.3}>
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 mt-8">
-              <div className="flex items-center gap-2 text-sm text-white/30">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-500/40 to-orange-500/30 border border-amber-500/30" />
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <span className="w-3 h-3 rounded-full bg-gradient-to-br from-[#c9a84c]/40 to-[#dbb95d]/30 border border-[#c9a84c]/30" />
                 <span>{coreLessons.length} Core Programs</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-white/30">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-500/40 to-cyan-500/30 border border-blue-500/30" />
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <span className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-400/40 to-cyan-400/30 border border-blue-400/30" />
                 <span>{institutional.length} Institutional Programs</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-white/30">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-br from-white/20 to-white/10 border border-white/15" />
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <span className="w-3 h-3 rounded-full bg-gradient-to-br from-gray-300/40 to-gray-200/30 border border-gray-300" />
                 <span>{lessons.length} Total</span>
               </div>
             </div>
@@ -106,9 +105,9 @@ export default async function LessonsPage() {
       {/* ═══════════════════════════════════════════════════════
           LESSON CARDS GRID
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-20 bg-[#0a0e1a] px-4 relative">
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.02),transparent_60%)]" />
+      <section className="py-20 bg-gray-50 px-4 relative">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#c9a84c]/20 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.02),transparent_60%)]" />
 
         <div className="max-w-6xl mx-auto relative">
           <LessonCards lessons={lessons} />
@@ -118,18 +117,18 @@ export default async function LessonsPage() {
       {/* ═══════════════════════════════════════════════════════
           HOW IT WORKS — Simple 3-step strip
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 bg-[#060a14] px-4 relative">
+      <section className="py-24 bg-white px-4 relative">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.03),transparent_60%)]" />
         <div className="max-w-5xl mx-auto relative">
           <div className="text-center mb-14">
             <AnimatedSection>
-              <span className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/40 text-xs font-semibold uppercase tracking-widest mb-4">
+              <span className="inline-block px-3 py-1 rounded-full bg-gray-100 border border-gray-200 text-gray-500 text-xs font-semibold uppercase tracking-widest mb-4">
                 How It Works
               </span>
             </AnimatedSection>
             <TextReveal
               text="Start in 3 Simple Steps"
-              className="text-3xl sm:text-4xl font-black text-white tracking-tight"
+              className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight"
             />
           </div>
 
@@ -155,17 +154,17 @@ export default async function LessonsPage() {
               },
             ].map((item, i) => (
               <AnimatedSection key={item.step} delay={i * 0.12}>
-                <div className="group relative rounded-2xl border border-white/[0.06] bg-[#0f1628]/80 p-8 transition-all duration-500 hover:border-amber-500/15 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-1 text-center">
+                <div className="group relative rounded-2xl border border-gray-200 bg-white p-8 transition-all duration-500 hover:border-[#c9a84c]/30 hover:shadow-lg hover:shadow-[#c9a84c]/10 hover:-translate-y-1 text-center">
                   <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
                     {item.icon}
                   </div>
-                  <div className="text-xs font-bold text-amber-400/60 uppercase tracking-widest mb-2">
+                  <div className="text-xs font-bold text-[#c9a84c]/60 uppercase tracking-widest mb-2">
                     Step {item.step}
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-amber-200 transition-colors">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#c9a84c] transition-colors">
                     {item.title}
                   </h3>
-                  <p className="text-white/35 text-sm leading-relaxed">
+                  <p className="text-gray-400 text-sm leading-relaxed">
                     {item.desc}
                   </p>
                 </div>
@@ -178,22 +177,22 @@ export default async function LessonsPage() {
       {/* ═══════════════════════════════════════════════════════
           CTA
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 px-4 bg-[#0a0e1a] relative">
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/15 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(245,158,11,0.05),transparent_60%)]" />
+      <section className="py-24 px-4 bg-gray-50 relative">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#c9a84c]/15 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(201,168,76,0.05),transparent_60%)]" />
         <div className="max-w-2xl mx-auto text-center relative">
           <AnimatedSection>
-            <div className="relative rounded-3xl border border-amber-500/15 bg-[#0f1628] p-12 sm:p-16 overflow-hidden">
-              <div className="absolute inset-0 chess-bg opacity-[0.02] pointer-events-none" />
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-gradient-to-b from-amber-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+            <div className="relative rounded-3xl border border-[#c9a84c]/15 bg-white p-12 sm:p-16 overflow-hidden">
+              <div className="absolute inset-0 chess-bg opacity-[0.015] pointer-events-none" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-gradient-to-b from-[#c9a84c]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
               <div className="relative">
                 <TextReveal
                   text="Found the Right Fit?"
-                  className="text-3xl sm:text-4xl font-black text-white tracking-tight"
+                  className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight"
                 />
                 <AnimatedSection delay={0.2}>
-                  <p className="text-white/35 mt-4 mb-8 max-w-md mx-auto">
+                  <p className="text-gray-400 mt-4 mb-8 max-w-md mx-auto">
                     Submit an enquiry and a coach will get back to you within 24 hours
                     to get you started.
                   </p>
@@ -203,10 +202,10 @@ export default async function LessonsPage() {
                     href="/academy/enquire"
                     className="group relative inline-flex items-center gap-2 px-10 py-5 rounded-full text-base font-black transition-all overflow-hidden"
                   >
-                    <span className="absolute inset-0 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 group-hover:from-amber-300 group-hover:to-orange-400 transition-all" />
+                    <span className="absolute inset-0 bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#dbb95d] group-hover:from-[#dbb95d] group-hover:to-[#c9a84c] transition-all" />
                     <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.25),transparent_70%)]" />
-                    <span className="relative z-10 text-black">Enquire Now</span>
-                    <span className="relative z-10 text-black/60 group-hover:translate-x-1 transition-transform">→</span>
+                    <span className="relative z-10 text-white">Enquire Now</span>
+                    <span className="relative z-10 text-white/60 group-hover:translate-x-1 transition-transform">→</span>
                   </Link>
                 </MagneticButton>
               </div>

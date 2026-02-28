@@ -31,8 +31,8 @@ export default function AcademyNav() {
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 left-0 right-0 transition-all duration-500 ${
         scrolled
-          ? "bg-[#0a0e1a]/95 backdrop-blur-xl shadow-2xl shadow-black/40 border-b border-amber-500/10"
-          : "bg-gradient-to-b from-[#0a0e1a]/80 to-transparent"
+          ? "bg-white/95 backdrop-blur-xl shadow-lg shadow-black/[0.04] border-b border-gray-200/60"
+          : "bg-white/80 backdrop-blur-sm"
       }`}
       style={{ zIndex: 99999 }}
     >
@@ -43,22 +43,22 @@ export default function AcademyNav() {
             <motion.div
               whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
               transition={{ duration: 0.5 }}
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/25"
+              className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#c9a84c] via-[#d4b15a] to-[#a8893d] flex items-center justify-center shadow-lg shadow-[#c9a84c]/25"
             >
               <Crown size={20} className="text-white" />
             </motion.div>
             <div className="leading-tight">
-              <div className="font-black text-white text-lg tracking-tight leading-none">
+              <div className="font-black text-gray-900 text-lg tracking-tight leading-none">
                 PiChess
               </div>
-              <div className="text-[10px] font-bold text-amber-400/90 tracking-[0.25em] uppercase">
+              <div className="text-[10px] font-bold text-[#c9a84c] tracking-[0.25em] uppercase">
                 Academy
               </div>
             </div>
           </Link>
 
           {/* Desktop nav — pill style */}
-          <nav className="hidden lg:flex items-center gap-1 bg-white/[0.04] backdrop-blur-sm rounded-full px-2 py-1.5 border border-white/[0.06]">
+          <nav className="hidden lg:flex items-center gap-1 bg-gray-100/80 backdrop-blur-sm rounded-full px-2 py-1.5 border border-gray-200/60">
             {links.map((l) => {
               const active = pathname === l.href;
               return (
@@ -66,11 +66,11 @@ export default function AcademyNav() {
                   {active && (
                     <motion.div
                       layoutId="activeNavPill"
-                      className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-orange-500/15 rounded-full border border-amber-400/20"
+                      className="absolute inset-0 bg-white rounded-full border border-gray-200 shadow-sm"
                       transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                     />
                   )}
-                  <span className={`relative z-10 ${active ? "text-amber-300" : "text-white/60 hover:text-white"}`}>
+                  <span className={`relative z-10 ${active ? "text-[#c9a84c] font-bold" : "text-gray-500 hover:text-gray-800"}`}>
                     {l.label}
                   </span>
                 </Link>
@@ -82,7 +82,7 @@ export default function AcademyNav() {
           <div className="hidden lg:flex items-center gap-4">
             <Link
               href="/"
-              className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white/60 transition-colors"
+              className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors"
             >
               <ArrowLeft size={12} />
               Main Site
@@ -92,9 +92,9 @@ export default function AcademyNav() {
                 href="/academy/enquire"
                 className="relative px-5 py-2.5 rounded-full text-sm font-bold transition-all overflow-hidden group"
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 group-hover:from-amber-300 group-hover:via-amber-400 group-hover:to-orange-400 transition-all" />
+                <span className="absolute inset-0 bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#c9a84c] group-hover:from-[#dbb95d] group-hover:to-[#c9a84c] transition-all" />
                 <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2),transparent_70%)]" />
-                <span className="relative z-10 text-black">Enquire Now</span>
+                <span className="relative z-10 text-white font-bold">Enquire Now</span>
               </Link>
             </motion.div>
           </div>
@@ -102,7 +102,7 @@ export default function AcademyNav() {
           {/* Mobile toggle */}
           <motion.button
             onClick={() => setOpen(!open)}
-            className="lg:hidden p-2 text-white/80"
+            className="lg:hidden p-2 text-gray-600"
             whileTap={{ scale: 0.9 }}
             aria-label="Toggle menu"
           >
@@ -119,7 +119,7 @@ export default function AcademyNav() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:hidden overflow-hidden bg-[#0a0e1a]/98 backdrop-blur-xl border-t border-white/[0.06]"
+            className="lg:hidden overflow-hidden bg-white/98 backdrop-blur-xl border-t border-gray-200/60"
           >
             <div className="px-4 py-5 space-y-1">
               {links.map((l, i) => (
@@ -134,8 +134,8 @@ export default function AcademyNav() {
                     onClick={() => setOpen(false)}
                     className={`block px-4 py-3 rounded-xl text-base font-medium transition-all ${
                       pathname === l.href
-                        ? "text-amber-300 bg-amber-500/10"
-                        : "text-white/70 hover:text-white hover:bg-white/5"
+                        ? "text-[#c9a84c] bg-[#c9a84c]/10 font-bold"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                     }`}
                   >
                     {l.label}
@@ -146,19 +146,19 @@ export default function AcademyNav() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35 }}
-                className="pt-4 border-t border-white/10 flex flex-col gap-2"
+                className="pt-4 border-t border-gray-100 flex flex-col gap-2"
               >
                 <Link
                   href="/academy/enquire"
                   onClick={() => setOpen(false)}
-                  className="px-6 py-3 rounded-full text-center text-sm font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-black"
+                  className="px-6 py-3 rounded-full text-center text-sm font-bold bg-gradient-to-r from-[#c9a84c] to-[#dbb95d] text-white"
                 >
                   Enquire Now →
                 </Link>
                 <Link
                   href="/"
                   onClick={() => setOpen(false)}
-                  className="px-4 py-2.5 text-center text-xs text-white/35 hover:text-white/60 transition-colors"
+                  className="px-4 py-2.5 text-center text-xs text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   ← Back to Main Site
                 </Link>

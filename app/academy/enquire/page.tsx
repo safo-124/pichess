@@ -49,25 +49,24 @@ function EnquireForm() {
   ];
 
   const inputClass =
-    "w-full bg-[#0f1628] border border-white/[0.08] rounded-xl px-4 py-3.5 text-white placeholder-white/20 text-sm focus:outline-none focus:border-amber-500/40 focus:ring-1 focus:ring-amber-500/20 transition-all";
+    "w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 placeholder-gray-300 text-sm focus:outline-none focus:border-[#c9a84c]/40 focus:ring-1 focus:ring-[#c9a84c]/20 transition-all";
 
   return (
-    <div className="min-h-screen bg-[#060a14] pt-24 pb-24 px-4 relative">
+    <div className="min-h-screen bg-white pt-24 pb-24 px-4 relative">
       {/* Decorative background */}
-      <div className="absolute inset-0 chess-bg opacity-[0.015] pointer-events-none" />
-      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-amber-500/[0.03] blur-[200px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] rounded-full bg-blue-500/[0.03] blur-[180px] pointer-events-none" />
+      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-[#c9a84c]/[0.04] blur-[200px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] rounded-full bg-blue-200/[0.1] blur-[180px] pointer-events-none" />
 
       <div className="max-w-2xl mx-auto relative">
         <div className="text-center mb-12">
           <AnimatedSection>
-            <span className="inline-block px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-6">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/20 text-[#c9a84c] text-xs font-semibold uppercase tracking-widest mb-6">
               Academy
             </span>
           </AnimatedSection>
-          <TextReveal text="Enquire Now" className="text-4xl sm:text-6xl font-black text-white tracking-tight" />
+          <TextReveal text="Enquire Now" className="text-4xl sm:text-6xl font-black text-gray-900 tracking-tight" />
           <AnimatedSection delay={0.2}>
-            <p className="text-white/35 mt-4 text-base leading-relaxed max-w-md mx-auto">
+            <p className="text-gray-400 mt-4 text-base leading-relaxed max-w-md mx-auto">
               Tell us about yourself and we&apos;ll get back to you within 24 hours with the perfect program for you.
             </p>
           </AnimatedSection>
@@ -79,41 +78,41 @@ function EnquireForm() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              className="rounded-3xl border border-amber-500/20 bg-[#0f1628] p-14 text-center relative overflow-hidden"
+              className="rounded-3xl border border-[#c9a84c]/20 bg-gray-50 p-14 text-center relative overflow-hidden"
             >
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-gradient-to-b from-amber-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-gradient-to-b from-[#c9a84c]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
               <div className="relative">
                 <div className="text-6xl mb-6">🎉</div>
-                <h2 className="text-3xl font-black text-white mb-3">Enquiry Received!</h2>
-                <p className="text-white/40 text-base">A coach will contact you within 24 hours. Get ready to make your move!</p>
+                <h2 className="text-3xl font-black text-gray-900 mb-3">Enquiry Received!</h2>
+                <p className="text-gray-400 text-base">A coach will contact you within 24 hours. Get ready to make your move!</p>
               </div>
             </motion.div>
           </AnimatedSection>
         ) : (
           <AnimatedSection delay={0.15}>
-            <div className="rounded-3xl border border-white/[0.06] bg-[#0f1628] p-8 sm:p-10 relative overflow-hidden">
+            <div className="rounded-3xl border border-gray-200 bg-gray-50 p-8 sm:p-10 relative overflow-hidden">
               {/* Subtle top glow */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200px] h-[100px] bg-gradient-to-b from-amber-500/[0.06] to-transparent rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200px] h-[100px] bg-gradient-to-b from-[#c9a84c]/[0.06] to-transparent rounded-full blur-3xl pointer-events-none" />
 
               <form onSubmit={handleSubmit} className="space-y-6 relative">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-2.5">Full Name *</label>
+                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5">Full Name *</label>
                     <input name="name" type="text" required placeholder="e.g. Kofi Mensah" className={inputClass} />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-2.5">Email *</label>
+                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5">Email *</label>
                     <input name="email" type="email" required placeholder="you@example.com" className={inputClass} />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-2.5">Phone Number</label>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5">Phone Number</label>
                   <input name="phone" type="tel" placeholder="+233 XX XXX XXXX" className={inputClass} />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-2.5">Program of Interest</label>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5">Program of Interest</label>
                   <select
                     name="program"
                     value={selectedProgram}
@@ -128,7 +127,7 @@ function EnquireForm() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-2.5">Message</label>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5">Message</label>
                   <textarea name="message" rows={4} placeholder="Tell us about your chess experience and goals..." className={`${inputClass} resize-none`} />
                 </div>
 
@@ -139,9 +138,9 @@ function EnquireForm() {
                   whileTap={{ scale: 0.97 }}
                   className="group relative w-full py-4 rounded-full text-base font-black transition-all overflow-hidden disabled:opacity-50"
                 >
-                  <span className="absolute inset-0 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 group-hover:from-amber-300 group-hover:to-orange-400 transition-all" />
+                  <span className="absolute inset-0 bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#dbb95d] group-hover:from-[#dbb95d] group-hover:to-[#c9a84c] transition-all" />
                   <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2),transparent_70%)]" />
-                  <span className="relative z-10 text-black">
+                  <span className="relative z-10 text-white">
                     {status === "loading" ? "Submitting..." : "Submit Enquiry →"}
                   </span>
                 </motion.button>

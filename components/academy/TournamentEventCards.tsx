@@ -59,9 +59,9 @@ function daysUntil(d: string) {
 }
 
 const statusConfig: Record<string, { bg: string; text: string; dot: string; label: string }> = {
-  UPCOMING: { bg: "bg-amber-500/15 border-amber-500/25", text: "text-amber-300", dot: "bg-amber-400", label: "Upcoming" },
-  ONGOING: { bg: "bg-emerald-500/15 border-emerald-500/25", text: "text-emerald-300", dot: "bg-emerald-400 animate-pulse", label: "Live Now" },
-  COMPLETED: { bg: "bg-white/5 border-white/10", text: "text-white/40", dot: "bg-white/30", label: "Completed" },
+  UPCOMING: { bg: "bg-[#c9a84c]/10 border-[#c9a84c]/25", text: "text-[#c9a84c]", dot: "bg-[#c9a84c]", label: "Upcoming" },
+  ONGOING: { bg: "bg-emerald-50 border-emerald-200", text: "text-emerald-600", dot: "bg-emerald-500 animate-pulse", label: "Live Now" },
+  COMPLETED: { bg: "bg-gray-100 border-gray-200", text: "text-gray-400", dot: "bg-gray-300", label: "Completed" },
 };
 
 const typeIcons: Record<string, string> = {
@@ -96,8 +96,8 @@ function CountdownBadge({ date }: { date: string }) {
   const label = daysUntil(date);
   if (!label) return null;
   return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-200 text-[11px] font-bold tracking-wide">
-      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/25 text-[#c9a84c] text-[11px] font-bold tracking-wide">
+      <span className="w-1.5 h-1.5 rounded-full bg-[#c9a84c] animate-pulse" />
       {label}
     </span>
   );
@@ -109,7 +109,7 @@ function CountdownBadge({ date }: { date: string }) {
 
 function SpotsIndicator({ maxSpots, registeredCount }: { maxSpots: number | null; registeredCount: number }) {
   if (!maxSpots) return (
-    <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-blue-500/15 border border-blue-500/25 text-blue-300 tracking-wider">
+    <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-600 tracking-wider">
       {registeredCount} registered
     </span>
   );
@@ -117,7 +117,7 @@ function SpotsIndicator({ maxSpots, registeredCount }: { maxSpots: number | null
   const pct = Math.min(100, (registeredCount / maxSpots) * 100);
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden min-w-[60px]">
+      <div className="flex-1 h-1.5 rounded-full bg-gray-200 overflow-hidden min-w-[60px]">
         <div
           className={`h-full rounded-full transition-all duration-500 ${
             pct >= 90 ? "bg-red-400" : pct >= 70 ? "bg-amber-400" : "bg-emerald-400"
@@ -126,7 +126,7 @@ function SpotsIndicator({ maxSpots, registeredCount }: { maxSpots: number | null
         />
       </div>
       <span className={`text-[10px] font-bold ${
-        remaining === 0 ? "text-red-300" : remaining <= 5 ? "text-amber-300" : "text-white/40"
+        remaining === 0 ? "text-red-500" : remaining <= 5 ? "text-amber-600" : "text-gray-400"
       }`}>
         {remaining === 0 ? "Full" : `${remaining} spot${remaining !== 1 ? "s" : ""} left`}
       </span>
@@ -152,12 +152,12 @@ function DetailModal({ item, onClose }: { item: TournamentItem; onClose: () => v
         exit={{ opacity: 0, scale: 0.9, y: 40 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl bg-[#0f1628] border border-white/[0.08] shadow-2xl shadow-black/50"
+        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white border border-gray-200 shadow-2xl shadow-black/10"
       >
         {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-black/70 transition-all"
+          className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all"
         >
           ✕
         </button>
@@ -183,11 +183,11 @@ function DetailModal({ item, onClose }: { item: TournamentItem; onClose: () => v
               <span className={`inline-block w-1.5 h-1.5 rounded-full mr-1.5 align-middle ${sc.dot}`} />
               {sc.label}
             </span>
-            <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/50 text-xs font-bold">
+            <span className="px-3 py-1 rounded-full bg-gray-100 border border-gray-200 text-gray-500 text-xs font-bold">
               {typeIcons[item.type] || "🏆"} {item.type === "EVENT" ? "Event" : "Tournament"}
             </span>
             {item.featured && (
-              <span className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold">
+              <span className="px-3 py-1 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/25 text-[#c9a84c] text-xs font-bold">
                 ★ Featured
               </span>
             )}
@@ -195,39 +195,39 @@ function DetailModal({ item, onClose }: { item: TournamentItem; onClose: () => v
           </div>
 
           {/* Title */}
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight leading-tight">
             {item.title}
           </h2>
 
           {/* Meta grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex items-center gap-3 text-white/50">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-lg">📅</div>
+            <div className="flex items-center gap-3 text-gray-500">
+              <div className="w-10 h-10 rounded-xl bg-[#c9a84c]/10 flex items-center justify-center text-lg">📅</div>
               <div>
-                <p className="text-[11px] uppercase tracking-wider text-white/30 font-semibold">Date</p>
-                <p className="text-sm text-white/70">{formatDateRange(item.date, item.endDate)}</p>
+                <p className="text-[11px] uppercase tracking-wider text-gray-400 font-semibold">Date</p>
+                <p className="text-sm text-gray-700">{formatDateRange(item.date, item.endDate)}</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 text-white/50">
-              <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-lg">📍</div>
+            <div className="flex items-center gap-3 text-gray-500">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-lg">📍</div>
               <div>
-                <p className="text-[11px] uppercase tracking-wider text-white/30 font-semibold">Location</p>
-                <p className="text-sm text-white/70">{item.location}{item.venue ? ` · ${item.venue}` : ""}</p>
+                <p className="text-[11px] uppercase tracking-wider text-gray-400 font-semibold">Location</p>
+                <p className="text-sm text-gray-700">{item.location}{item.venue ? ` · ${item.venue}` : ""}</p>
               </div>
             </div>
           </div>
 
           {/* Description */}
           {item.description && (
-            <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-6">
-              <p className="text-white/50 text-sm leading-relaxed whitespace-pre-line">{item.description}</p>
+            <div className="rounded-2xl bg-gray-50 border border-gray-200 p-6">
+              <p className="text-gray-500 text-sm leading-relaxed whitespace-pre-line">{item.description}</p>
             </div>
           )}
 
           {/* Photo gallery */}
           {item.photos.length > 0 && (
             <div>
-              <h3 className="text-sm font-bold text-white/60 uppercase tracking-wider mb-3">Gallery</h3>
+              <h3 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-3">Gallery</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {item.photos.map((p) => (
                   <div key={p.id} className="relative aspect-[4/3] rounded-xl overflow-hidden group/photo">
@@ -245,15 +245,15 @@ function DetailModal({ item, onClose }: { item: TournamentItem; onClose: () => v
 
           {/* Spots indicator */}
           {(item.status === "UPCOMING" || item.status === "ONGOING") && (
-            <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4">
+            <div className="rounded-2xl bg-gray-50 border border-gray-200 p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold text-white/40 uppercase tracking-wider">Registration</span>
-                <span className="text-xs text-white/30">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Registration</span>
+                <span className="text-xs text-gray-400">
                   {item.registeredCount} registered{item.maxSpots ? ` / ${item.maxSpots}` : ""}
                 </span>
               </div>
               {item.maxSpots && (
-                <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden mb-2">
+                <div className="w-full h-2 rounded-full bg-gray-200 overflow-hidden mb-2">
                   <div
                     className={`h-full rounded-full transition-all ${
                       item.registeredCount / item.maxSpots >= 0.9 ? "bg-red-400" :
@@ -270,10 +270,10 @@ function DetailModal({ item, onClose }: { item: TournamentItem; onClose: () => v
           {(item.status === "UPCOMING" || item.status === "ONGOING") && (
             <button
               onClick={(e) => { e.stopPropagation(); setShowRegister(true); }}
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-black text-sm font-black hover:from-amber-300 hover:to-orange-400 transition-all hover:scale-105 hover:shadow-xl hover:shadow-amber-500/20 active:scale-95"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#dbb95d] text-white text-sm font-black hover:from-[#dbb95d] hover:to-[#c9a84c] transition-all hover:scale-105 hover:shadow-xl hover:shadow-[#c9a84c]/20 active:scale-95"
             >
               {item.maxSpots && item.registeredCount >= item.maxSpots ? "Join Waitlist" : "Register Now"}
-              <span className="text-black/60">→</span>
+              <span className="text-white/60">→</span>
             </button>
           )}
         </div>
@@ -318,10 +318,10 @@ function TournamentCard({ item, index, onSelect }: { item: TournamentItem; index
       onClick={onSelect}
       className={`group relative cursor-pointer rounded-2xl border overflow-hidden transition-all duration-500 ${
         isOngoing
-          ? "border-emerald-500/20 bg-[#0f1628] hover:border-emerald-500/40 hover:shadow-2xl hover:shadow-emerald-500/10"
+          ? "border-emerald-200 bg-white hover:border-emerald-300 hover:shadow-2xl hover:shadow-emerald-500/10"
           : isUpcoming
-          ? "border-amber-500/10 bg-[#0f1628] hover:border-amber-500/30 hover:shadow-2xl hover:shadow-amber-500/10"
-          : "border-white/[0.06] bg-[#0f1628]/60 hover:border-white/10"
+          ? "border-[#c9a84c]/15 bg-white hover:border-[#c9a84c]/40 hover:shadow-2xl hover:shadow-[#c9a84c]/10"
+          : "border-gray-200 bg-white/80 hover:border-gray-300"
       } hover:-translate-y-2`}
     >
       {/* Flyer / Gradient placeholder */}
@@ -335,22 +335,22 @@ function TournamentCard({ item, index, onSelect }: { item: TournamentItem; index
               className="object-cover transition-transform duration-700 group-hover:scale-110"
               sizes="(max-width: 640px) 100vw, 400px"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0f1628] via-[#0f1628]/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent" />
           </>
         ) : (
           <div className={`w-full h-full ${
             isOngoing
-              ? "bg-gradient-to-br from-emerald-900/50 to-[#0f1628]"
+              ? "bg-gradient-to-br from-emerald-50 to-white"
               : isUpcoming
-              ? "bg-gradient-to-br from-amber-900/40 to-[#0f1628]"
-              : "bg-gradient-to-br from-zinc-800/40 to-[#0f1628]"
+              ? "bg-gradient-to-br from-[#c9a84c]/10 to-white"
+              : "bg-gradient-to-br from-gray-100 to-white"
           }`}>
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="text-7xl opacity-20 group-hover:scale-125 group-hover:opacity-30 transition-all duration-500">
                 {typeIcons[item.type] || "🏆"}
               </span>
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0f1628] via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
           </div>
         )}
 
@@ -365,7 +365,7 @@ function TournamentCard({ item, index, onSelect }: { item: TournamentItem; index
         {/* Featured star */}
         {item.featured && (
           <div className="absolute top-3 right-3 z-10">
-            <span className="w-8 h-8 rounded-full bg-amber-500/30 backdrop-blur-md border border-amber-500/30 flex items-center justify-center text-sm">
+            <span className="w-8 h-8 rounded-full bg-[#c9a84c]/20 backdrop-blur-md border border-[#c9a84c]/30 flex items-center justify-center text-sm">
               ★
             </span>
           </div>
@@ -383,23 +383,23 @@ function TournamentCard({ item, index, onSelect }: { item: TournamentItem; index
       <div className="p-5 space-y-3">
         {/* Type badge */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/40 uppercase tracking-wider">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200 text-gray-400 uppercase tracking-wider">
             {typeIcons[item.type]} {item.type === "EVENT" ? "Event" : "Tournament"}
           </span>
           {item.tags.map((tag) => (
-            <span key={tag} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/15 text-amber-300/60 uppercase tracking-wider">
+            <span key={tag} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/15 text-[#c9a84c]/70 uppercase tracking-wider">
               {tag}
             </span>
           ))}
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold text-white group-hover:text-amber-200 transition-colors leading-tight line-clamp-2">
+        <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#c9a84c] transition-colors leading-tight line-clamp-2">
           {item.title}
         </h3>
 
         {/* Meta */}
-        <div className="space-y-1.5 text-sm text-white/35">
+        <div className="space-y-1.5 text-sm text-gray-400">
           <div className="flex items-center gap-2">
             <span className="text-base">📅</span>
             <span>{formatDateRange(item.date, item.endDate)}</span>
@@ -412,7 +412,7 @@ function TournamentCard({ item, index, onSelect }: { item: TournamentItem; index
 
         {/* Description preview */}
         {item.description && (
-          <p className="text-white/25 text-sm leading-relaxed line-clamp-2">{item.description}</p>
+          <p className="text-gray-400 text-sm leading-relaxed line-clamp-2">{item.description}</p>
         )}
 
         {/* Spots indicator */}
@@ -421,21 +421,21 @@ function TournamentCard({ item, index, onSelect }: { item: TournamentItem; index
         )}
 
         {/* Bottom bar */}
-        <div className="flex items-center justify-between pt-2 border-t border-white/[0.04]">
-          <span className="text-xs text-white/20 group-hover:text-amber-400/50 transition-colors">
+        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+          <span className="text-xs text-gray-300 group-hover:text-[#c9a84c]/60 transition-colors">
             Click for details →
           </span>
           {(isUpcoming || isOngoing) && (
             <span className={`text-xs font-bold px-3 py-1 rounded-full ${
               item.maxSpots && item.registeredCount >= item.maxSpots
-                ? "text-red-400/70 bg-red-400/10"
-                : "text-amber-400/70 bg-amber-400/10"
+                ? "text-red-500 bg-red-50"
+                : "text-[#c9a84c] bg-[#c9a84c]/10"
             }`}>
               {item.maxSpots && item.registeredCount >= item.maxSpots ? "Waitlist" : "Register Open"}
             </span>
           )}
           {item.photos.length > 0 && (
-            <span className="text-xs text-white/20 flex items-center gap-1">
+            <span className="text-xs text-gray-300 flex items-center gap-1">
               📷 {item.photos.length}
             </span>
           )}
@@ -445,8 +445,8 @@ function TournamentCard({ item, index, onSelect }: { item: TournamentItem; index
       {/* Hover glow effect */}
       <div className={`absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500 opacity-0 group-hover:opacity-100 ${
         isOngoing
-          ? "shadow-[inset_0_0_40px_rgba(16,185,129,0.05)]"
-          : "shadow-[inset_0_0_40px_rgba(245,158,11,0.05)]"
+          ? "shadow-[inset_0_0_40px_rgba(16,185,129,0.03)]"
+          : "shadow-[inset_0_0_40px_rgba(201,168,76,0.04)]"
       }`} />
     </motion.div>
   );
@@ -490,14 +490,14 @@ export default function TournamentEventCards({ items }: { items: TournamentItem[
             onClick={() => setTab(t.id)}
             className={`group relative px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
               tab === t.id
-                ? "bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-lg shadow-amber-500/20"
-                : "bg-white/5 border border-white/10 text-white/50 hover:bg-white/10 hover:text-white/70"
+                ? "bg-gradient-to-r from-[#c9a84c] to-[#dbb95d] text-white shadow-lg shadow-[#c9a84c]/20"
+                : "bg-gray-100 border border-gray-200 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
             }`}
           >
             <span className="mr-1.5">{t.icon}</span>
             {t.label}
             <span className={`ml-2 text-[11px] font-bold px-1.5 py-0.5 rounded-full ${
-              tab === t.id ? "bg-black/20 text-black/70" : "bg-white/10 text-white/30"
+              tab === t.id ? "bg-white/20 text-white/80" : "bg-gray-200 text-gray-400"
             }`}>
               {t.count}
             </span>
@@ -514,9 +514,9 @@ export default function TournamentEventCards({ items }: { items: TournamentItem[
             viewport={{ once: true }}
             className="flex items-center gap-3 mb-8"
           >
-            <div className="w-1 h-8 rounded-full bg-gradient-to-b from-amber-400 to-orange-500" />
-            <h2 className="text-2xl font-black text-white tracking-tight">Upcoming & Active</h2>
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/20">
+            <div className="w-1 h-8 rounded-full bg-gradient-to-b from-[#c9a84c] to-[#dbb95d]" />
+            <h2 className="text-2xl font-black text-gray-900 tracking-tight">Upcoming & Active</h2>
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#c9a84c]/10 text-[#c9a84c] border border-[#c9a84c]/20">
               {upcoming.length}
             </span>
           </motion.div>
@@ -538,9 +538,9 @@ export default function TournamentEventCards({ items }: { items: TournamentItem[
             viewport={{ once: true }}
             className="flex items-center gap-3 mb-8"
           >
-            <div className="w-1 h-8 rounded-full bg-gradient-to-b from-white/20 to-white/5" />
-            <h2 className="text-2xl font-black text-white/60 tracking-tight">Past Events</h2>
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-white/5 text-white/30 border border-white/10">
+            <div className="w-1 h-8 rounded-full bg-gradient-to-b from-gray-300 to-gray-200" />
+            <h2 className="text-2xl font-black text-gray-400 tracking-tight">Past Events</h2>
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-400 border border-gray-200">
               {past.length}
             </span>
           </motion.div>
@@ -558,13 +558,13 @@ export default function TournamentEventCards({ items }: { items: TournamentItem[
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl border border-white/[0.06] bg-[#0f1628] p-20 text-center"
+          className="rounded-2xl border border-gray-200 bg-gray-50 p-20 text-center"
         >
           <div className="text-6xl mb-4">{tab === "events" ? "🎪" : "🏆"}</div>
-          <p className="text-white/30 text-lg font-medium">
+          <p className="text-gray-400 text-lg font-medium">
             No {tab === "all" ? "tournaments or events" : tab} found yet.
           </p>
-          <p className="text-white/15 text-sm mt-2">Check back soon for updates!</p>
+          <p className="text-gray-300 text-sm mt-2">Check back soon for updates!</p>
         </motion.div>
       )}
 

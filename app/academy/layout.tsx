@@ -6,25 +6,25 @@ export const metadata = { title: "Academy | PiChess" };
 
 function AcademyFooter() {
   return (
-    <footer className="bg-[#060a14] border-t border-white/[0.06] text-white">
+    <footer className="bg-white border-t border-gray-200 text-gray-800">
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-sm font-black text-white shadow-md shadow-amber-500/20">♛</div>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#c9a84c] to-[#a8893d] flex items-center justify-center text-sm font-black text-white shadow-md shadow-[#c9a84c]/20">♛</div>
             <div>
-              <span className="font-black text-white text-sm">PiChess <span className="text-amber-400">Academy</span></span>
-              <span className="text-white/20 mx-2">·</span>
-              <span className="text-white/30 text-xs">Train. Compete. Conquer.</span>
+              <span className="font-black text-gray-900 text-sm">PiChess <span className="text-[#c9a84c]">Academy</span></span>
+              <span className="text-gray-300 mx-2">·</span>
+              <span className="text-gray-400 text-xs">Train. Compete. Conquer.</span>
             </div>
           </div>
-          <div className="flex items-center gap-6 text-white/35 text-sm">
-            <Link href="/academy/enquire" className="hover:text-amber-400 transition-colors">Enquire</Link>
-            <Link href="/academy/team" className="hover:text-amber-400 transition-colors">Team</Link>
-            <Link href="/academy/tournaments" className="hover:text-amber-400 transition-colors">Tournaments</Link>
-            <Link href="/" className="hover:text-white transition-colors">← Main Site</Link>
+          <div className="flex items-center gap-6 text-gray-400 text-sm">
+            <Link href="/academy/enquire" className="hover:text-[#c9a84c] transition-colors">Enquire</Link>
+            <Link href="/academy/team" className="hover:text-[#c9a84c] transition-colors">Team</Link>
+            <Link href="/academy/tournaments" className="hover:text-[#c9a84c] transition-colors">Tournaments</Link>
+            <Link href="/" className="hover:text-gray-700 transition-colors">← Main Site</Link>
           </div>
         </div>
-        <div className="mt-8 pt-6 border-t border-white/[0.04] text-center text-xs text-white/20">
+        <div className="mt-8 pt-6 border-t border-gray-100 text-center text-xs text-gray-300">
           © {new Date().getFullYear()} PiChess Academy. All rights reserved.
         </div>
       </div>
@@ -34,9 +34,9 @@ function AcademyFooter() {
 
 export default function AcademyLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#060a14] text-white flex flex-col">
+    <div className="min-h-screen bg-white text-gray-900 flex flex-col">
       <AcademyNav />
-      <ScrollPawn color="#f59e0b" />
+      <ScrollPawn color="#c9a84c" />
       <main className="flex-1">{children}</main>
       <AcademyFooter />
     </div>
