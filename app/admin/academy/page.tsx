@@ -4,21 +4,21 @@ import { updateLeadStatus, deleteLead, createTeamMember, deleteTeamMember, creat
 import AdminTabs from "@/components/admin/AdminTabs";
 import AcademyContentEditor from "@/components/admin/AcademyContentEditor";
 import {
-  defaultHero, defaultStats, defaultPrograms, defaultFeatures, defaultCTA,
-  type AcademyHero, type AcademyStat, type AcademyProgram, type AcademyFeature, type AcademyCTA,
+  defaultHero, defaultStats, defaultLessons, defaultFeatures, defaultCTA,
+  type AcademyHero, type AcademyStat, type AcademyLesson, type AcademyFeature, type AcademyCTA,
 } from "@/lib/academy-content";
 
 export const metadata = { title: "Academy | Admin" };
 
 async function getData() {
   try {
-    const [leads, team, testimonials, heroRaw, statsRaw, programsRaw, featuresRaw, ctaRaw] = await Promise.all([
+    const [leads, team, testimonials, heroRaw, statsRaw, lessonsRaw, featuresRaw, ctaRaw] = await Promise.all([
       (prisma as any).academy_Lead.findMany({ orderBy: { createdAt: "desc" } }),
       (prisma as any).academy_Team.findMany({ orderBy: { order: "asc" } }),
       (prisma as any).academy_Testimonial.findMany({ orderBy: { createdAt: "desc" } }),
       (prisma as any).siteContent.findUnique({ where: { key: "academy_hero" } }),
       (prisma as any).siteContent.findUnique({ where: { key: "academy_stats" } }),
-      (prisma as any).siteContent.findUnique({ where: { key: "academy_programs" } }),
+      (prisma as any).siteContent.findUnique({ where: { key: "academy_lessons" } }),
       (prisma as any).siteContent.findUnique({ where: { key: "academy_features" } }),
       (prisma as any).siteContent.findUnique({ where: { key: "academy_cta" } }),
     ]);
@@ -26,11 +26,11 @@ async function getData() {
       leads, team, testimonials,
       hero: heroRaw ? JSON.parse(heroRaw.value) as AcademyHero : defaultHero,
       stats: statsRaw ? JSON.parse(statsRaw.value) as AcademyStat[] : defaultStats,
-      programs: programsRaw ? JSON.parse(programsRaw.value) as AcademyProgram[] : defaultPrograms,
+      lessons: lessonsRaw ? JSON.parse(lessonsRaw.value) as AcademyLesson[] : defaultLessons,
       features: featuresRaw ? JSON.parse(featuresRaw.value) as AcademyFeature[] : defaultFeatures,
       cta: ctaRaw ? JSON.parse(ctaRaw.value) as AcademyCTA : defaultCTA,
     };
-  } catch { return { leads: [], team: [], testimonials: [], hero: defaultHero, stats: defaultStats, programs: defaultPrograms, features: defaultFeatures, cta: defaultCTA }; }
+  } catch { return { leads: [], team: [], testimonials: [], hero: defaultHero, stats: defaultStats, lessons: defaultLessons, features: defaultFeatures, cta: defaultCTA }; }
 }
 
 const statusColors: Record<string, string> = {
@@ -44,7 +44,7 @@ const inputCls = "w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 
 const btnCls = "px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#c9a84c] to-[#b89843] text-white text-sm font-semibold hover:shadow-lg hover:shadow-[#c9a84c]/20 transition-all";
 
 export default async function AdminAcademyPage() {
-  const { leads, team, testimonials, hero, stats, programs, features, cta } = await getData();
+  const { leads, team, testimonials, hero, stats, lessons, features, cta } = await getData();
   const counts = { NEW: 0, CONTACTED: 0, ENROLLED: 0, CLOSED: 0 } as Record<string, number>;
   leads.forEach((l: any) => { if (counts[l.status] !== undefined) counts[l.status]++; });
 
@@ -80,7 +80,7 @@ export default async function AdminAcademyPage() {
         <AcademyContentEditor
           initialHero={hero}
           initialStats={stats}
-          initialPrograms={programs}
+          initialLessons={lessons}
           initialFeatures={features}
           initialCTA={cta}
         />

@@ -3,13 +3,13 @@
 import { useState, useTransition, useRef, useCallback } from "react";
 import { saveSiteContent } from "@/lib/actions/admin";
 import {
-  type AcademyHero, type AcademyStat, type AcademyProgram, type AcademyFeature, type AcademyCTA,
-  defaultHero, defaultStats, defaultPrograms, defaultFeatures, defaultCTA,
+  type AcademyHero, type AcademyStat, type AcademyLesson, type AcademyFeature, type AcademyCTA,
+  defaultHero, defaultStats, defaultLessons, defaultFeatures, defaultCTA,
 } from "@/lib/academy-content";
 
 // Re-export for convenience (but prefer importing from @/lib/academy-content in server components)
-export type { AcademyHero, AcademyStat, AcademyProgram, AcademyFeature, AcademyCTA };
-export { defaultHero, defaultStats, defaultPrograms, defaultFeatures, defaultCTA };
+export type { AcademyHero, AcademyStat, AcademyLesson, AcademyFeature, AcademyCTA };
+export { defaultHero, defaultStats, defaultLessons, defaultFeatures, defaultCTA };
 
 /* ────────────────────────────────────────────────────────
    Styling
@@ -199,23 +199,23 @@ function DragHandle() {
 interface Props {
   initialHero: AcademyHero;
   initialStats: AcademyStat[];
-  initialPrograms: AcademyProgram[];
+  initialLessons: AcademyLesson[];
   initialFeatures: AcademyFeature[];
   initialCTA: AcademyCTA;
 }
 
-type Section = "hero" | "stats" | "programs" | "features" | "cta";
+type Section = "hero" | "stats" | "lessons" | "features" | "cta";
 
 export default function AcademyContentEditor({
   initialHero,
   initialStats,
-  initialPrograms,
+  initialLessons,
   initialFeatures,
   initialCTA,
 }: Props) {
   const [hero, setHero] = useState<AcademyHero>(initialHero);
   const [stats, setStats] = useState<AcademyStat[]>(initialStats);
-  const [programs, setPrograms] = useState<AcademyProgram[]>(initialPrograms);
+  const [lessons, setLessons] = useState<AcademyLesson[]>(initialLessons);
   const [features, setFeatures] = useState<AcademyFeature[]>(initialFeatures);
   const [cta, setCTA] = useState<AcademyCTA>(initialCTA);
   const [pending, startTransition] = useTransition();
@@ -223,7 +223,7 @@ export default function AcademyContentEditor({
   const [openSection, setOpenSection] = useState<Section>("hero");
 
   const statsDrag = useDragReorder(stats, setStats);
-  const programsDrag = useDragReorder(programs, setPrograms);
+  const lessonsDrag = useDragReorder(lessons, setLessons);
   const featuresDrag = useDragReorder(features, setFeatures);
 
   async function save(section: Section) {
@@ -231,7 +231,7 @@ export default function AcademyContentEditor({
       const map: Record<Section, { key: string; val: unknown }> = {
         hero: { key: "academy_hero", val: hero },
         stats: { key: "academy_stats", val: stats },
-        programs: { key: "academy_programs", val: programs },
+        lessons: { key: "academy_lessons", val: lessons },
         features: { key: "academy_features", val: features },
         cta: { key: "academy_cta", val: cta },
       };
@@ -276,7 +276,7 @@ export default function AcademyContentEditor({
       <div className="flex flex-wrap gap-2">
         <Toggle id="hero" label="Hero" icon="🎬" />
         <Toggle id="stats" label="Stats" icon="📊" />
-        <Toggle id="programs" label="Programs" icon="📚" />
+        <Toggle id="lessons" label="Lessons" icon="📚" />
         <Toggle id="features" label="Features" icon="⚡" />
         <Toggle id="cta" label="CTA" icon="🎯" />
       </div>
@@ -433,41 +433,44 @@ export default function AcademyContentEditor({
         </div>
       )}
 
-      {/* ═══ PROGRAMS ════════════════════════════════════════════════ */}
-      {openSection === "programs" && (
+      {/* ═══ LESSONS ═════════════════════════════════════════════ */}
+      {openSection === "lessons" && (
         <div className={cardCls}>
           <div className="flex items-center justify-between mb-5">
-            <h3 className={sectionTitle}>📚 Programs</h3>
+            <h3 className={sectionTitle}>📚 Lesson Packages</h3>
             <div className="flex gap-2 items-center">
               <button
-                onClick={() => setPrograms([...programs, { title: "", age: "", desc: "", icon: "♟" }])}
+                onClick={() => setLessons([...lessons, { title: "", desc: "", longDesc: "", icon: "♟", image: "", category: "core" }])}
                 className="px-3 py-1.5 rounded-lg bg-zinc-100 text-zinc-600 text-xs font-semibold hover:bg-zinc-200 transition-colors"
               >
-                + Add Program
+                + Add Lesson
               </button>
-              <SaveBtn section="programs" />
+              <SaveBtn section="lessons" />
             </div>
           </div>
-          <p className="text-[11px] text-zinc-400 mb-3">Drag ⠿ to reorder</p>
+          <p className="text-[11px] text-zinc-400 mb-3">Drag ⠿ to reorder • Set category to control grouping on the page</p>
           <div className="space-y-4">
-            {programs.map((prog, i) => (
+            {lessons.map((lesson, i) => (
               <div
                 key={i}
                 draggable
-                onDragStart={programsDrag.onDragStart(i)}
-                onDragEnd={programsDrag.onDragEnd}
-                onDragOver={programsDrag.onDragOver}
-                onDrop={programsDrag.onDrop(i)}
-                className="p-4 rounded-xl bg-zinc-50 border border-zinc-100 space-y-3"
+                onDragStart={lessonsDrag.onDragStart(i)}
+                onDragEnd={lessonsDrag.onDragEnd}
+                onDragOver={lessonsDrag.onDragOver}
+                onDrop={lessonsDrag.onDrop(i)}
+                className={`p-4 rounded-xl border space-y-3 ${lesson.category === "institutional" ? "bg-blue-50/50 border-blue-200/60" : "bg-zinc-50 border-zinc-100"}`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <DragHandle />
-                    <span className="text-xs font-bold text-zinc-400">Program {i + 1}</span>
+                    <span className="text-xs font-bold text-zinc-400">Lesson {i + 1}</span>
+                    {lesson.category === "institutional" && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-600">Institutional</span>
+                    )}
                   </div>
-                  {programs.length > 1 && (
+                  {lessons.length > 1 && (
                     <button
-                      onClick={() => setPrograms(programs.filter((_, j) => j !== i))}
+                      onClick={() => setLessons(lessons.filter((_, j) => j !== i))}
                       className="text-[11px] text-red-500 hover:text-red-700 font-semibold"
                     >
                       Remove
@@ -478,11 +481,11 @@ export default function AcademyContentEditor({
                   <div>
                     <label className={labelCls}>Icon</label>
                     <input
-                      value={prog.icon}
+                      value={lesson.icon}
                       onChange={(e) => {
-                        const next = [...programs];
+                        const next = [...lessons];
                         next[i] = { ...next[i], icon: e.target.value };
-                        setPrograms(next);
+                        setLessons(next);
                       }}
                       className={inputCls}
                       placeholder="♟"
@@ -491,42 +494,68 @@ export default function AcademyContentEditor({
                   <div>
                     <label className={labelCls}>Title</label>
                     <input
-                      value={prog.title}
+                      value={lesson.title}
                       onChange={(e) => {
-                        const next = [...programs];
+                        const next = [...lessons];
                         next[i] = { ...next[i], title: e.target.value };
-                        setPrograms(next);
+                        setLessons(next);
                       }}
                       className={inputCls}
                     />
                   </div>
                   <div>
-                    <label className={labelCls}>Age Range</label>
-                    <input
-                      value={prog.age}
+                    <label className={labelCls}>Category</label>
+                    <select
+                      value={lesson.category}
                       onChange={(e) => {
-                        const next = [...programs];
-                        next[i] = { ...next[i], age: e.target.value };
-                        setPrograms(next);
+                        const next = [...lessons];
+                        next[i] = { ...next[i], category: e.target.value as "core" | "institutional" };
+                        setLessons(next);
                       }}
                       className={inputCls}
-                      placeholder="Ages 6-12"
-                    />
+                    >
+                      <option value="core">Core Lesson</option>
+                      <option value="institutional">Institutional</option>
+                    </select>
                   </div>
                 </div>
                 <div>
-                  <label className={labelCls}>Description</label>
+                  <label className={labelCls}>Description (Short)</label>
                   <textarea
-                    value={prog.desc}
+                    value={lesson.desc}
                     onChange={(e) => {
-                      const next = [...programs];
+                      const next = [...lessons];
                       next[i] = { ...next[i], desc: e.target.value };
-                      setPrograms(next);
+                      setLessons(next);
                     }}
                     className={`${inputCls} resize-none`}
                     rows={2}
+                    placeholder="Brief summary shown on the card"
                   />
                 </div>
+                <div>
+                  <label className={labelCls}>Long Description (Detail View)</label>
+                  <textarea
+                    value={lesson.longDesc || ""}
+                    onChange={(e) => {
+                      const next = [...lessons];
+                      next[i] = { ...next[i], longDesc: e.target.value };
+                      setLessons(next);
+                    }}
+                    className={`${inputCls} resize-none`}
+                    rows={4}
+                    placeholder="Detailed description shown when user clicks the card"
+                  />
+                </div>
+                <ImageField
+                  label="Lesson Image"
+                  value={lesson.image || ""}
+                  onChange={(url) => {
+                    const next = [...lessons];
+                    next[i] = { ...next[i], image: url };
+                    setLessons(next);
+                  }}
+                />
               </div>
             ))}
           </div>

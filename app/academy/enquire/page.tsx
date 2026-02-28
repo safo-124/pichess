@@ -1,12 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import TextReveal from "@/components/shared/TextReveal";
 import { submitAcademyLead } from "@/lib/actions/academy";
 
 export default function EnquirePage() {
+  return (
+    <Suspense>
+      <EnquireForm />
+    </Suspense>
+  );
+}
+
+function EnquireForm() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const searchParams = useSearchParams();
+  const preselected = searchParams.get("program") || "";
+  const [selectedProgram, setSelectedProgram] = useState(preselected);
+
+  useEffect(() => {
+    if (preselected) setSelectedProgram(preselected);
+  }, [preselected]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -19,7 +35,18 @@ export default function EnquirePage() {
     } catch { setStatus("error"); }
   }
 
-  const programs = ["Junior Chess Program", "Intermediate Training", "Advanced Coaching", "Weekend Intensive", "Not Sure Yet"];
+  const programs = [
+    "Premium Lessons",
+    "Private Lessons",
+    "Group Lessons",
+    "Chess for Kids",
+    "Adult Beginner Course",
+    "Chess for Special Needs",
+    "Grandmaster / Elite Lessons",
+    "Chess in Schools Program",
+    "Chess for Companies & Organizations",
+    "Not Sure Yet",
+  ];
 
   const inputClass =
     "w-full bg-[#0f1628] border border-white/[0.08] rounded-xl px-4 py-3.5 text-white placeholder-white/20 text-sm focus:outline-none focus:border-amber-500/40 focus:ring-1 focus:ring-amber-500/20 transition-all";
@@ -87,7 +114,12 @@ export default function EnquirePage() {
 
                 <div>
                   <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-2.5">Program of Interest</label>
-                  <select name="program" className={`${inputClass} appearance-none`}>
+                  <select
+                    name="program"
+                    value={selectedProgram}
+                    onChange={(e) => setSelectedProgram(e.target.value)}
+                    className={`${inputClass} appearance-none`}
+                  >
                     <option value="">Select a program</option>
                     {programs.map((p) => (
                       <option key={p} value={p}>{p}</option>

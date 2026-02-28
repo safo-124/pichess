@@ -7,8 +7,8 @@ import prisma from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  defaultHero, defaultStats, defaultPrograms, defaultFeatures, defaultCTA,
-  type AcademyHero, type AcademyStat, type AcademyProgram, type AcademyFeature, type AcademyCTA,
+  defaultHero, defaultStats, defaultLessons, defaultFeatures, defaultCTA,
+  type AcademyHero, type AcademyStat, type AcademyLesson, type AcademyFeature, type AcademyCTA,
 } from "@/lib/academy-content";
 
 export const metadata = { title: "PiChess Academy" };
@@ -16,12 +16,12 @@ export const metadata = { title: "PiChess Academy" };
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function getData() {
   try {
-    const [team, testimonials, heroRaw, statsRaw, programsRaw, featuresRaw, ctaRaw] = await Promise.all([
+    const [team, testimonials, heroRaw, statsRaw, lessonsRaw, featuresRaw, ctaRaw] = await Promise.all([
       prisma.academy_Team.findMany({ where: { published: true }, orderBy: { order: "asc" }, take: 4 }),
       prisma.academy_Testimonial.findMany({ where: { published: true }, take: 3 }),
       (prisma as any).siteContent.findUnique({ where: { key: "academy_hero" } }),
       (prisma as any).siteContent.findUnique({ where: { key: "academy_stats" } }),
-      (prisma as any).siteContent.findUnique({ where: { key: "academy_programs" } }),
+      (prisma as any).siteContent.findUnique({ where: { key: "academy_lessons" } }),
       (prisma as any).siteContent.findUnique({ where: { key: "academy_features" } }),
       (prisma as any).siteContent.findUnique({ where: { key: "academy_cta" } }),
     ]);
@@ -29,24 +29,15 @@ async function getData() {
       team, testimonials,
       hero: heroRaw ? JSON.parse(heroRaw.value) as AcademyHero : defaultHero,
       stats: statsRaw ? JSON.parse(statsRaw.value) as AcademyStat[] : defaultStats,
-      programs: programsRaw ? JSON.parse(programsRaw.value) as AcademyProgram[] : defaultPrograms,
+      lessons: lessonsRaw ? JSON.parse(lessonsRaw.value) as AcademyLesson[] : defaultLessons,
       features: featuresRaw ? JSON.parse(featuresRaw.value) as AcademyFeature[] : defaultFeatures,
       cta: ctaRaw ? JSON.parse(ctaRaw.value) as AcademyCTA : defaultCTA,
     };
-  } catch { return { team: [], testimonials: [], hero: defaultHero, stats: defaultStats, programs: defaultPrograms, features: defaultFeatures, cta: defaultCTA }; }
+  } catch { return { team: [], testimonials: [], hero: defaultHero, stats: defaultStats, lessons: defaultLessons, features: defaultFeatures, cta: defaultCTA }; }
 }
 
-const programGradients = [
-  "from-amber-500/20 to-orange-500/10",
-  "from-blue-500/20 to-indigo-500/10",
-  "from-purple-500/20 to-pink-500/10",
-  "from-emerald-500/20 to-teal-500/10",
-  "from-rose-500/20 to-red-500/10",
-  "from-cyan-500/20 to-sky-500/10",
-];
-
 export default async function AcademyPage() {
-  const { team, testimonials, hero, stats, programs, features, cta } = await getData();
+  const { team, testimonials, hero, stats, lessons, features, cta } = await getData();
 
   return (
     <div className="overflow-x-hidden">
@@ -200,51 +191,76 @@ export default async function AcademyPage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════
-          PROGRAMS — Cards with gradient accents
+          LESSON PACKAGES — Teaser linking to /academy/lessons
       ═══════════════════════════════════════════════════════ */}
-      <section id="programs" className="py-28 bg-[#0a0e1a] px-4 relative">
+      <section id="lessons" className="py-28 bg-[#0a0e1a] px-4 relative">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(245,158,11,0.03),transparent_60%)]" />
+        <div className="max-w-5xl mx-auto relative">
+          <div className="text-center mb-14">
             <AnimatedSection>
               <span className="inline-block px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-4">
                 Curriculum
               </span>
             </AnimatedSection>
-            <TextReveal text="Our Programs" className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight" />
+            <TextReveal text="Lesson Packages" className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight" />
             <AnimatedSection delay={0.2}>
               <p className="text-white/35 mt-4 max-w-lg mx-auto text-base">
-                Structured pathways from beginner to master level, designed by Ghana&apos;s top chess minds.
+                From private coaching to group classes — find the perfect lesson format for every player.
               </p>
             </AnimatedSection>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {programs.map((p, i) => (
-              <AnimatedSection key={p.title} delay={i * 0.12}>
-                <div className={`relative group rounded-2xl border border-white/[0.06] bg-[#0f1628] p-8 transition-all duration-500 hover:border-amber-500/20 hover:shadow-xl hover:shadow-amber-500/5 overflow-hidden`}>
-                  {/* Gradient blob */}
-                  <div className={`absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl ${programGradients[i % programGradients.length]} rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -translate-y-12 translate-x-12`} />
-
-                  <div className="relative z-10">
-                    <div className="flex items-start justify-between gap-4 mb-4">
-                      <div className="text-4xl group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 inline-block origin-center">
-                        {p.icon}
-                      </div>
-                      <span className="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-white/[0.06] text-amber-300/80 border border-white/[0.08]">
-                        {p.age}
-                      </span>
+          {/* Preview grid — show first 4 lessons as cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            {lessons.slice(0, 4).map((lesson, i) => (
+              <AnimatedSection key={lesson.title} delay={i * 0.08}>
+                <Link href="/academy/lessons" className="group block rounded-2xl border border-white/[0.06] bg-[#0f1628]/80 overflow-hidden transition-all duration-500 hover:border-amber-500/15 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-1">
+                  {/* Image or gradient header */}
+                  {lesson.image ? (
+                    <div className="relative h-28 overflow-hidden">
+                      <Image src={lesson.image} alt={lesson.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0f1628] via-[#0f1628]/30 to-transparent" />
                     </div>
-                    <h3 className="text-xl font-black text-white mb-2 group-hover:text-amber-200 transition-colors">{p.title}</h3>
-                    <p className="text-white/40 text-sm leading-relaxed">{p.desc}</p>
-                    <div className="mt-6 flex items-center gap-2 text-amber-400/70 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                      Learn more <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  ) : (
+                    <div className="relative h-20 bg-gradient-to-br from-amber-500/10 to-orange-500/5">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0f1628] to-transparent opacity-70" />
                     </div>
+                  )}
+                  <div className="p-4 text-center -mt-6 relative">
+                    <span className="text-3xl inline-block group-hover:scale-110 transition-transform duration-300 drop-shadow-lg">
+                      {lesson.icon}
+                    </span>
+                    <h3 className="text-sm font-bold text-white mt-2 group-hover:text-amber-200 transition-colors">
+                      {lesson.title}
+                    </h3>
+                    <p className="text-white/30 text-xs mt-1 line-clamp-2">{lesson.desc}</p>
                   </div>
-                </div>
+                </Link>
               </AnimatedSection>
             ))}
           </div>
+
+          {/* "View all" + count */}
+          <AnimatedSection delay={0.3}>
+            <div className="text-center">
+              <p className="text-white/25 text-sm mb-5">
+                {lessons.length} lesson packages available — including private coaching, group classes, and institutional programs.
+              </p>
+              <MagneticButton>
+                <Link
+                  href="/academy/lessons"
+                  className="group relative inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-bold transition-all overflow-hidden"
+                >
+                  <span className="absolute inset-0 bg-gradient-to-r from-amber-400/15 to-orange-500/15 border border-amber-500/25 rounded-full group-hover:from-amber-400/25 group-hover:to-orange-500/25 transition-all" />
+                  <span className="relative z-10 text-amber-300 group-hover:text-amber-200 transition-colors">
+                    View All Lessons
+                  </span>
+                  <span className="relative z-10 text-amber-400/60 group-hover:translate-x-1 transition-transform">→</span>
+                </Link>
+              </MagneticButton>
+            </div>
+          </AnimatedSection>
         </div>
       </section>
 
