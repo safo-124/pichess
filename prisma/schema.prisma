@@ -13,10 +13,259 @@ datasource db {
   provider = "postgresql"
 }
 
+// ─── AUTH ──────────────────────────────────────────────────────────────────────
+
 model User {
+  id        Int            @id @default(autoincrement())
+  email     String         @unique
+  name      String?
+  role      String         @default("COACH") // ADMIN | COACH
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  posts     Content_Post[]
+}
+
+// ─── ACADEMY ──────────────────────────────────────────────────────────────────
+
+model Academy_Team {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      String
+  bio       String?
+  image     String?
+  order     Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Academy_Testimonial {
+  id        Int      @id @default(autoincrement())
+  name      String
+  content   String
+  rating    Int      @default(5)
+  image     String?
+  program   String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Academy_Lead {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  message   String?
+  program   String?
+  age_group String?
+  status    String   @default("NEW") // NEW | CONTACTED | ENROLLED | CLOSED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── NGO ──────────────────────────────────────────────────────────────────────
+
+model NGO_Application {
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String
+  phone         String?
+  age           Int?
+  location      String?
+  reason        String?
+  school        String?
+  chess_level   String?
+  essay         String?
+  guardian_name  String?
+  guardian_phone String?
+  region        String?
+  status        String   @default("PENDING") // PENDING | APPROVED | REJECTED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model NGO_Volunteer {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String
+  phone        String?
+  occupation   String?
+  skills       String?
+  availability String?
+  motivation   String?
+  message      String?
+  status       String   @default("PENDING")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model NGO_Donation {
+  id         Int      @id @default(autoincrement())
+  donor_name String?
+  email      String?
+  phone      String?
+  amount     Float
+  currency   String   @default("GHS")
+  method     String?
+  message    String?
+  anonymous  Boolean  @default(false)
+  reference  String?
+  status     String   @default("PENDING")
+  createdAt  DateTime @default(now())
+}
+
+model NGO_Material_Donation {
+  id          Int      @id @default(autoincrement())
+  donorName   String
+  donorEmail  String
+  itemType    String
+  description String?
+  quantity    Int      @default(1)
+  status      String   @default("PENDING")
+  createdAt   DateTime @default(now())
+}
+
+model NGO_Team {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      String
+  bio       String?
+  image     String?
+  order     Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NGO_Story {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  image     String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── TOURNAMENTS ──────────────────────────────────────────────────────────────
+
+model Tournament {
+  id               Int                  @id @default(autoincrement())
+  title            String
+  description      String?
+  date             DateTime
+  location         String
+  venue            String?
+  registrationLink String?
+  tags             String[] // ["academy","open","ngo"]
+  status           String               @default("UPCOMING") // UPCOMING | ONGOING | COMPLETED
+  featured         Boolean              @default(false)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  photos           Tournament_Photo[]
+  sponsors         Tournament_Sponsor[]
+}
+
+model Tournament_Photo {
+  id           Int        @id @default(autoincrement())
+  url          String
+  caption      String?
+  tournamentId Int
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+}
+
+model Tournament_Sponsor {
+  id           Int        @id @default(autoincrement())
+  name         String
+  logo         String?
+  tier         String     @default("SILVER") // GOLD | SILVER | BRONZE
+  tournamentId Int
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+}
+
+model Sponsor_Inquiry {
+  id          Int      @id @default(autoincrement())
+  companyName String
+  contactName String
+  email       String
+  phone       String?
+  budget      String?
+  message     String?
+  status      String   @default("NEW")
+  createdAt   DateTime @default(now())
+}
+
+// ─── SHOP ─────────────────────────────────────────────────────────────────────
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String
+  slug      String    @unique
+  image     String?
+  createdAt DateTime  @default(now())
+  products  Product[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  image       String?
+  inStock     Boolean  @default(true)
+  featured    Boolean  @default(false)
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── CONTENT ──────────────────────────────────────────────────────────────────
+
+model Content_Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  content   String
+  excerpt   String?
+  image     String?
+  tags      String[] // ["news","ngo","academy","learning"]
+  published Boolean  @default(false)
+  authorId  Int?
+  author    User?    @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Partner {
+  id        Int      @id @default(autoincrement())
+  name      String
+  logo      String?
+  website   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Subscriber {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String?
+  active    Boolean  @default(true)
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+}
+
+// ─── LEARNING ─────────────────────────────────────────────────────────────────
+
+model Daily_Puzzle {
+  id          Int      @id @default(autoincrement())
+  fen         String
+  solution    String
+  difficulty  String   @default("MEDIUM") // EASY | MEDIUM | HARD
+  date        DateTime @default(now())
+  title       String?
+  description String?
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }
