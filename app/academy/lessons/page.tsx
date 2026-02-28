@@ -4,9 +4,12 @@ import MagneticButton from "@/components/shared/MagneticButton";
 import LessonCards from "@/components/academy/LessonCards";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import Image from "next/image";
 import {
   defaultLessons,
+  defaultLessonsHero,
   type AcademyLesson,
+  type AcademyLessonsHero,
 } from "@/lib/academy-content";
 
 export const metadata = {
@@ -16,19 +19,23 @@ export const metadata = {
 };
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-async function getLessons(): Promise<AcademyLesson[]> {
+async function getData(): Promise<{ lessons: AcademyLesson[]; lessonsHero: AcademyLessonsHero }> {
   try {
-    const row = await (prisma as any).siteContent.findUnique({
-      where: { key: "academy_lessons" },
-    });
-    return row ? (JSON.parse(row.value) as AcademyLesson[]) : defaultLessons;
+    const [lessonsRow, heroRow] = await Promise.all([
+      (prisma as any).siteContent.findUnique({ where: { key: "academy_lessons" } }),
+      (prisma as any).siteContent.findUnique({ where: { key: "academy_lessons_hero" } }),
+    ]);
+    return {
+      lessons: lessonsRow ? (JSON.parse(lessonsRow.value) as AcademyLesson[]) : defaultLessons,
+      lessonsHero: heroRow ? (JSON.parse(heroRow.value) as AcademyLessonsHero) : defaultLessonsHero,
+    };
   } catch {
-    return defaultLessons;
+    return { lessons: defaultLessons, lessonsHero: defaultLessonsHero };
   }
 }
 
 export default async function LessonsPage() {
-  const lessons = await getLessons();
+  const { lessons, lessonsHero } = await getData();
   const coreLessons = lessons.filter((l) => l.category === "core");
   const institutional = lessons.filter((l) => l.category === "institutional");
 
@@ -38,6 +45,21 @@ export default async function LessonsPage() {
           HERO
       ═══════════════════════════════════════════════════════ */}
       <section className="relative pt-32 pb-24 bg-[#060a14] overflow-hidden">
+        {/* Background image */}
+        {lessonsHero.bgImage && (
+          <>
+            <Image
+              src={lessonsHero.bgImage}
+              alt=""
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-[#060a14]/75" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#060a14]/60 via-transparent to-[#060a14]" />
+          </>
+        )}
+
         {/* Decorative elements */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(245,158,11,0.06),transparent_60%)]" />
         <div className="absolute top-1/3 right-0 w-[500px] h-[500px] rounded-full bg-blue-500/[0.03] blur-[160px] pointer-events-none" />
@@ -47,19 +69,18 @@ export default async function LessonsPage() {
         <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
           <AnimatedSection>
             <span className="inline-block px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-6">
-              Curriculum
+              {lessonsHero.badge}
             </span>
           </AnimatedSection>
 
           <TextReveal
-            text="Lesson Packages"
+            text={lessonsHero.title}
             className="text-5xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight"
           />
 
           <AnimatedSection delay={0.2}>
             <p className="text-white/40 mt-6 max-w-2xl mx-auto text-lg leading-relaxed">
-              From private coaching to group classes — find the perfect lesson
-              format for every player. Click on any card to learn more.
+              {lessonsHero.description}
             </p>
           </AnimatedSection>
 

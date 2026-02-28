@@ -39,6 +39,13 @@ export interface AcademyFeature {
   desc: string;
 }
 
+export interface AcademyLessonsHero {
+  badge: string;
+  title: string;
+  description: string;
+  bgImage: string;
+}
+
 export interface AcademyCTA {
   title1: string;
   title2: string;
@@ -158,4 +165,11 @@ export const defaultCTA: AcademyCTA = {
   title2: "Chess Journey?",
   description: "Fill out our enquiry form and a coach will get back to you within 24 hours.",
   buttonText: "Enquire Now",
+};
+
+export const defaultLessonsHero: AcademyLessonsHero = {
+  badge: "Curriculum",
+  title: "Lesson Packages",
+  description: "From private coaching to group classes — find the perfect lesson format for every player. Click on any card to learn more.",
+  bgImage: "",
 };

@@ -3,13 +3,13 @@
 import { useState, useTransition, useRef, useCallback } from "react";
 import { saveSiteContent } from "@/lib/actions/admin";
 import {
-  type AcademyHero, type AcademyStat, type AcademyLesson, type AcademyFeature, type AcademyCTA,
-  defaultHero, defaultStats, defaultLessons, defaultFeatures, defaultCTA,
+  type AcademyHero, type AcademyStat, type AcademyLesson, type AcademyFeature, type AcademyCTA, type AcademyLessonsHero,
+  defaultHero, defaultStats, defaultLessons, defaultFeatures, defaultCTA, defaultLessonsHero,
 } from "@/lib/academy-content";
 
 // Re-export for convenience (but prefer importing from @/lib/academy-content in server components)
-export type { AcademyHero, AcademyStat, AcademyLesson, AcademyFeature, AcademyCTA };
-export { defaultHero, defaultStats, defaultLessons, defaultFeatures, defaultCTA };
+export type { AcademyHero, AcademyStat, AcademyLesson, AcademyFeature, AcademyCTA, AcademyLessonsHero };
+export { defaultHero, defaultStats, defaultLessons, defaultFeatures, defaultCTA, defaultLessonsHero };
 
 /* ────────────────────────────────────────────────────────
    Styling
@@ -202,9 +202,10 @@ interface Props {
   initialLessons: AcademyLesson[];
   initialFeatures: AcademyFeature[];
   initialCTA: AcademyCTA;
+  initialLessonsHero: AcademyLessonsHero;
 }
 
-type Section = "hero" | "stats" | "lessons" | "features" | "cta";
+type Section = "hero" | "stats" | "lessons" | "features" | "cta" | "lessonsHero";
 
 export default function AcademyContentEditor({
   initialHero,
@@ -212,12 +213,14 @@ export default function AcademyContentEditor({
   initialLessons,
   initialFeatures,
   initialCTA,
+  initialLessonsHero,
 }: Props) {
   const [hero, setHero] = useState<AcademyHero>(initialHero);
   const [stats, setStats] = useState<AcademyStat[]>(initialStats);
   const [lessons, setLessons] = useState<AcademyLesson[]>(initialLessons);
   const [features, setFeatures] = useState<AcademyFeature[]>(initialFeatures);
   const [cta, setCTA] = useState<AcademyCTA>(initialCTA);
+  const [lessonsHero, setLessonsHero] = useState<AcademyLessonsHero>(initialLessonsHero);
   const [pending, startTransition] = useTransition();
   const [saved, setSaved] = useState<Section | null>(null);
   const [openSection, setOpenSection] = useState<Section>("hero");
@@ -234,6 +237,7 @@ export default function AcademyContentEditor({
         lessons: { key: "academy_lessons", val: lessons },
         features: { key: "academy_features", val: features },
         cta: { key: "academy_cta", val: cta },
+        lessonsHero: { key: "academy_lessons_hero", val: lessonsHero },
       };
       const { key, val } = map[section];
       await saveSiteContent(key, JSON.stringify(val));
@@ -276,6 +280,7 @@ export default function AcademyContentEditor({
       <div className="flex flex-wrap gap-2">
         <Toggle id="hero" label="Hero" icon="🎬" />
         <Toggle id="stats" label="Stats" icon="📊" />
+        <Toggle id="lessonsHero" label="Lessons Page" icon="🖼" />
         <Toggle id="lessons" label="Lessons" icon="📚" />
         <Toggle id="features" label="Features" icon="⚡" />
         <Toggle id="cta" label="CTA" icon="🎯" />
@@ -429,6 +434,38 @@ export default function AcademyContentEditor({
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* ═══ LESSONS PAGE HERO ═══════════════════════════════════════ */}
+      {openSection === "lessonsHero" && (
+        <div className={cardCls}>
+          <div className="flex items-center justify-between mb-5">
+            <h3 className={sectionTitle}>🖼 Lessons Page Hero</h3>
+            <SaveBtn section="lessonsHero" />
+          </div>
+          <p className="text-[11px] text-zinc-400 mb-4">Customize the hero section of the <strong>/academy/lessons</strong> page — badge text, title, description, and background image.</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className={labelCls}>Badge Text</label>
+              <input value={lessonsHero.badge} onChange={(e) => setLessonsHero({ ...lessonsHero, badge: e.target.value })} className={inputCls} placeholder="Curriculum" />
+            </div>
+            <div>
+              <label className={labelCls}>Title</label>
+              <input value={lessonsHero.title} onChange={(e) => setLessonsHero({ ...lessonsHero, title: e.target.value })} className={inputCls} placeholder="Lesson Packages" />
+            </div>
+            <div className="col-span-full">
+              <label className={labelCls}>Description</label>
+              <textarea value={lessonsHero.description} onChange={(e) => setLessonsHero({ ...lessonsHero, description: e.target.value })} className={`${inputCls} resize-none`} rows={3} placeholder="From private coaching to group classes — find the perfect lesson format for every player." />
+            </div>
+            <div className="col-span-full">
+              <ImageField
+                label="Background Image"
+                value={lessonsHero.bgImage}
+                onChange={(url) => setLessonsHero({ ...lessonsHero, bgImage: url })}
+              />
+            </div>
           </div>
         </div>
       )}
