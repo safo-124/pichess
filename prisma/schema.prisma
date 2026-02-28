@@ -256,6 +256,15 @@ model Subscriber {
   createdAt DateTime @default(now())
 }
 
+// ─── SITE CONTENT (admin-editable page content) ──────────────────────────────
+
+model SiteContent {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique // e.g. "academy_hero", "academy_stats"
+  value     String   // JSON string
+  updatedAt DateTime @updatedAt
+}
+
 // ─── LEARNING ─────────────────────────────────────────────────────────────────
 
 model Daily_Puzzle {

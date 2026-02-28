@@ -6,35 +6,47 @@ import ParallaxSection from "@/components/shared/ParallaxSection";
 import prisma from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  defaultHero, defaultStats, defaultPrograms, defaultFeatures, defaultCTA,
+  type AcademyHero, type AcademyStat, type AcademyProgram, type AcademyFeature, type AcademyCTA,
+} from "@/lib/academy-content";
 
 export const metadata = { title: "PiChess Academy" };
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 async function getData() {
   try {
-    const [team, testimonials] = await Promise.all([
+    const [team, testimonials, heroRaw, statsRaw, programsRaw, featuresRaw, ctaRaw] = await Promise.all([
       prisma.academy_Team.findMany({ where: { published: true }, orderBy: { order: "asc" }, take: 4 }),
       prisma.academy_Testimonial.findMany({ where: { published: true }, take: 3 }),
+      (prisma as any).siteContent.findUnique({ where: { key: "academy_hero" } }),
+      (prisma as any).siteContent.findUnique({ where: { key: "academy_stats" } }),
+      (prisma as any).siteContent.findUnique({ where: { key: "academy_programs" } }),
+      (prisma as any).siteContent.findUnique({ where: { key: "academy_features" } }),
+      (prisma as any).siteContent.findUnique({ where: { key: "academy_cta" } }),
     ]);
-    return { team, testimonials };
-  } catch { return { team: [], testimonials: [] }; }
+    return {
+      team, testimonials,
+      hero: heroRaw ? JSON.parse(heroRaw.value) as AcademyHero : defaultHero,
+      stats: statsRaw ? JSON.parse(statsRaw.value) as AcademyStat[] : defaultStats,
+      programs: programsRaw ? JSON.parse(programsRaw.value) as AcademyProgram[] : defaultPrograms,
+      features: featuresRaw ? JSON.parse(featuresRaw.value) as AcademyFeature[] : defaultFeatures,
+      cta: ctaRaw ? JSON.parse(ctaRaw.value) as AcademyCTA : defaultCTA,
+    };
+  } catch { return { team: [], testimonials: [], hero: defaultHero, stats: defaultStats, programs: defaultPrograms, features: defaultFeatures, cta: defaultCTA }; }
 }
 
-const programs = [
-  { title: "Junior Chess Program", age: "Ages 6–12", desc: "Foundational chess concepts, rules, and fun competitive play for young minds.", icon: "♟", gradient: "from-amber-500/20 to-orange-500/10" },
-  { title: "Intermediate Training", age: "Ages 12–18", desc: "Opening theory, endgame mastery, and tournament preparation for rising competitors.", icon: "♞", gradient: "from-blue-500/20 to-indigo-500/10" },
-  { title: "Advanced Coaching", age: "18+", desc: "Elite competitive training with professional coaches and international exposure.", icon: "♛", gradient: "from-purple-500/20 to-pink-500/10" },
-  { title: "Weekend Intensive", age: "All Ages", desc: "Weekend-only accelerated programs for busy schedules seeking rapid improvement.", icon: "♜", gradient: "from-emerald-500/20 to-teal-500/10" },
-];
-
-const features = [
-  { icon: "🏆", title: "Tournament Ready", desc: "Regular competitions to sharpen your edge" },
-  { icon: "🎯", title: "Personal Coaching", desc: "One-on-one sessions with titled players" },
-  { icon: "📊", title: "Progress Tracking", desc: "Data-driven improvement methodology" },
-  { icon: "🌍", title: "Global Network", desc: "Connect with chess communities worldwide" },
+const programGradients = [
+  "from-amber-500/20 to-orange-500/10",
+  "from-blue-500/20 to-indigo-500/10",
+  "from-purple-500/20 to-pink-500/10",
+  "from-emerald-500/20 to-teal-500/10",
+  "from-rose-500/20 to-red-500/10",
+  "from-cyan-500/20 to-sky-500/10",
 ];
 
 export default async function AcademyPage() {
-  const { team, testimonials } = await getData();
+  const { team, testimonials, hero, stats, programs, features, cta } = await getData();
 
   return (
     <div className="overflow-x-hidden">
@@ -44,7 +56,7 @@ export default async function AcademyPage() {
       <section className="relative min-h-screen flex items-center overflow-hidden bg-[#060a14]">
         {/* Background image */}
         <Image
-          src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=1920&q=80"
+          src={hero.bgImage}
           alt="Chess board close up"
           fill
           priority
@@ -67,19 +79,19 @@ export default async function AcademyPage() {
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 mb-8">
                   <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
                   <span className="text-amber-300/90 text-xs font-semibold uppercase tracking-widest">
-                    Now Enrolling — 2026 Cohort
+                    {hero.badge}
                   </span>
                 </div>
               </AnimatedSection>
 
               <div className="mb-8">
-                <TextReveal text="Train Like a" className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white tracking-tight leading-[0.95]" as="div" />
-                <TextReveal text="Champion." className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight leading-[0.95] bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 bg-clip-text text-transparent" delay={0.2} as="div" />
+                <TextReveal text={hero.title1} className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white tracking-tight leading-[0.95]" as="div" />
+                <TextReveal text={hero.title2} className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight leading-[0.95] bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 bg-clip-text text-transparent" delay={0.2} as="div" />
               </div>
 
               <AnimatedSection delay={0.3}>
                 <p className="text-white/40 text-lg sm:text-xl leading-relaxed max-w-lg mb-10">
-                  Ghana&apos;s premier chess academy. Expert coaches, structured programs, and a proven path to competitive excellence.
+                  {hero.description}
                 </p>
               </AnimatedSection>
 
@@ -114,7 +126,7 @@ export default async function AcademyPage() {
                 <ParallaxSection speed={0.15} direction="down">
                   <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl shadow-black/50 border border-white/[0.06]">
                     <Image
-                      src="https://images.unsplash.com/photo-1586165368502-1bad9cc4be3e?w=800&q=80"
+                      src={hero.sideImage}
                       alt="Students training at PiChess Academy"
                       fill
                       className="object-cover"
@@ -126,16 +138,16 @@ export default async function AcademyPage() {
                 {/* Floating stat card */}
                 <ParallaxSection speed={0.3} direction="up">
                   <div className="absolute -bottom-6 -left-8 bg-[#0f1628]/90 backdrop-blur-xl border border-amber-500/20 rounded-2xl p-5 shadow-xl shadow-black/40">
-                    <div className="text-3xl font-black text-amber-400">500+</div>
-                    <div className="text-white/50 text-sm font-medium">Students Trained</div>
+                    <div className="text-3xl font-black text-amber-400">{hero.floatStat}</div>
+                    <div className="text-white/50 text-sm font-medium">{hero.floatStatLabel}</div>
                   </div>
                 </ParallaxSection>
 
                 {/* Floating badge */}
                 <ParallaxSection speed={0.4} direction="up">
                   <div className="absolute -top-4 -right-4 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl p-4 shadow-lg shadow-amber-500/20">
-                    <div className="text-black text-2xl font-black">♛</div>
-                    <div className="text-black/70 text-[10px] font-bold uppercase tracking-wider">Elite</div>
+                    <div className="text-black text-2xl font-black">{hero.floatBadgeIcon}</div>
+                    <div className="text-black/70 text-[10px] font-bold uppercase tracking-wider">{hero.floatBadgeLabel}</div>
                   </div>
                 </ParallaxSection>
               </div>
@@ -178,18 +190,11 @@ export default async function AcademyPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.04),transparent_70%)]" />
         <div className="max-w-7xl mx-auto px-4 relative">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
-            <AnimatedSection delay={0}>
-              <div className="text-center"><StatsCounter end={500} label="Students Trained" suffix="+" color="gold" /></div>
-            </AnimatedSection>
-            <AnimatedSection delay={0.1}>
-              <div className="text-center"><StatsCounter end={15} label="Expert Coaches" color="white" /></div>
-            </AnimatedSection>
-            <AnimatedSection delay={0.2}>
-              <div className="text-center"><StatsCounter end={30} label="Tournaments Won" suffix="+" color="gold" /></div>
-            </AnimatedSection>
-            <AnimatedSection delay={0.3}>
-              <div className="text-center"><StatsCounter end={5} label="Programs Available" color="white" /></div>
-            </AnimatedSection>
+            {stats.map((s, i) => (
+              <AnimatedSection key={s.label} delay={i * 0.1}>
+                <div className="text-center"><StatsCounter end={s.end} label={s.label} suffix={s.suffix || undefined} color={s.color as "gold" | "white"} /></div>
+              </AnimatedSection>
+            ))}
           </div>
         </div>
       </section>
@@ -219,7 +224,7 @@ export default async function AcademyPage() {
               <AnimatedSection key={p.title} delay={i * 0.12}>
                 <div className={`relative group rounded-2xl border border-white/[0.06] bg-[#0f1628] p-8 transition-all duration-500 hover:border-amber-500/20 hover:shadow-xl hover:shadow-amber-500/5 overflow-hidden`}>
                   {/* Gradient blob */}
-                  <div className={`absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl ${p.gradient} rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -translate-y-12 translate-x-12`} />
+                  <div className={`absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl ${programGradients[i % programGradients.length]} rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -translate-y-12 translate-x-12`} />
 
                   <div className="relative z-10">
                     <div className="flex items-start justify-between gap-4 mb-4">
@@ -345,11 +350,11 @@ export default async function AcademyPage() {
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-gradient-to-b from-amber-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
               <div className="relative">
-                <TextReveal text="Ready to Start Your" className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight" />
-                <TextReveal text="Chess Journey?" className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 bg-clip-text text-transparent tracking-tight" delay={0.15} />
+                <TextReveal text={cta.title1} className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight" />
+                <TextReveal text={cta.title2} className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 bg-clip-text text-transparent tracking-tight" delay={0.15} />
                 <AnimatedSection delay={0.3}>
                   <p className="text-white/35 mt-4 mb-10 max-w-md mx-auto">
-                    Fill out our enquiry form and a coach will get back to you within 24 hours.
+                    {cta.description}
                   </p>
                 </AnimatedSection>
                 <MagneticButton>
@@ -359,7 +364,7 @@ export default async function AcademyPage() {
                   >
                     <span className="absolute inset-0 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 group-hover:from-amber-300 group-hover:to-orange-400 transition-all" />
                     <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.25),transparent_70%)]" />
-                    <span className="relative z-10 text-black">Enquire Now</span>
+                    <span className="relative z-10 text-black">{cta.buttonText}</span>
                     <span className="relative z-10 text-black/60 group-hover:translate-x-1 transition-transform">→</span>
                   </Link>
                 </MagneticButton>

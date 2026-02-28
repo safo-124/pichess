@@ -334,3 +334,36 @@ export async function deletePuzzle(fd: FormData) {
   revalidatePath("/admin");
   revalidatePath("/learning-tools");
 }
+
+// ─── SITE CONTENT ───────────────────────────────────────────────────────────
+
+export async function saveSiteContent(key: string, value: string) {
+  await (prisma as any).siteContent.upsert({
+    where: { key },
+    create: { key, value },
+    update: { value },
+  });
+  // Revalidate relevant pages based on the key prefix
+  const zone = key.split("_")[0]; // academy, ngo, main, etc.
+  revalidatePath("/admin/academy");
+  revalidatePath("/admin/ngo");
+  revalidatePath("/admin");
+  if (zone === "academy") {
+    revalidatePath("/academy");
+    revalidatePath("/academy/team");
+    revalidatePath("/academy/tournaments");
+  } else if (zone === "ngo") {
+    revalidatePath("/ngo");
+  } else {
+    revalidatePath("/");
+  }
+}
+
+export async function getSiteContent(key: string): Promise<string | null> {
+  try {
+    const row = await (prisma as any).siteContent.findUnique({ where: { key } });
+    return row?.value ?? null;
+  } catch {
+    return null;
+  }
+}

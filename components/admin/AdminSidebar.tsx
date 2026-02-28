@@ -1,83 +1,178 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import {
   LayoutDashboard, GraduationCap, Heart, ShoppingBag,
-  FileText, BarChart3, Settings, LogOut, ChevronRight,
+  FileText, Trophy, Settings, LogOut, Crown,
+  PanelLeftClose, PanelLeft, Globe, Puzzle,
 } from "lucide-react";
 
-const sections = [
-  { label: "Overview", href: "/admin", icon: LayoutDashboard },
-  { label: "Academy", href: "/admin/academy", icon: GraduationCap, color: "text-[#c9a84c]" },
-  { label: "NGO", href: "/admin/ngo", icon: Heart, color: "text-[#2e7d5b]" },
-  { label: "Shop", href: "/admin/shop", icon: ShoppingBag, color: "text-purple-400" },
-  { label: "Content", href: "/admin/content", icon: FileText, color: "text-orange-400" },
-  { label: "Extras", href: "/admin/extras", icon: Settings, color: "text-cyan-400" },
-  { label: "Analytics", href: "/admin/analytics", icon: BarChart3, color: "text-pink-400" },
+const mainNav = [
+  { label: "Dashboard", href: "/admin", icon: LayoutDashboard, color: "#c9a84c" },
+];
+
+const manageSections = [
+  { label: "Academy", href: "/admin/academy", icon: GraduationCap, color: "#c9a84c", desc: "Leads, team, testimonials" },
+  { label: "Tournaments", href: "/admin/tournaments", icon: Trophy, color: "#f59e0b", desc: "Events & competitions" },
+  { label: "NGO / Foundation", href: "/admin/ngo", icon: Heart, color: "#2e7d5b", desc: "Applications, volunteers" },
+  { label: "Shop", href: "/admin/shop", icon: ShoppingBag, color: "#a855f7", desc: "Products & categories" },
+];
+
+const contentSections = [
+  { label: "Blog & News", href: "/admin/content", icon: FileText, color: "#f97316", desc: "Posts, subscribers" },
+  { label: "Partners & Extras", href: "/admin/extras", icon: Puzzle, color: "#06b6d4", desc: "Partners, puzzles" },
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
+
+  const isActive = (href: string) =>
+    pathname === href || (href !== "/admin" && pathname.startsWith(href));
+
+  const NavLink = ({ item }: { item: { label: string; href: string; icon: any; color: string; desc?: string } }) => {
+    const active = isActive(item.href);
+    const Icon = item.icon;
+    return (
+      <Link
+        href={item.href}
+        className={`group relative flex items-center gap-3 rounded-xl text-[13px] font-medium transition-all duration-200 ${
+          collapsed ? "justify-center p-2.5" : "px-3 py-2.5"
+        } ${
+          active
+            ? "bg-white/[0.08] text-white shadow-sm"
+            : "text-white/40 hover:text-white/80 hover:bg-white/[0.04]"
+        }`}
+      >
+        {active && (
+          <motion.div
+            layoutId="adminSidebarActive"
+            className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
+            style={{ background: item.color }}
+            transition={{ type: "spring", bounce: 0.25, duration: 0.4 }}
+          />
+        )}
+        <div
+          className={`flex items-center justify-center w-7 h-7 rounded-lg transition-colors ${
+            active ? "bg-white/10" : "bg-transparent group-hover:bg-white/5"
+          }`}
+          style={active ? { color: item.color } : undefined}
+        >
+          <Icon size={15} />
+        </div>
+        {!collapsed && (
+          <div className="flex-1 min-w-0">
+            <div className="truncate">{item.label}</div>
+          </div>
+        )}
+        {collapsed && (
+          <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-zinc-900 text-white text-xs font-medium rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 shadow-xl border border-white/10">
+            {item.label}
+          </div>
+        )}
+      </Link>
+    );
+  };
 
   return (
-    <aside className="w-64 min-h-screen bg-zinc-950 border-r border-white/8 flex flex-col">
+    <aside
+      className={`${
+        collapsed ? "w-[72px]" : "w-64"
+      } min-h-screen bg-[#0a0a0f] border-r border-white/[0.06] flex flex-col transition-all duration-300 shrink-0`}
+    >
       {/* Logo */}
-      <div className="p-6 border-b border-white/8">
-        <Link href="/admin" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-white rounded flex items-center justify-center font-black text-black">
-            ♟
+      <div className={`${collapsed ? "p-3" : "p-5"} border-b border-white/[0.06]`}>
+        <Link href="/admin" className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#c9a84c] to-[#a8893d] flex items-center justify-center shadow-lg shadow-[#c9a84c]/20 shrink-0">
+            <Crown size={16} className="text-white" />
           </div>
-          <div>
-            <div className="font-black text-white text-sm">PiChess</div>
-            <div className="text-[10px] text-white/40 uppercase tracking-widest">Admin</div>
-          </div>
+          {!collapsed && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <div className="font-black text-white text-sm tracking-tight">PiChess</div>
+              <div className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-medium">Admin Panel</div>
+            </motion.div>
+          )}
         </Link>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 p-4 space-y-1">
-        {sections.map((item, i) => {
-          const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
-          const Icon = item.icon;
-          return (
-            <motion.div
-              key={item.href}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.05 }}
-            >
-              <Link
-                href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group ${
-                  active
-                    ? "bg-white/10 text-white"
-                    : "text-white/50 hover:text-white hover:bg-white/6"
-                }`}
-              >
-                <Icon
-                  size={16}
-                  className={active ? (item.color ?? "text-white") : `group-hover:${item.color ?? "text-white"} transition-colors`}
-                />
-                {item.label}
-                {active && (
-                  <ChevronRight size={14} className="ml-auto text-white/40" />
-                )}
-              </Link>
-            </motion.div>
-          );
-        })}
+      {/* Navigation */}
+      <nav className={`flex-1 ${collapsed ? "p-2" : "p-3"} space-y-5 overflow-y-auto`}>
+        {/* Main */}
+        <div className="space-y-0.5">
+          {mainNav.map((item) => (
+            <NavLink key={item.href} item={item} />
+          ))}
+        </div>
+
+        {/* Manage */}
+        <div>
+          {!collapsed && (
+            <div className="px-3 mb-2">
+              <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.15em]">Manage</p>
+            </div>
+          )}
+          <div className="space-y-0.5">
+            {manageSections.map((item) => (
+              <NavLink key={item.href} item={item} />
+            ))}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div>
+          {!collapsed && (
+            <div className="px-3 mb-2">
+              <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.15em]">Content</p>
+            </div>
+          )}
+          <div className="space-y-0.5">
+            {contentSections.map((item) => (
+              <NavLink key={item.href} item={item} />
+            ))}
+          </div>
+        </div>
       </nav>
 
       {/* Bottom */}
-      <div className="p-4 border-t border-white/8 space-y-1">
-        <Link href="/admin/extras" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/40 hover:text-white hover:bg-white/6 transition-all">
-          <Settings size={16} />
-          Settings & Extras
+      <div className={`${collapsed ? "p-2" : "p-3"} border-t border-white/[0.06] space-y-0.5`}>
+        {/* View Site */}
+        <Link
+          href="/"
+          target="_blank"
+          className={`flex items-center gap-3 rounded-xl text-[13px] font-medium text-white/30 hover:text-white/60 hover:bg-white/[0.04] transition-all ${
+            collapsed ? "justify-center p-2.5" : "px-3 py-2.5"
+          }`}
+        >
+          <Globe size={15} />
+          {!collapsed && "View Site"}
         </Link>
-        <Link href="/login" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-red-400/60 hover:text-red-400 hover:bg-red-500/8 transition-all">
-          <LogOut size={16} />
-          Logout
+
+        {/* Collapse toggle */}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className={`w-full flex items-center gap-3 rounded-xl text-[13px] font-medium text-white/30 hover:text-white/60 hover:bg-white/[0.04] transition-all ${
+            collapsed ? "justify-center p-2.5" : "px-3 py-2.5"
+          }`}
+        >
+          {collapsed ? <PanelLeft size={15} /> : <PanelLeftClose size={15} />}
+          {!collapsed && "Collapse"}
+        </button>
+
+        {/* Logout */}
+        <Link
+          href="/login"
+          className={`flex items-center gap-3 rounded-xl text-[13px] font-medium text-red-400/40 hover:text-red-400 hover:bg-red-500/[0.06] transition-all ${
+            collapsed ? "justify-center p-2.5" : "px-3 py-2.5"
+          }`}
+        >
+          <LogOut size={15} />
+          {!collapsed && "Logout"}
         </Link>
       </div>
     </aside>
