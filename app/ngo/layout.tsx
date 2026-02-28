@@ -1,4 +1,5 @@
 import NGONav from "@/components/ngo/NGONav";
+import ScrollPawn from "@/components/shared/ScrollPawn";
 import Link from "next/link";
 
 export const metadata = { title: "Foundation | PiChess NGO" };
@@ -26,6 +27,7 @@ export default function NGOLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-white text-zinc-900 flex flex-col">
       <NGONav />
+      <ScrollPawn color="#2e7d5b" light />
       <main className="flex-1">{children}</main>
       <NGOFooter />
     </div>

@@ -29,12 +29,12 @@ export default function MainNav() {
 
   return (
     <header
-      className={`w-full transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 w-full transition-all duration-300 ${
         scrolled
-          ? "bg-black/95 backdrop-blur-md shadow-lg shadow-black/20"
-          : "bg-black/70 backdrop-blur-md border-b border-white/10"
+          ? "bg-black shadow-lg shadow-black/40"
+          : "bg-black/90 backdrop-blur-lg border-b border-white/10"
       }`}
-      style={{ position: "relative", zIndex: 9999 }}
+      style={{ zIndex: 99999 }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">

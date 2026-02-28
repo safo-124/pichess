@@ -2,6 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import StatsCounter from "@/components/shared/StatsCounter";
+import ParallaxSection from "@/components/shared/ParallaxSection";
+import TextReveal from "@/components/shared/TextReveal";
+import MagneticButton from "@/components/shared/MagneticButton";
 import prisma from "@/lib/prisma";
 
 /* ── data fetchers ─────────────────────────────────────────── */
@@ -99,14 +102,14 @@ export default async function HomePage() {
                 </div>
               </AnimatedSection>
 
-              <AnimatedSection delay={0.1}>
-                <h1 className="text-[2.75rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.03em] text-white leading-[1.05] mb-6">
-                  Where Every
-                  <br />
-                  Move{" "}
-                  <span className="gradient-text-gold">Matters.</span>
-                </h1>
-              </AnimatedSection>
+              <h1 className="text-[2.75rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.03em] text-white leading-[1.05] mb-6">
+                <TextReveal text="Where Every" delay={0.1} />
+                <br />
+                <TextReveal text="Move" delay={0.25} />{" "}
+                <span className="gradient-text-gold">
+                  <TextReveal text="Matters." delay={0.35} />
+                </span>
+              </h1>
 
               <AnimatedSection delay={0.2}>
                 <p className="text-white/50 text-base sm:text-lg leading-relaxed max-w-lg mb-10">
@@ -117,18 +120,22 @@ export default async function HomePage() {
 
               <AnimatedSection delay={0.3}>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Link
-                    href="/academy"
-                    className="group relative px-8 py-4 rounded-full bg-[#c9a84c] text-black font-bold text-sm transition-all hover:shadow-[0_0_40px_rgba(201,168,76,0.4)] hover:scale-[1.03] active:scale-[0.97] text-center"
-                  >
-                    <span className="relative z-10">Join the Academy</span>
-                  </Link>
-                  <Link
-                    href="/ngo"
-                    className="px-8 py-4 rounded-full border border-white/15 text-white font-semibold text-sm hover:bg-white/5 hover:border-white/25 transition-all backdrop-blur-sm text-center"
-                  >
-                    Support Our Mission
-                  </Link>
+                  <MagneticButton>
+                    <Link
+                      href="/academy"
+                      className="group relative inline-block px-8 py-4 rounded-full bg-[#c9a84c] text-black font-bold text-sm transition-all hover:shadow-[0_0_40px_rgba(201,168,76,0.4)] hover:scale-[1.03] active:scale-[0.97] text-center animated-border"
+                    >
+                      <span className="relative z-10 flex items-center gap-2">Join the Academy <span className="animate-wiggle inline-block">→</span></span>
+                    </Link>
+                  </MagneticButton>
+                  <MagneticButton>
+                    <Link
+                      href="/ngo"
+                      className="inline-block px-8 py-4 rounded-full border border-white/15 text-white font-semibold text-sm hover:bg-white/5 hover:border-white/25 transition-all backdrop-blur-sm text-center"
+                    >
+                      Support Our Mission
+                    </Link>
+                  </MagneticButton>
                 </div>
               </AnimatedSection>
 
@@ -149,36 +156,42 @@ export default async function HomePage() {
               </AnimatedSection>
             </div>
 
-            {/* Right — Feature image composition */}
+            {/* Right — Feature image composition with parallax */}
             <AnimatedSection delay={0.2} direction="right" className="hidden lg:block">
               <div className="relative">
                 {/* Main image */}
-                <div className="relative rounded-3xl overflow-hidden aspect-[3/4] shadow-2xl shadow-black/50">
-                  <Image
-                    src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=800&q=80"
-                    alt="Chess training session"
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                </div>
-                {/* Floating badge */}
-                <div className="absolute -bottom-4 -left-6 rounded-2xl bg-zinc-900/90 backdrop-blur-xl border border-white/10 p-5 shadow-2xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-[#c9a84c]/15 flex items-center justify-center">
-                      <span className="text-[#c9a84c] text-xl">♔</span>
-                    </div>
-                    <div>
-                      <p className="text-white font-bold text-sm">Next Tournament</p>
-                      <p className="text-[#c9a84c] text-xs font-medium">Registering now</p>
+                <ParallaxSection speed={0.15} direction="down">
+                  <div className="relative rounded-3xl overflow-hidden aspect-[3/4] shadow-2xl shadow-black/50">
+                    <Image
+                      src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=800&q=80"
+                      alt="Chess training session"
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  </div>
+                </ParallaxSection>
+                {/* Floating badge — animated border */}
+                <ParallaxSection speed={0.3} direction="up">
+                  <div className="absolute -bottom-4 -left-6 rounded-2xl bg-zinc-900/90 backdrop-blur-xl border border-white/10 p-5 shadow-2xl animate-breathe">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-full bg-[#c9a84c]/15 flex items-center justify-center">
+                        <span className="text-[#c9a84c] text-xl">♔</span>
+                      </div>
+                      <div>
+                        <p className="text-white font-bold text-sm">Next Tournament</p>
+                        <p className="text-[#c9a84c] text-xs font-medium">Registering now</p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </ParallaxSection>
                 {/* Floating green badge */}
-                <div className="absolute -top-3 -right-3 rounded-xl bg-[#2e7d5b] text-white p-4 shadow-xl shadow-[#2e7d5b]/20">
-                  <p className="text-2xl font-black leading-none">200+</p>
-                  <p className="text-white/80 text-[10px] font-semibold mt-1 uppercase tracking-wider">Lives Changed</p>
-                </div>
+                <ParallaxSection speed={0.4} direction="up">
+                  <div className="absolute -top-3 -right-3 rounded-xl bg-[#2e7d5b] text-white p-4 shadow-xl shadow-[#2e7d5b]/20 animate-breathe" style={{ animationDelay: "1s" }}>
+                    <p className="text-2xl font-black leading-none">200+</p>
+                    <p className="text-white/80 text-[10px] font-semibold mt-1 uppercase tracking-wider">Lives Changed</p>
+                  </div>
+                </ParallaxSection>
                 {/* Decorative ring */}
                 <div className="absolute -z-10 inset-0 translate-x-4 translate-y-4 rounded-3xl border border-[#c9a84c]/15" />
               </div>
@@ -232,13 +245,11 @@ export default async function HomePage() {
           <AnimatedSection>
             <p className="text-white/20 text-xs font-bold uppercase tracking-[0.3em] mb-6">About PiChess</p>
           </AnimatedSection>
-          <AnimatedSection delay={0.1}>
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] mb-8">
-              Building Africa&apos;s Strongest
-              <br className="hidden sm:block" />
-              Chess Ecosystem
-            </h2>
-          </AnimatedSection>
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] mb-8">
+            <TextReveal text="Building Africa's Strongest" delay={0.1} />
+            <br className="hidden sm:block" />
+            <TextReveal text="Chess Ecosystem" delay={0.3} />
+          </h2>
           <AnimatedSection delay={0.2}>
             <p className="text-lg sm:text-xl text-white/40 leading-relaxed max-w-3xl mx-auto">
               Founded in Accra, PiChess brings together{" "}
@@ -268,8 +279,8 @@ export default async function HomePage() {
             <AnimatedSection>
               <span className="text-xs font-bold text-[#c9a84c] uppercase tracking-[0.25em]">Academy</span>
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mt-3 tracking-tight">
-                Train Like a<br />
-                <span className="gradient-text-gold">Grandmaster.</span>
+                <TextReveal text="Train Like a" /><br />
+                <span className="gradient-text-gold"><TextReveal text="Grandmaster." delay={0.2} /></span>
               </h2>
             </AnimatedSection>
             <AnimatedSection delay={0.15}>
@@ -500,9 +511,9 @@ export default async function HomePage() {
             <AnimatedSection direction="right">
               <span className="text-xs font-bold text-[#2e7d5b] uppercase tracking-[0.25em]">Foundation</span>
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mt-3 tracking-tight leading-[1.05]">
-                Chess Changes
+                <TextReveal text="Chess Changes" />
                 <br />
-                <span className="gradient-text-green">Lives.</span>
+                <span className="gradient-text-green"><TextReveal text="Lives." delay={0.2} /></span>
               </h2>
               <p className="text-white/45 mt-6 text-base sm:text-lg leading-relaxed max-w-lg">
                 Our foundation uses chess as a vehicle for education, discipline, and
@@ -811,33 +822,42 @@ export default async function HomePage() {
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <AnimatedSection>
-            <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight mb-6 leading-[1.05]">
-              Ready to Make<br className="hidden sm:block" />
-              Your <span className="gradient-text-gold">Move?</span>
-            </h2>
+            <div className="mb-6">
+              <TextReveal text="Ready to Make" className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.05]" as="span" />
+              <br className="hidden sm:block" />
+              <TextReveal text="Your" className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.05]" delay={0.15} as="span" />
+              {" "}
+              <TextReveal text="Move?" className="text-4xl sm:text-6xl lg:text-7xl font-black gradient-text-gold tracking-tight leading-[1.05]" delay={0.25} as="span" />
+            </div>
             <p className="text-white/45 text-base sm:text-lg mb-12 max-w-xl mx-auto leading-relaxed">
               Join hundreds of students building discipline, critical thinking, and
               competitive excellence through the game of chess.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/academy/enquire"
-                className="w-full sm:w-auto px-10 py-4 rounded-full bg-[#c9a84c] hover:bg-[#dbb95d] text-black font-bold text-base transition-all hover:shadow-[0_0_50px_rgba(201,168,76,0.35)] hover:scale-[1.03] active:scale-[0.97]"
-              >
-                Start Your Journey →
-              </Link>
-              <Link
-                href="/shop"
-                className="w-full sm:w-auto px-10 py-4 rounded-full border border-white/15 text-white hover:bg-white/8 font-semibold text-base transition-all backdrop-blur-sm"
-              >
-                Visit the Shop
-              </Link>
-              <Link
-                href="/ngo/apply"
-                className="w-full sm:w-auto px-10 py-4 rounded-full border border-white/15 text-white hover:bg-white/8 font-semibold text-base transition-all backdrop-blur-sm"
-              >
-                Apply for Support
-              </Link>
+              <MagneticButton>
+                <Link
+                  href="/academy/enquire"
+                  className="animated-border w-full sm:w-auto px-10 py-4 rounded-full bg-[#c9a84c] hover:bg-[#dbb95d] text-black font-bold text-base transition-all hover:shadow-[0_0_50px_rgba(201,168,76,0.35)] hover:scale-[1.03] active:scale-[0.97] inline-block"
+                >
+                  Start Your Journey <span className="inline-block animate-wiggle">→</span>
+                </Link>
+              </MagneticButton>
+              <MagneticButton>
+                <Link
+                  href="/shop"
+                  className="w-full sm:w-auto px-10 py-4 rounded-full border border-white/15 text-white hover:bg-white/8 font-semibold text-base transition-all backdrop-blur-sm inline-block"
+                >
+                  Visit the Shop
+                </Link>
+              </MagneticButton>
+              <MagneticButton>
+                <Link
+                  href="/ngo/apply"
+                  className="w-full sm:w-auto px-10 py-4 rounded-full border border-white/15 text-white hover:bg-white/8 font-semibold text-base transition-all backdrop-blur-sm inline-block"
+                >
+                  Apply for Support
+                </Link>
+              </MagneticButton>
             </div>
           </AnimatedSection>
         </div>

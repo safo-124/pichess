@@ -1,16 +1,20 @@
 import MainNav from "@/components/main/MainNav";
 import MainFooter from "@/components/main/MainFooter";
+import ScrollPawn from "@/components/shared/ScrollPawn";
+import FloatingPieces from "@/components/shared/FloatingPieces";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Navbar — isolated stacking context so nothing can cover it */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-[9999]"
-        style={{ isolation: "isolate" }}
-      >
-        <MainNav />
-      </nav>
+      {/* Navbar */}
+      <MainNav />
+
+      {/* Floating parallax chess pieces in background */}
+      <FloatingPieces />
+
+      {/* Scroll-tracking pawn on the right edge */}
+      <ScrollPawn />
+
       <main>{children}</main>
       <MainFooter />
     </div>
