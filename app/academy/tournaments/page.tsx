@@ -17,7 +17,10 @@ async function getData(): Promise<TournamentItem[]> {
     const rows = await (prisma as any).tournament.findMany({
       where: { tags: { has: "academy" } },
       orderBy: [{ status: "asc" }, { date: "desc" }],
-      include: { photos: true },
+      include: {
+        photos: true,
+        registrations: { where: { status: "CONFIRMED" }, select: { id: true } },
+      },
     });
     return rows.map((t: any) => ({
       id: t.id,
@@ -33,6 +36,8 @@ async function getData(): Promise<TournamentItem[]> {
       tags: t.tags ?? [],
       status: t.status,
       featured: t.featured,
+      maxSpots: t.maxSpots ?? null,
+      registeredCount: t.registrations?.length ?? 0,
       photos: t.photos?.map((p: any) => ({ id: p.id, url: p.url, caption: p.caption })) ?? [],
     }));
   } catch {

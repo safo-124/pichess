@@ -12,7 +12,10 @@ async function getTournaments() {
   try {
     return await prisma.tournament.findMany({
       where: { featured: true, status: { in: ["UPCOMING", "ONGOING"] } },
-      include: { photos: { take: 1 } },
+      include: {
+        photos: { take: 1 },
+        registrations: { where: { status: "CONFIRMED" }, select: { id: true } },
+      },
       orderBy: { date: "asc" },
       take: 4,
     });
@@ -591,6 +594,8 @@ export default async function HomePage() {
                 const now = new Date();
                 const daysUntil = Math.ceil((eventDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
                 const isLive = t.status === "ONGOING";
+                const regCount = (t as any).registrations?.length ?? 0;
+                const spotsLeft = t.maxSpots ? Math.max(0, t.maxSpots - regCount) : null;
 
                 return (
                   <AnimatedSection key={t.id} delay={i * 0.1}>
@@ -648,7 +653,7 @@ export default async function HomePage() {
                           {t.title}
                         </h3>
 
-                        <div className="space-y-1.5 mb-5 flex-1">
+                        <div className="space-y-1.5 mb-4 flex-1">
                           <p className="text-white/35 text-xs flex items-center gap-1.5">
                             <span className="text-sm">📅</span>
                             {eventDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
@@ -670,18 +675,41 @@ export default async function HomePage() {
                           )}
                         </div>
 
-                        {t.registrationLink ? (
-                          <a
-                            href={t.registrationLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#c9a84c]/8 hover:bg-[#c9a84c] hover:text-black text-[#c9a84c] text-xs font-bold transition-all w-full border border-[#c9a84c]/15 hover:border-[#c9a84c] hover:shadow-[0_0_20px_rgba(201,168,76,0.25)]"
-                          >
-                            {isLive ? "Join Now →" : "Register Now →"}
-                          </a>
-                        ) : (
-                          <span className="text-white/15 text-xs font-medium text-center block py-2.5">Registration opening soon</span>
-                        )}
+                        {/* Spots indicator */}
+                        {t.maxSpots ? (
+                          <div className="mb-4">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[10px] text-white/25 font-semibold">{regCount} / {t.maxSpots} spots</span>
+                              <span className={`text-[10px] font-bold ${
+                                spotsLeft === 0 ? "text-red-400" : spotsLeft !== null && spotsLeft <= 5 ? "text-amber-400" : "text-white/30"
+                              }`}>
+                                {spotsLeft === 0 ? "Full" : `${spotsLeft} left`}
+                              </span>
+                            </div>
+                            <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                              <div
+                                className={`h-full rounded-full transition-all ${
+                                  regCount / t.maxSpots >= 0.9 ? "bg-red-400" :
+                                  regCount / t.maxSpots >= 0.7 ? "bg-amber-400" : "bg-emerald-400"
+                                }`}
+                                style={{ width: `${Math.min(100, (regCount / t.maxSpots) * 100)}%` }}
+                              />
+                            </div>
+                          </div>
+                        ) : regCount > 0 ? (
+                          <p className="text-white/20 text-[10px] font-semibold mb-4">
+                            👥 {regCount} registered
+                          </p>
+                        ) : null}
+
+                        <Link
+                          href="/academy/tournaments"
+                          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#c9a84c]/8 hover:bg-[#c9a84c] hover:text-black text-[#c9a84c] text-xs font-bold transition-all w-full border border-[#c9a84c]/15 hover:border-[#c9a84c] hover:shadow-[0_0_20px_rgba(201,168,76,0.25)]"
+                        >
+                          {spotsLeft === 0
+                            ? "Join Waitlist →"
+                            : isLive ? "Join Now →" : "Register Now →"}
+                        </Link>
                       </div>
                     </div>
                   </AnimatedSection>

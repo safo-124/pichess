@@ -150,7 +150,7 @@ model NGO_Story {
 // ─── TOURNAMENTS ──────────────────────────────────────────────────────────────
 
 model Tournament {
-  id               Int                  @id @default(autoincrement())
+  id               Int                        @id @default(autoincrement())
   title            String
   description      String?
   date             DateTime
@@ -159,14 +159,31 @@ model Tournament {
   venue            String?
   flyer            String?
   registrationLink String?
-  type             String               @default("TOURNAMENT") // TOURNAMENT | EVENT
+  type             String                     @default("TOURNAMENT") // TOURNAMENT | EVENT
   tags             String[] // ["academy","open","ngo"]
-  status           String               @default("UPCOMING") // UPCOMING | ONGOING | COMPLETED
-  featured         Boolean              @default(false)
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
+  status           String                     @default("UPCOMING") // UPCOMING | ONGOING | COMPLETED
+  featured         Boolean                    @default(false)
+  maxSpots         Int?
+  createdAt        DateTime                   @default(now())
+  updatedAt        DateTime                   @updatedAt
   photos           Tournament_Photo[]
   sponsors         Tournament_Sponsor[]
+  registrations    Tournament_Registration[]
+}
+
+model Tournament_Registration {
+  id           Int        @id @default(autoincrement())
+  tournamentId Int
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  fullName     String
+  email        String
+  phone        String
+  whatsApp     String?
+  age          Int?
+  rating       String?
+  notes        String?
+  status       String     @default("CONFIRMED") // CONFIRMED | CANCELLED | WAITLISTED
+  createdAt    DateTime   @default(now())
 }
 
 model Tournament_Photo {

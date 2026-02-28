@@ -9,6 +9,7 @@ const tournamentPaths = ["/admin/tournaments", "/tournaments", "/academy/tournam
 
 export async function createTournament(fd: FormData) {
   const tags = (fd.get("tags") as string ?? "").split(",").map(t => t.trim()).filter(Boolean);
+  const maxSpotsRaw = fd.get("maxSpots") as string;
   await (prisma as any).tournament.create({
     data: {
       title: fd.get("title") as string,
@@ -23,6 +24,7 @@ export async function createTournament(fd: FormData) {
       tags,
       status: (fd.get("status") as string) || "UPCOMING",
       featured: fd.get("featured") === "true",
+      maxSpots: maxSpotsRaw ? Number(maxSpotsRaw) : null,
     },
   });
   tournamentPaths.forEach(p => revalidatePath(p));
@@ -31,6 +33,7 @@ export async function createTournament(fd: FormData) {
 export async function updateTournament(fd: FormData) {
   const id = Number(fd.get("id"));
   const tags = (fd.get("tags") as string ?? "").split(",").map(t => t.trim()).filter(Boolean);
+  const maxSpotsRaw = fd.get("maxSpots") as string;
   await (prisma as any).tournament.update({
     where: { id },
     data: {
@@ -46,6 +49,7 @@ export async function updateTournament(fd: FormData) {
       tags,
       status: fd.get("status") as string,
       featured: fd.get("featured") === "true",
+      maxSpots: maxSpotsRaw ? Number(maxSpotsRaw) : null,
     },
   });
   tournamentPaths.forEach(p => revalidatePath(p));
@@ -72,6 +76,24 @@ export async function addTournamentPhoto(fd: FormData) {
 export async function deleteTournamentPhoto(fd: FormData) {
   const id = Number(fd.get("id"));
   await (prisma as any).tournament_Photo.delete({ where: { id } });
+  tournamentPaths.forEach(p => revalidatePath(p));
+}
+
+// ─── TOURNAMENT REGISTRATIONS ───────────────────────────────────────────────
+
+export async function updateRegistrationStatus(fd: FormData) {
+  const id = Number(fd.get("id"));
+  const status = fd.get("status") as string;
+  await (prisma as any).tournament_Registration.update({
+    where: { id },
+    data: { status },
+  });
+  tournamentPaths.forEach(p => revalidatePath(p));
+}
+
+export async function deleteRegistration(fd: FormData) {
+  const id = Number(fd.get("id"));
+  await (prisma as any).tournament_Registration.delete({ where: { id } });
   tournamentPaths.forEach(p => revalidatePath(p));
 }
 

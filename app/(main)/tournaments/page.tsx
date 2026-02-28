@@ -4,7 +4,10 @@ import Link from "next/link";
 
 async function getTournaments() {
   try {
-    return await prisma.tournament.findMany({ orderBy: { date: "asc" } });
+    return await prisma.tournament.findMany({
+      orderBy: { date: "asc" },
+      include: { registrations: { where: { status: "CONFIRMED" }, select: { id: true } } },
+    });
   } catch { return []; }
 }
 
@@ -62,24 +65,41 @@ export default async function TournamentsPage() {
                     </div>
                     <h3 className="font-bold text-white text-xl mb-2">{t.title}</h3>
                     {t.description && <p className="text-white/40 text-sm mb-3 flex-1">{t.description}</p>}
-                    <div className="text-white/40 text-sm space-y-1 mb-4">
+                    <div className="text-white/40 text-sm space-y-1 mb-3">
                       <p>📅 {new Date(t.date).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</p>
                       <p>📍 {t.venue ? `${t.venue}, ` : ""}{t.location}</p>
                     </div>
-                    {t.registrationLink ? (
-                      <a
-                        href={t.registrationLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-auto block text-center px-4 py-2.5 rounded-full bg-[#c9a84c] hover:bg-[#dbb95d] text-black text-sm font-bold transition-all hover:scale-105"
-                      >
-                        Register Now →
-                      </a>
-                    ) : (
-                      <span className="mt-auto block text-center px-4 py-2.5 rounded-full border border-white/10 text-white/30 text-sm">
-                        Registration Opening Soon
-                      </span>
-                    )}
+                    {/* Spots indicator */}
+                    {(() => {
+                      const registered = (t as any).registrations?.length ?? 0;
+                      const max = t.maxSpots;
+                      if (max) {
+                        const left = Math.max(0, max - registered);
+                        const pct = Math.min(100, (registered / max) * 100);
+                        const color = pct >= 90 ? "bg-red-500" : pct >= 70 ? "bg-amber-500" : "bg-emerald-500";
+                        return (
+                          <div className="mb-4">
+                            <div className="flex justify-between text-xs mb-1">
+                              <span className="text-white/50">{registered} / {max} spots</span>
+                              <span className={left === 0 ? "text-red-400 font-semibold" : "text-emerald-400"}>{left === 0 ? "Full" : `${left} left`}</span>
+                            </div>
+                            <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                              <div className={`h-full ${color} rounded-full transition-all`} style={{ width: `${pct}%` }} />
+                            </div>
+                          </div>
+                        );
+                      }
+                      if (registered > 0) {
+                        return <p className="text-white/40 text-xs mb-4">👥 {registered} registered</p>;
+                      }
+                      return null;
+                    })()}
+                    <Link
+                      href="/academy/tournaments"
+                      className="mt-auto block text-center px-4 py-2.5 rounded-full bg-[#c9a84c] hover:bg-[#dbb95d] text-black text-sm font-bold transition-all hover:scale-105"
+                    >
+                      {t.maxSpots && ((t as any).registrations?.length ?? 0) >= t.maxSpots ? "Join Waitlist →" : "Register Now →"}
+                    </Link>
                   </div>
                 </AnimatedSection>
               ))}

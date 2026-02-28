@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import prisma from "@/lib/prisma";
-import { createTournament, updateTournament, deleteTournament, addTournamentPhoto, deleteTournamentPhoto } from "@/lib/actions/admin";
+import { createTournament, updateTournament, deleteTournament, addTournamentPhoto, deleteTournamentPhoto, updateRegistrationStatus, deleteRegistration } from "@/lib/actions/admin";
 import AdminTournamentManager from "@/components/admin/AdminTournamentManager";
 
 export const metadata = { title: "Tournaments & Events | Admin" };
@@ -9,7 +9,10 @@ async function getTournaments() {
   try {
     const rows = await (prisma as any).tournament.findMany({
       orderBy: { date: "desc" },
-      include: { photos: true },
+      include: {
+        photos: true,
+        registrations: { orderBy: { createdAt: "desc" } },
+      },
     });
     return rows.map((t: any) => ({
       id: t.id,
@@ -25,7 +28,20 @@ async function getTournaments() {
       tags: t.tags ?? [],
       status: t.status,
       featured: t.featured,
+      maxSpots: t.maxSpots ?? null,
       photos: t.photos?.map((p: any) => ({ id: p.id, url: p.url, caption: p.caption })) ?? [],
+      registrations: t.registrations?.map((r: any) => ({
+        id: r.id,
+        fullName: r.fullName,
+        email: r.email,
+        phone: r.phone,
+        whatsApp: r.whatsApp,
+        age: r.age,
+        rating: r.rating,
+        notes: r.notes,
+        status: r.status,
+        createdAt: r.createdAt instanceof Date ? r.createdAt.toISOString() : String(r.createdAt),
+      })) ?? [],
     }));
   } catch {
     return [];
@@ -43,6 +59,8 @@ export default async function AdminTournamentsPage() {
       deleteAction={deleteTournament}
       addPhotoAction={addTournamentPhoto}
       deletePhotoAction={deleteTournamentPhoto}
+      updateRegistrationStatusAction={updateRegistrationStatus}
+      deleteRegistrationAction={deleteRegistration}
     />
   );
 }

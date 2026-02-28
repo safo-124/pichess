@@ -20,13 +20,28 @@ interface Tournament {
   tags: string[];
   status: string;
   featured: boolean;
+  maxSpots: number | null;
   photos: Photo[];
+  registrations: Registration[];
 }
 
 interface Photo {
   id: number;
   url: string;
   caption: string | null;
+}
+
+interface Registration {
+  id: number;
+  fullName: string;
+  email: string;
+  phone: string;
+  whatsApp: string | null;
+  age: number | null;
+  rating: string | null;
+  notes: string | null;
+  status: string;
+  createdAt: string;
 }
 
 interface Props {
@@ -36,6 +51,8 @@ interface Props {
   deleteAction: (fd: FormData) => Promise<void>;
   addPhotoAction: (fd: FormData) => Promise<void>;
   deletePhotoAction: (fd: FormData) => Promise<void>;
+  updateRegistrationStatusAction: (fd: FormData) => Promise<void>;
+  deleteRegistrationAction: (fd: FormData) => Promise<void>;
 }
 
 /* ────────────────────────────────────────────────────────
@@ -257,6 +274,11 @@ function TournamentForm({
             </div>
 
             <div>
+              <label className={labelCls}>Max Spots (leave empty for unlimited)</label>
+              <input name="maxSpots" type="number" min={1} defaultValue={initial?.maxSpots ?? ""} className={inputCls} placeholder="e.g. 50" />
+            </div>
+
+            <div>
               <label className={labelCls}>Tags (comma-separated)</label>
               <input name="tags" defaultValue={(initial?.tags ?? []).join(", ")} className={inputCls} placeholder="academy, open, ngo" />
             </div>
@@ -385,6 +407,199 @@ function PhotosPanel({
 }
 
 /* ────────────────────────────────────────────────────────
+   Registrations Panel
+   ──────────────────────────────────────────────────────── */
+
+function RegistrationsPanel({
+  tournament,
+  onUpdateStatus,
+  onDeleteReg,
+  onClose,
+  isPending,
+}: {
+  tournament: Tournament;
+  onUpdateStatus: (fd: FormData) => void;
+  onDeleteReg: (fd: FormData) => void;
+  onClose: () => void;
+  isPending: boolean;
+}) {
+  const [statusFilter, setStatusFilter] = useState<"all" | "CONFIRMED" | "WAITLISTED" | "CANCELLED">("all");
+  const regs = tournament.registrations ?? [];
+  const filtered = statusFilter === "all" ? regs : regs.filter(r => r.status === statusFilter);
+  const confirmed = regs.filter(r => r.status === "CONFIRMED").length;
+  const waitlisted = regs.filter(r => r.status === "WAITLISTED").length;
+  const cancelled = regs.filter(r => r.status === "CANCELLED").length;
+
+  const regStatusColors: Record<string, string> = {
+    CONFIRMED: "bg-green-50 text-green-600",
+    WAITLISTED: "bg-amber-50 text-amber-600",
+    CANCELLED: "bg-red-50 text-red-600",
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl border border-zinc-200/80" onClick={(e) => e.stopPropagation()}>
+        <div className="sticky top-0 z-10 bg-white border-b border-zinc-100 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+          <div>
+            <h2 className="text-lg font-bold text-zinc-800">Registrations: {tournament.title}</h2>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              {confirmed} confirmed{tournament.maxSpots ? ` / ${tournament.maxSpots} spots` : ""}
+              {waitlisted > 0 ? ` · ${waitlisted} waitlisted` : ""}
+              {cancelled > 0 ? ` · ${cancelled} cancelled` : ""}
+            </p>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 transition-colors text-sm">✕</button>
+        </div>
+
+        <div className="p-6 space-y-4">
+          {/* Spots progress */}
+          {tournament.maxSpots && (
+            <div className="rounded-xl bg-zinc-50 border border-zinc-200/80 p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Capacity</span>
+                <span className="text-sm font-bold text-zinc-700">{confirmed} / {tournament.maxSpots}</span>
+              </div>
+              <div className="w-full h-3 rounded-full bg-zinc-200 overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all ${
+                    confirmed / tournament.maxSpots >= 0.9 ? "bg-red-400" :
+                    confirmed / tournament.maxSpots >= 0.7 ? "bg-amber-400" : "bg-emerald-400"
+                  }`}
+                  style={{ width: `${Math.min(100, (confirmed / tournament.maxSpots) * 100)}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Filter tabs */}
+          <div className="flex gap-2 flex-wrap">
+            {([
+              { id: "all" as const, label: "All", count: regs.length },
+              { id: "CONFIRMED" as const, label: "✅ Confirmed", count: confirmed },
+              { id: "WAITLISTED" as const, label: "⏳ Waitlisted", count: waitlisted },
+              { id: "CANCELLED" as const, label: "❌ Cancelled", count: cancelled },
+            ]).map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setStatusFilter(tab.id)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  statusFilter === tab.id
+                    ? "bg-zinc-800 text-white"
+                    : "bg-zinc-100 text-zinc-500 hover:bg-zinc-200"
+                }`}
+              >
+                {tab.label} <span className="opacity-60">({tab.count})</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Registrations table */}
+          {filtered.length > 0 ? (
+            <div className="rounded-xl border border-zinc-200/80 overflow-hidden">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-zinc-50 text-left">
+                    <th className="px-4 py-3 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Name</th>
+                    <th className="px-4 py-3 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Contact</th>
+                    <th className="px-4 py-3 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Details</th>
+                    <th className="px-4 py-3 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Status</th>
+                    <th className="px-4 py-3 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-100">
+                  {filtered.map((r) => (
+                    <tr key={r.id} className="hover:bg-zinc-50/50 transition-colors">
+                      <td className="px-4 py-3">
+                        <p className="font-semibold text-zinc-800">{r.fullName}</p>
+                        <p className="text-zinc-400 text-xs">{new Date(r.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</p>
+                      </td>
+                      <td className="px-4 py-3">
+                        <p className="text-zinc-600 text-xs">{r.email}</p>
+                        <p className="text-zinc-400 text-xs">{r.phone}</p>
+                        {r.whatsApp && r.whatsApp !== r.phone && (
+                          <p className="text-zinc-300 text-xs">WA: {r.whatsApp}</p>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        {r.age && <span className="text-xs text-zinc-400 mr-2">Age: {r.age}</span>}
+                        {r.rating && <span className="text-xs text-zinc-400">⭐ {r.rating}</span>}
+                        {r.notes && <p className="text-xs text-zinc-300 mt-0.5 line-clamp-1">{r.notes}</p>}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${regStatusColors[r.status] ?? "bg-zinc-100 text-zinc-500"}`}>
+                          {r.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex gap-1">
+                          {r.status !== "CONFIRMED" && (
+                            <button
+                              disabled={isPending}
+                              onClick={() => {
+                                const fd = new FormData();
+                                fd.set("id", String(r.id));
+                                fd.set("status", "CONFIRMED");
+                                onUpdateStatus(fd);
+                              }}
+                              className="px-2 py-1 rounded-md bg-green-50 text-green-600 text-[10px] font-semibold hover:bg-green-100 transition-colors disabled:opacity-50"
+                            >
+                              Confirm
+                            </button>
+                          )}
+                          {r.status !== "CANCELLED" && (
+                            <button
+                              disabled={isPending}
+                              onClick={() => {
+                                const fd = new FormData();
+                                fd.set("id", String(r.id));
+                                fd.set("status", "CANCELLED");
+                                onUpdateStatus(fd);
+                              }}
+                              className="px-2 py-1 rounded-md bg-amber-50 text-amber-600 text-[10px] font-semibold hover:bg-amber-100 transition-colors disabled:opacity-50"
+                            >
+                              Cancel
+                            </button>
+                          )}
+                          <button
+                            disabled={isPending}
+                            onClick={() => {
+                              if (!confirm(`Remove ${r.fullName}'s registration?`)) return;
+                              const fd = new FormData();
+                              fd.set("id", String(r.id));
+                              onDeleteReg(fd);
+                            }}
+                            className="px-2 py-1 rounded-md bg-red-50 text-red-500 text-[10px] font-semibold hover:bg-red-100 transition-colors disabled:opacity-50"
+                          >
+                            Delete
+                          </button>
+                          <a
+                            href={`https://wa.me/${(r.whatsApp || r.phone).replace(/\\D/g, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-2 py-1 rounded-md bg-[#25D366]/10 text-[#25D366] text-[10px] font-semibold hover:bg-[#25D366]/20 transition-colors"
+                          >
+                            WA
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="text-center py-12 text-zinc-300">
+              <span className="text-4xl mb-2 block">📋</span>
+              <p className="text-sm">No registrations yet{statusFilter !== "all" ? ` with status "${statusFilter}"` : ""}.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────
    Main Admin Component
    ──────────────────────────────────────────────────────── */
 
@@ -395,16 +610,19 @@ export default function AdminTournamentManager({
   deleteAction,
   addPhotoAction,
   deletePhotoAction,
+  updateRegistrationStatusAction,
+  deleteRegistrationAction,
 }: Props) {
   const [isPending, startTransition] = useTransition();
   const [showCreate, setShowCreate] = useState(false);
   const [editing, setEditing] = useState<Tournament | null>(null);
   const [photosFor, setPhotosFor] = useState<Tournament | null>(null);
+  const [regsFor, setRegsFor] = useState<Tournament | null>(null);
   const [filter, setFilter] = useState<"all" | "TOURNAMENT" | "EVENT">("all");
 
   const upcoming = tournaments.filter((t) => t.status === "UPCOMING").length;
   const ongoing = tournaments.filter((t) => t.status === "ONGOING").length;
-  const completed = tournaments.filter((t) => t.status === "COMPLETED").length;
+  const totalRegs = tournaments.reduce((s, t) => s + (t.registrations?.length ?? 0), 0);
   const eventCount = tournaments.filter((t) => t.type === "EVENT").length;
   const tournamentCount = tournaments.filter((t) => t.type === "TOURNAMENT").length;
 
@@ -446,6 +664,18 @@ export default function AdminTournamentManager({
     });
   }
 
+  function handleUpdateRegStatus(fd: FormData) {
+    startTransition(async () => {
+      await updateRegistrationStatusAction(fd);
+    });
+  }
+
+  function handleDeleteReg(fd: FormData) {
+    startTransition(async () => {
+      await deleteRegistrationAction(fd);
+    });
+  }
+
   return (
     <div className="space-y-6 max-w-7xl">
       {/* Header */}
@@ -463,13 +693,14 @@ export default function AdminTournamentManager({
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
         {[
           { label: "Total", value: tournaments.length, color: "" },
           { label: "Upcoming", value: upcoming, color: "text-blue-600" },
           { label: "Ongoing", value: ongoing, color: "text-green-600" },
           { label: "Tournaments", value: tournamentCount, color: "text-amber-600" },
           { label: "Events", value: eventCount, color: "text-purple-600" },
+          { label: "Registrations", value: totalRegs, color: "text-cyan-600" },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl bg-white border border-zinc-200/80 p-4">
             <p className={`text-2xl font-black ${s.color || "text-zinc-900"}`}>{s.value}</p>
@@ -541,6 +772,35 @@ export default function AdminTournamentManager({
                 <p>📅 {new Date(t.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}{t.endDate ? ` – ${new Date(t.endDate).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}` : ""}</p>
                 <p>📍 {t.location}{t.venue ? ` · ${t.venue}` : ""}</p>
               </div>
+
+              {/* Registration & spots info */}
+              {(() => {
+                const regCount = t.registrations?.filter(r => r.status === "CONFIRMED").length ?? 0;
+                const totalRegsForCard = t.registrations?.length ?? 0;
+                return (
+                  <div className="rounded-lg bg-zinc-50 border border-zinc-200/80 p-2.5">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Registrations</span>
+                      <span className="text-xs font-bold text-zinc-700">
+                        {regCount}{t.maxSpots ? ` / ${t.maxSpots}` : ""} confirmed
+                        {totalRegsForCard > regCount ? ` · ${totalRegsForCard - regCount} other` : ""}
+                      </span>
+                    </div>
+                    {t.maxSpots && (
+                      <div className="w-full h-1.5 rounded-full bg-zinc-200 overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all ${
+                            regCount / t.maxSpots >= 0.9 ? "bg-red-400" :
+                            regCount / t.maxSpots >= 0.7 ? "bg-amber-400" : "bg-emerald-400"
+                          }`}
+                          style={{ width: `${Math.min(100, (regCount / t.maxSpots) * 100)}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
               {t.tags.length > 0 && (
                 <div className="flex gap-1 flex-wrap">
                   {t.tags.map((tag) => (
@@ -553,9 +813,12 @@ export default function AdminTournamentManager({
               )}
 
               {/* Actions */}
-              <div className="flex gap-1.5 pt-2 border-t border-zinc-100">
+              <div className="flex gap-1.5 pt-2 border-t border-zinc-100 flex-wrap">
                 <button onClick={() => setEditing(t)} className="flex-1 px-3 py-1.5 rounded-lg bg-zinc-800 text-white text-[11px] font-semibold hover:bg-zinc-700 transition-colors">
                   Edit
+                </button>
+                <button onClick={() => setRegsFor(t)} className="px-3 py-1.5 rounded-lg bg-cyan-50 text-cyan-600 text-[11px] font-semibold hover:bg-cyan-100 transition-colors">
+                  📋 {(t.registrations?.length ?? 0)} Regs
                 </button>
                 <button onClick={() => setPhotosFor(t)} className="px-3 py-1.5 rounded-lg bg-zinc-100 text-zinc-600 text-[11px] font-semibold hover:bg-zinc-200 transition-colors">
                   📷 Photos
@@ -578,6 +841,15 @@ export default function AdminTournamentManager({
       )}
       {photosFor && (
         <PhotosPanel tournament={photosFor} onAddPhoto={handleAddPhoto} onDeletePhoto={handleDeletePhoto} onClose={() => setPhotosFor(null)} isPending={isPending} />
+      )}
+      {regsFor && (
+        <RegistrationsPanel
+          tournament={regsFor}
+          onUpdateStatus={handleUpdateRegStatus}
+          onDeleteReg={handleDeleteReg}
+          onClose={() => setRegsFor(null)}
+          isPending={isPending}
+        />
       )}
     </div>
   );

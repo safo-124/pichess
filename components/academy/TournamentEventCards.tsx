@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import RegistrationForm from "@/components/shared/RegistrationForm";
 
 /* ────────────────────────────────────────────────────────
    Types
@@ -23,6 +23,8 @@ export interface TournamentItem {
   tags: string[];
   status: string;
   featured: boolean;
+  maxSpots: number | null;
+  registeredCount: number;
   photos: { id: number; url: string; caption: string | null }[];
 }
 
@@ -105,8 +107,36 @@ function CountdownBadge({ date }: { date: string }) {
    Detail Modal
    ──────────────────────────────────────────────────────── */
 
+function SpotsIndicator({ maxSpots, registeredCount }: { maxSpots: number | null; registeredCount: number }) {
+  if (!maxSpots) return (
+    <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-blue-500/15 border border-blue-500/25 text-blue-300 tracking-wider">
+      {registeredCount} registered
+    </span>
+  );
+  const remaining = Math.max(0, maxSpots - registeredCount);
+  const pct = Math.min(100, (registeredCount / maxSpots) * 100);
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden min-w-[60px]">
+        <div
+          className={`h-full rounded-full transition-all duration-500 ${
+            pct >= 90 ? "bg-red-400" : pct >= 70 ? "bg-amber-400" : "bg-emerald-400"
+          }`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <span className={`text-[10px] font-bold ${
+        remaining === 0 ? "text-red-300" : remaining <= 5 ? "text-amber-300" : "text-white/40"
+      }`}>
+        {remaining === 0 ? "Full" : `${remaining} spot${remaining !== 1 ? "s" : ""} left`}
+      </span>
+    </div>
+  );
+}
+
 function DetailModal({ item, onClose }: { item: TournamentItem; onClose: () => void }) {
   const sc = statusConfig[item.status] ?? statusConfig.UPCOMING;
+  const [showRegister, setShowRegister] = useState(false);
 
   return (
     <motion.div
@@ -213,19 +243,58 @@ function DetailModal({ item, onClose }: { item: TournamentItem; onClose: () => v
             </div>
           )}
 
+          {/* Spots indicator */}
+          {(item.status === "UPCOMING" || item.status === "ONGOING") && (
+            <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-white/40 uppercase tracking-wider">Registration</span>
+                <span className="text-xs text-white/30">
+                  {item.registeredCount} registered{item.maxSpots ? ` / ${item.maxSpots}` : ""}
+                </span>
+              </div>
+              {item.maxSpots && (
+                <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden mb-2">
+                  <div
+                    className={`h-full rounded-full transition-all ${
+                      item.registeredCount / item.maxSpots >= 0.9 ? "bg-red-400" :
+                      item.registeredCount / item.maxSpots >= 0.7 ? "bg-amber-400" : "bg-emerald-400"
+                    }`}
+                    style={{ width: `${Math.min(100, (item.registeredCount / item.maxSpots) * 100)}%` }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
           {/* CTA */}
-          {item.registrationLink && item.status === "UPCOMING" && (
-            <a
-              href={item.registrationLink}
-              target="_blank"
-              rel="noopener noreferrer"
+          {(item.status === "UPCOMING" || item.status === "ONGOING") && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setShowRegister(true); }}
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-black text-sm font-black hover:from-amber-300 hover:to-orange-400 transition-all hover:scale-105 hover:shadow-xl hover:shadow-amber-500/20 active:scale-95"
             >
-              Register Now
+              {item.maxSpots && item.registeredCount >= item.maxSpots ? "Join Waitlist" : "Register Now"}
               <span className="text-black/60">→</span>
-            </a>
+            </button>
           )}
         </div>
+
+        {/* Inline registration form */}
+        {showRegister && (
+          <RegistrationForm
+            tournament={{
+              id: item.id,
+              title: item.title,
+              date: item.date,
+              location: item.location,
+              venue: item.venue,
+              type: item.type,
+              maxSpots: item.maxSpots,
+              registeredCount: item.registeredCount,
+              flyer: item.flyer,
+            }}
+            onClose={() => setShowRegister(false)}
+          />
+        )}
       </motion.div>
     </motion.div>
   );
@@ -346,14 +415,23 @@ function TournamentCard({ item, index, onSelect }: { item: TournamentItem; index
           <p className="text-white/25 text-sm leading-relaxed line-clamp-2">{item.description}</p>
         )}
 
+        {/* Spots indicator */}
+        {(isUpcoming || isOngoing) && (
+          <SpotsIndicator maxSpots={item.maxSpots} registeredCount={item.registeredCount} />
+        )}
+
         {/* Bottom bar */}
         <div className="flex items-center justify-between pt-2 border-t border-white/[0.04]">
           <span className="text-xs text-white/20 group-hover:text-amber-400/50 transition-colors">
             Click for details →
           </span>
-          {item.registrationLink && isUpcoming && (
-            <span className="text-xs font-bold text-amber-400/70 px-3 py-1 rounded-full bg-amber-400/10">
-              Register Open
+          {(isUpcoming || isOngoing) && (
+            <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+              item.maxSpots && item.registeredCount >= item.maxSpots
+                ? "text-red-400/70 bg-red-400/10"
+                : "text-amber-400/70 bg-amber-400/10"
+            }`}>
+              {item.maxSpots && item.registeredCount >= item.maxSpots ? "Waitlist" : "Register Open"}
             </span>
           )}
           {item.photos.length > 0 && (
