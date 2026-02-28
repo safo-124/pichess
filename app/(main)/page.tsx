@@ -75,18 +75,26 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           HERO — Clean white with contained image
       ═══════════════════════════════════════════════════════ */}
-      <section className="relative min-h-[100dvh] flex items-center overflow-hidden bg-white">
-        {/* Subtle decorative elements */}
-        <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] rounded-full bg-[#c9a84c]/[0.06] blur-[200px] pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-gray-200/50 blur-[180px] pointer-events-none" />
-        <div className="absolute inset-0 chess-bg opacity-[0.015] pointer-events-none" />
+      <section className="relative min-h-[100dvh] flex items-center overflow-hidden bg-black">
+        {/* Full-width background image */}
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=1920&q=80"
+            alt="Chess background"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
+        </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-32 pb-24 sm:pt-36 sm:pb-32">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-32 pb-24 sm:pt-40 sm:pb-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Left — Text */}
             <div>
               <AnimatedSection delay={0}>
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-[#c9a84c]/30 bg-[#c9a84c]/5 mb-8">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-[#c9a84c]/40 bg-[#c9a84c]/10 backdrop-blur-sm mb-8">
                   <span className="w-2 h-2 rounded-full bg-[#c9a84c] animate-pulse-dot" />
                   <span className="text-[#c9a84c] text-[11px] font-bold uppercase tracking-[0.25em]">
                     Ghana&apos;s Premier Chess Platform
@@ -94,7 +102,7 @@ export default async function HomePage() {
                 </div>
               </AnimatedSection>
 
-              <h1 className="text-[2.75rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.03em] text-gray-900 leading-[1.05] mb-6">
+              <h1 className="text-[2.75rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.03em] text-white leading-[1.05] mb-6">
                 <TextReveal text="Where Every" delay={0.1} />
                 <br />
                 <TextReveal text="Move" delay={0.25} />{" "}
@@ -104,7 +112,7 @@ export default async function HomePage() {
               </h1>
 
               <AnimatedSection delay={0.2}>
-                <p className="text-gray-500 text-base sm:text-lg leading-relaxed max-w-lg mb-10">
+                <p className="text-white/70 text-base sm:text-lg leading-relaxed max-w-lg mb-10">
                   A world-class chess academy, a life-changing foundation, and a thriving
                   community — all united by the world&apos;s greatest game.
                 </p>
@@ -115,7 +123,7 @@ export default async function HomePage() {
                   <MagneticButton>
                     <Link
                       href="/academy"
-                      className="group relative inline-block px-8 py-4 rounded-full bg-black text-white font-bold text-sm transition-all hover:shadow-[0_0_40px_rgba(0,0,0,0.2)] hover:scale-[1.03] active:scale-[0.97] text-center"
+                      className="group relative inline-block px-8 py-4 rounded-full bg-[#c9a84c] text-black font-bold text-sm transition-all hover:bg-[#dbb95d] hover:shadow-[0_0_40px_rgba(201,168,76,0.3)] hover:scale-[1.03] active:scale-[0.97] text-center"
                     >
                       <span className="relative z-10 flex items-center gap-2">Join the Academy <span className="animate-wiggle inline-block">→</span></span>
                     </Link>
@@ -123,7 +131,7 @@ export default async function HomePage() {
                   <MagneticButton>
                     <Link
                       href="/ngo"
-                      className="inline-block px-8 py-4 rounded-full border border-gray-300 text-gray-700 font-semibold text-sm hover:bg-gray-50 hover:border-gray-400 transition-all text-center"
+                      className="inline-block px-8 py-4 rounded-full border border-white/30 text-white font-semibold text-sm hover:bg-white/10 hover:border-white/50 backdrop-blur-sm transition-all text-center"
                     >
                       Support Our Mission
                     </Link>
@@ -133,45 +141,33 @@ export default async function HomePage() {
 
               {/* Mini stats row */}
               <AnimatedSection delay={0.45}>
-                <div className="flex items-center gap-8 mt-12 pt-8 border-t border-gray-200">
+                <div className="flex items-center gap-8 mt-12 pt-8 border-t border-white/15">
                   {[
                     { val: "500+", label: "Students" },
                     { val: "50+", label: "Events" },
                     { val: "15+", label: "Coaches" },
                   ].map((s) => (
                     <div key={s.label}>
-                      <p className="text-2xl sm:text-3xl font-black text-gray-900">{s.val}</p>
-                      <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mt-0.5">{s.label}</p>
+                      <p className="text-2xl sm:text-3xl font-black text-white">{s.val}</p>
+                      <p className="text-white/50 text-xs font-medium uppercase tracking-wider mt-0.5">{s.label}</p>
                     </div>
                   ))}
                 </div>
               </AnimatedSection>
             </div>
 
-            {/* Right — Feature image composition with parallax */}
+            {/* Right — Floating badges only (image is now background) */}
             <AnimatedSection delay={0.2} direction="right" className="hidden lg:block">
-              <div className="relative">
-                {/* Main image */}
-                <ParallaxSection speed={0.15} direction="down">
-                  <div className="relative rounded-3xl overflow-hidden aspect-[3/4] shadow-2xl shadow-black/10 ring-1 ring-gray-200">
-                    <Image
-                      src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=800&q=80"
-                      alt="Chess training session"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                  </div>
-                </ParallaxSection>
+              <div className="relative h-[500px]">
                 {/* Floating badge */}
                 <ParallaxSection speed={0.3} direction="up">
-                  <div className="absolute -bottom-4 -left-6 rounded-2xl bg-white backdrop-blur-xl border border-gray-200 p-5 shadow-xl animate-breathe">
+                  <div className="absolute bottom-12 left-0 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 p-5 shadow-xl animate-breathe">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-[#c9a84c]/10 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-[#c9a84c]/20 flex items-center justify-center">
                         <span className="text-[#c9a84c] text-xl">♔</span>
                       </div>
                       <div>
-                        <p className="text-gray-900 font-bold text-sm">Next Tournament</p>
+                        <p className="text-white font-bold text-sm">Next Tournament</p>
                         <p className="text-[#c9a84c] text-xs font-medium">Registering now</p>
                       </div>
                     </div>
@@ -179,13 +175,18 @@ export default async function HomePage() {
                 </ParallaxSection>
                 {/* Floating green badge */}
                 <ParallaxSection speed={0.4} direction="up">
-                  <div className="absolute -top-3 -right-3 rounded-xl bg-[#2e7d5b] text-white p-4 shadow-xl shadow-[#2e7d5b]/20 animate-breathe" style={{ animationDelay: "1s" }}>
+                  <div className="absolute top-8 right-8 rounded-xl bg-[#2e7d5b] text-white p-4 shadow-xl shadow-[#2e7d5b]/20 animate-breathe" style={{ animationDelay: "1s" }}>
                     <p className="text-2xl font-black leading-none">200+</p>
                     <p className="text-white/80 text-[10px] font-semibold mt-1 uppercase tracking-wider">Lives Changed</p>
                   </div>
                 </ParallaxSection>
-                {/* Decorative ring */}
-                <div className="absolute -z-10 inset-0 translate-x-4 translate-y-4 rounded-3xl border border-gray-200" />
+                {/* Floating stat badge */}
+                <ParallaxSection speed={0.2} direction="down">
+                  <div className="absolute top-1/2 right-0 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 p-4 shadow-xl animate-breathe" style={{ animationDelay: "2s" }}>
+                    <p className="text-white font-black text-lg">♟ 15+</p>
+                    <p className="text-white/60 text-[10px] font-semibold uppercase tracking-wider">Expert Coaches</p>
+                  </div>
+                </ParallaxSection>
               </div>
             </AnimatedSection>
           </div>
@@ -194,9 +195,9 @@ export default async function HomePage() {
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
           <div className="flex flex-col items-center gap-2">
-            <span className="text-gray-300 text-[10px] font-semibold uppercase tracking-widest">Scroll</span>
-            <div className="w-5 h-8 rounded-full border border-gray-300 flex items-start justify-center pt-1.5">
-              <div className="w-1 h-1.5 rounded-full bg-gray-400 animate-bounce" />
+            <span className="text-white/40 text-[10px] font-semibold uppercase tracking-widest">Scroll</span>
+            <div className="w-5 h-8 rounded-full border border-white/30 flex items-start justify-center pt-1.5">
+              <div className="w-1 h-1.5 rounded-full bg-white/60 animate-bounce" />
             </div>
           </div>
         </div>
