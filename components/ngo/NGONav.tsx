@@ -33,7 +33,7 @@ export default function NGONav() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? "bg-white/95 backdrop-blur-md shadow-md border-b border-[#2e7d5b]/20"
-          : "bg-transparent"
+          : "bg-white/80 backdrop-blur-sm"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,7 +43,7 @@ export default function NGONav() {
               <Heart size={16} className="text-[#2e7d5b] group-hover:text-white transition-colors" />
             </div>
             <div className="leading-tight">
-              <div className={`font-black text-base tracking-tight leading-none ${scrolled ? "text-zinc-900" : "text-white"}`}>
+              <div className={`font-black text-base tracking-tight leading-none ${scrolled ? "text-zinc-900" : "text-zinc-800"}`}>
                 PiChess
               </div>
               <div className="text-[10px] font-semibold text-[#2e7d5b] tracking-[0.2em] uppercase">
@@ -60,7 +60,7 @@ export default function NGONav() {
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                   pathname === l.href
                     ? "text-[#2e7d5b] bg-[#2e7d5b]/10"
-                    : `${scrolled ? "text-zinc-600 hover:text-[#2e7d5b]" : "text-white/80 hover:text-white"} hover:bg-[#2e7d5b]/8`
+                    : `${scrolled ? "text-zinc-600 hover:text-[#2e7d5b]" : "text-zinc-600 hover:text-[#2e7d5b]"} hover:bg-[#2e7d5b]/8`
                 }`}
               >
                 {l.label}
@@ -80,7 +80,7 @@ export default function NGONav() {
             </Link>
           </div>
 
-          <button onClick={() => setOpen(!open)} className={`lg:hidden p-2 ${scrolled ? "text-zinc-800" : "text-white"}`}>
+          <button onClick={() => setOpen(!open)} className={`lg:hidden p-2 ${scrolled ? "text-zinc-800" : "text-zinc-800"}`}>
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>

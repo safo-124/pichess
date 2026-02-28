@@ -3,22 +3,18 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Tournaments", href: "/tournaments" },
-  { label: "Learning Tools", href: "/learning-tools" },
+  { label: "Academy", href: "/academy" },
+  { label: "Foundation", href: "/ngo" },
   { label: "Shop", href: "/shop" },
   { label: "News", href: "/news" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
-const zoneLinks = [
-  { label: "Academy", href: "/academy", color: "text-[#c9a84c]", bg: "bg-[#c9a84c]" },
-  { label: "NGO", href: "/ngo", color: "text-[#2e7d5b]", bg: "bg-[#2e7d5b]" },
-];
 
 export default function MainNav() {
   const [open, setOpen] = useState(false);
@@ -32,15 +28,13 @@ export default function MainNav() {
   }, []);
 
   return (
-    <motion.header
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <header
+      className={`w-full transition-all duration-300 ${
         scrolled
           ? "bg-black/95 backdrop-blur-md shadow-lg shadow-black/20"
-          : "bg-transparent"
+          : "bg-black/70 backdrop-blur-md border-b border-white/10"
       }`}
+      style={{ position: "relative", zIndex: 9999 }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -56,31 +50,23 @@ export default function MainNav() {
 
           {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
-                  pathname === l.href
-                    ? "text-white bg-white/10"
-                    : "text-white/70 hover:text-white hover:bg-white/8"
-                }`}
-              >
-                {l.label}
-              </Link>
-            ))}
-
-            {/* Zone pill links */}
-            {zoneLinks.map((z) => (
-              <Link
-                key={z.href}
-                href={z.href}
-                className={`ml-1 px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-200
-                  ${z.color} border-current hover:text-white ${z.bg} hover:border-transparent`}
-              >
-                {z.label}
-              </Link>
-            ))}
+            {navLinks.map((l) => {
+              const isZone = l.href === "/academy" || l.href === "/ngo" || l.href === "/shop";
+              const zoneColor = l.href === "/academy" ? "text-[#c9a84c]" : l.href === "/ngo" ? "text-[#2e7d5b]" : l.href === "/shop" ? "text-amber-400" : "";
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
+                    pathname === l.href
+                      ? `${isZone ? zoneColor : "text-white"} bg-white/10`
+                      : `${isZone ? zoneColor : "text-white/70"} hover:text-white hover:bg-white/8`
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Join / Login */}
@@ -138,16 +124,6 @@ export default function MainNav() {
                 </motion.div>
               ))}
               <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
-                {zoneLinks.map((z) => (
-                  <Link
-                    key={z.href}
-                    href={z.href}
-                    onClick={() => setOpen(false)}
-                    className={`px-4 py-2.5 rounded-full text-center text-sm font-semibold ${z.color} border border-current`}
-                  >
-                    {z.label} Zone →
-                  </Link>
-                ))}
                 <Link
                   href="/login"
                   onClick={() => setOpen(false)}
@@ -160,6 +136,6 @@ export default function MainNav() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </header>
   );
 }

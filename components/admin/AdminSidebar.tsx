@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  LayoutDashboard, GraduationCap, Heart, Trophy, ShoppingBag,
+  LayoutDashboard, GraduationCap, Heart, ShoppingBag,
   FileText, BarChart3, Settings, LogOut, ChevronRight,
 } from "lucide-react";
 
@@ -11,9 +11,9 @@ const sections = [
   { label: "Overview", href: "/admin", icon: LayoutDashboard },
   { label: "Academy", href: "/admin/academy", icon: GraduationCap, color: "text-[#c9a84c]" },
   { label: "NGO", href: "/admin/ngo", icon: Heart, color: "text-[#2e7d5b]" },
-  { label: "Tournaments", href: "/admin/tournaments", icon: Trophy, color: "text-blue-400" },
   { label: "Shop", href: "/admin/shop", icon: ShoppingBag, color: "text-purple-400" },
   { label: "Content", href: "/admin/content", icon: FileText, color: "text-orange-400" },
+  { label: "Extras", href: "/admin/extras", icon: Settings, color: "text-cyan-400" },
   { label: "Analytics", href: "/admin/analytics", icon: BarChart3, color: "text-pink-400" },
 ];
 
@@ -71,9 +71,9 @@ export default function AdminSidebar() {
 
       {/* Bottom */}
       <div className="p-4 border-t border-white/8 space-y-1">
-        <Link href="/admin/settings" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/40 hover:text-white hover:bg-white/6 transition-all">
+        <Link href="/admin/extras" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/40 hover:text-white hover:bg-white/6 transition-all">
           <Settings size={16} />
-          Settings
+          Settings & Extras
         </Link>
         <Link href="/login" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-red-400/60 hover:text-red-400 hover:bg-red-500/8 transition-all">
           <LogOut size={16} />

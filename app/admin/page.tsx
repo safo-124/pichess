@@ -38,7 +38,7 @@ const statCards = [
   { label: "Academy Leads", key: "leads", href: "/admin/academy", color: "#c9a84c", icon: "🎓" },
   { label: "NGO Applications", key: "applications", href: "/admin/ngo", color: "#2e7d5b", icon: "🌱" },
   { label: "Volunteers", key: "volunteers", href: "/admin/ngo", color: "#2e7d5b", icon: "🤝" },
-  { label: "Tournaments", key: "tournaments", href: "/admin/tournaments", color: "#6366f1", icon: "♟️" },
+  { label: "Tournaments", key: "tournaments", href: "/admin/academy", color: "#c9a84c", icon: "♟️" },
   { label: "Products", key: "products", href: "/admin/shop", color: "#f59e0b", icon: "🛍️" },
   { label: "Posts", key: "posts", href: "/admin/content", color: "#ec4899", icon: "📝" },
   { label: "Subscribers", key: "subscribers", href: "/admin/content", color: "#06b6d4", icon: "📧" },
@@ -93,11 +93,15 @@ export default async function AdminDashboard() {
         <h2 className="text-lg font-bold text-zinc-900 mb-3">Quick Actions</h2>
         <div className="flex flex-wrap gap-3">
           {[
-            { label: "Add Tournament", href: "/admin/tournaments", icon: "♟️" },
+            { label: "Add Tournament", href: "/admin/academy", icon: "♟️" },
             { label: "Add Product", href: "/admin/shop", icon: "🛍️" },
             { label: "Create Post", href: "/admin/content", icon: "📝" },
-            { label: "View NGO Apps", href: "/admin/ngo", icon: "🌱" },
+            { label: "Add Partner", href: "/admin/extras", icon: "🤝" },
+            { label: "Add Puzzle", href: "/admin/extras", icon: "🧩" },
+            { label: "Add Team Member", href: "/admin/academy", icon: "👤" },
+            { label: "Add Story", href: "/admin/ngo", icon: "📖" },
             { label: "View Leads", href: "/admin/academy", icon: "🎓" },
+            { label: "View NGO Apps", href: "/admin/ngo", icon: "🌱" },
           ].map((a) => (
             <Link key={a.label} href={a.href}
               className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300 transition-all"
