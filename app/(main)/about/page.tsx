@@ -49,8 +49,6 @@ export default async function AboutPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
         </div>
-        <div className="absolute inset-0 chess-bg opacity-[0.03] pointer-events-none" />
-
         <div className="relative z-10 max-w-5xl mx-auto text-center px-4 pt-32 pb-20">
           <AnimatedSection>
             <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm mb-8">
@@ -90,7 +88,17 @@ export default async function AboutPage() {
       {/* ═══════════════════════════════════════════════════════
           STORY — Two columns with pillars card
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 px-4 bg-white relative overflow-hidden">
+      <section className="py-24 sm:py-32 px-4 relative overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1528819622765-d6bcf132f793?w=1920&q=80"
+            alt=""
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-white/90 backdrop-blur-[2px]" />
+        </div>
         {/* Decorative blurs */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#c9a84c]/5 rounded-full blur-[150px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#2e7d5b]/5 rounded-full blur-[120px] pointer-events-none" />
@@ -150,8 +158,16 @@ export default async function AboutPage() {
       {/* ═══════════════════════════════════════════════════════
           TIMELINE — Journey through the years
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-gray-50 relative overflow-hidden">
-        <div className="absolute inset-0 chess-bg opacity-[0.015] pointer-events-none" />
+      <section className="py-24 sm:py-32 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1560174038-da43ac74f01b?w=1920&q=80"
+            alt=""
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gray-50/[0.88] backdrop-blur-[2px]" />
+        </div>
 
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-16">
@@ -202,8 +218,15 @@ export default async function AboutPage() {
           STATS — Dark dramatic section
       ═══════════════════════════════════════════════════════ */}
       <section className="relative py-24 sm:py-28 overflow-hidden">
-        <div className="absolute inset-0 bg-black" />
-        <div className="absolute inset-0 chess-bg opacity-5 pointer-events-none" />
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1604948501466-4e9c339b9c24?w=1920&q=80"
+            alt=""
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/90" />
+        </div>
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/40 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/40 to-transparent" />
 
@@ -229,7 +252,16 @@ export default async function AboutPage() {
       {/* ═══════════════════════════════════════════════════════
           VALUES — Core values grid
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-white relative overflow-hidden">
+      <section className="py-24 sm:py-32 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=1920&q=80"
+            alt=""
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-white/[0.92] backdrop-blur-[2px]" />
+        </div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#c9a84c]/[0.03] rounded-full blur-[200px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 relative">
@@ -265,8 +297,16 @@ export default async function AboutPage() {
       {/* ═══════════════════════════════════════════════════════
           MISSION — Quote section
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-gray-50 relative overflow-hidden">
-        <div className="absolute inset-0 chess-bg opacity-[0.01] pointer-events-none" />
+      <section className="py-24 sm:py-32 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1586165368502-1bad9cc98592?w=1920&q=80"
+            alt=""
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gray-50/[0.90] backdrop-blur-[2px]" />
+        </div>
         <div className="max-w-4xl mx-auto text-center px-4 relative">
           <AnimatedSection>
             <span className="text-xs font-bold text-[#c9a84c] uppercase tracking-[0.3em]">{mission.title}</span>
@@ -284,9 +324,17 @@ export default async function AboutPage() {
       {/* ═══════════════════════════════════════════════════════
           CTA — Call to action
       ═══════════════════════════════════════════════════════ */}
-      <section className="relative py-28 sm:py-36 overflow-hidden bg-black">
-        <div className="absolute inset-0 chess-bg opacity-5 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black pointer-events-none" />
+      <section className="relative py-28 sm:py-36 overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1920&q=80"
+            alt=""
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/85" />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40 pointer-events-none" />
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/30 to-transparent" />
 
         <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
