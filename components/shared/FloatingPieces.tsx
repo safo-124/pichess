@@ -56,7 +56,7 @@ function ParallaxPiece({
 
   return (
     <motion.span
-      className={`absolute ${piece.size} text-white select-none`}
+      className={`absolute ${piece.size} text-black select-none`}
       style={{
         top: piece.top,
         left: piece.left,
