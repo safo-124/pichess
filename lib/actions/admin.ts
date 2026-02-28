@@ -3,7 +3,9 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-// ─── TOURNAMENTS ────────────────────────────────────────────────────────────
+// ─── TOURNAMENTS & EVENTS ───────────────────────────────────────────────────
+
+const tournamentPaths = ["/admin/tournaments", "/tournaments", "/academy/tournaments", "/"];
 
 export async function createTournament(fd: FormData) {
   const tags = (fd.get("tags") as string ?? "").split(",").map(t => t.trim()).filter(Boolean);
@@ -12,17 +14,18 @@ export async function createTournament(fd: FormData) {
       title: fd.get("title") as string,
       description: (fd.get("description") as string) || null,
       date: new Date(fd.get("date") as string),
+      endDate: fd.get("endDate") ? new Date(fd.get("endDate") as string) : null,
       location: fd.get("location") as string,
       venue: (fd.get("venue") as string) || null,
+      flyer: (fd.get("flyer") as string) || null,
       registrationLink: (fd.get("registrationLink") as string) || null,
+      type: (fd.get("type") as string) || "TOURNAMENT",
       tags,
       status: (fd.get("status") as string) || "UPCOMING",
       featured: fd.get("featured") === "true",
     },
   });
-  revalidatePath("/admin/tournaments");
-  revalidatePath("/tournaments");
-  revalidatePath("/");
+  tournamentPaths.forEach(p => revalidatePath(p));
 }
 
 export async function updateTournament(fd: FormData) {
@@ -34,25 +37,42 @@ export async function updateTournament(fd: FormData) {
       title: fd.get("title") as string,
       description: (fd.get("description") as string) || null,
       date: new Date(fd.get("date") as string),
+      endDate: fd.get("endDate") ? new Date(fd.get("endDate") as string) : null,
       location: fd.get("location") as string,
       venue: (fd.get("venue") as string) || null,
+      flyer: (fd.get("flyer") as string) || null,
       registrationLink: (fd.get("registrationLink") as string) || null,
+      type: (fd.get("type") as string) || "TOURNAMENT",
       tags,
       status: fd.get("status") as string,
       featured: fd.get("featured") === "true",
     },
   });
-  revalidatePath("/admin/tournaments");
-  revalidatePath("/tournaments");
-  revalidatePath("/");
+  tournamentPaths.forEach(p => revalidatePath(p));
 }
 
 export async function deleteTournament(fd: FormData) {
   const id = Number(fd.get("id"));
   await (prisma as any).tournament.delete({ where: { id } });
-  revalidatePath("/admin/tournaments");
-  revalidatePath("/tournaments");
-  revalidatePath("/");
+  tournamentPaths.forEach(p => revalidatePath(p));
+}
+
+export async function addTournamentPhoto(fd: FormData) {
+  const tournamentId = Number(fd.get("tournamentId"));
+  await (prisma as any).tournament_Photo.create({
+    data: {
+      url: fd.get("url") as string,
+      caption: (fd.get("caption") as string) || null,
+      tournamentId,
+    },
+  });
+  tournamentPaths.forEach(p => revalidatePath(p));
+}
+
+export async function deleteTournamentPhoto(fd: FormData) {
+  const id = Number(fd.get("id"));
+  await (prisma as any).tournament_Photo.delete({ where: { id } });
+  tournamentPaths.forEach(p => revalidatePath(p));
 }
 
 // ─── PRODUCTS ───────────────────────────────────────────────────────────────

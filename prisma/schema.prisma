@@ -154,9 +154,12 @@ model Tournament {
   title            String
   description      String?
   date             DateTime
+  endDate          DateTime?
   location         String
   venue            String?
+  flyer            String?
   registrationLink String?
+  type             String               @default("TOURNAMENT") // TOURNAMENT | EVENT
   tags             String[] // ["academy","open","ngo"]
   status           String               @default("UPCOMING") // UPCOMING | ONGOING | COMPLETED
   featured         Boolean              @default(false)
