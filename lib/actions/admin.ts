@@ -398,6 +398,9 @@ export async function saveSiteContent(key: string, value: string) {
     revalidatePath("/academy/enquire");
   } else if (zone === "ngo") {
     revalidatePath("/ngo");
+  } else if (zone === "about") {
+    revalidatePath("/about");
+    revalidatePath("/admin/about");
   } else {
     revalidatePath("/");
   }

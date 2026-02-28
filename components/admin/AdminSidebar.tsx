@@ -6,7 +6,7 @@ import { useState } from "react";
 import {
   LayoutDashboard, GraduationCap, Heart, ShoppingBag,
   FileText, Trophy, Settings, LogOut, Crown,
-  PanelLeftClose, PanelLeft, Globe, Puzzle,
+  PanelLeftClose, PanelLeft, Globe, Puzzle, Users,
 } from "lucide-react";
 
 const mainNav = [
@@ -21,6 +21,7 @@ const manageSections = [
 ];
 
 const contentSections = [
+  { label: "About Page", href: "/admin/about", icon: Users, color: "#6366f1", desc: "Hero, story, values" },
   { label: "Blog & News", href: "/admin/content", icon: FileText, color: "#f97316", desc: "Posts, subscribers" },
   { label: "Partners & Extras", href: "/admin/extras", icon: Puzzle, color: "#06b6d4", desc: "Partners, puzzles" },
 ];
