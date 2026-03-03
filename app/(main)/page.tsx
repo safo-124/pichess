@@ -5,6 +5,7 @@ import StatsCounter from "@/components/shared/StatsCounter";
 import ParallaxSection from "@/components/shared/ParallaxSection";
 import TextReveal from "@/components/shared/TextReveal";
 import MagneticButton from "@/components/shared/MagneticButton";
+import AnimatedChessBoard from "@/components/main/AnimatedChessBoard";
 import prisma from "@/lib/prisma";
 
 /* ── data fetchers ─────────────────────────────────────────── */
@@ -111,9 +112,14 @@ export default async function HomePage() {
         <div className="absolute top-[25%] right-[20%] w-3 h-3 rounded-full bg-[#2e7d5b]/20 animate-pulse-dot pointer-events-none" style={{ animationDelay: "0.8s" }} />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-32 pb-24 sm:pt-40 sm:pb-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Left — Text */}
-            <div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            {/* Chess Board — left on desktop, below text on mobile */}
+            <AnimatedSection delay={0.1} className="order-2 lg:order-1">
+              <AnimatedChessBoard className="w-[65%] sm:w-[55%] lg:w-full max-w-[480px] mx-auto lg:mx-0" />
+            </AnimatedSection>
+
+            {/* Text — right on desktop, above board on mobile */}
+            <div className="order-1 lg:order-2">
               <AnimatedSection delay={0}>
                 <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-[#c9a84c]/30 bg-[#c9a84c]/10 mb-8">
                   <span className="w-2 h-2 rounded-full bg-[#c9a84c] animate-pulse-dot" />
@@ -177,60 +183,7 @@ export default async function HomePage() {
               </AnimatedSection>
             </div>
 
-            {/* Right — Interactive chess board visual + floating badges */}
-            <AnimatedSection delay={0.2} direction="right" className="hidden lg:block">
-              <div className="relative h-[520px]">
-                {/* Decorative chess board grid */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] grid grid-cols-8 grid-rows-8 rounded-2xl overflow-hidden rotate-6 opacity-30 border border-gray-200">
-                  {Array.from({ length: 64 }).map((_, i) => {
-                    const row = Math.floor(i / 8);
-                    const col = i % 8;
-                    const isDark = (row + col) % 2 === 1;
-                    return (
-                      <div
-                        key={i}
-                        className={isDark ? "bg-[#c9a84c]/20" : "bg-gray-50"}
-                      />
-                    );
-                  })}
-                </div>
 
-                {/* Floating badge — Tournament */}
-                <ParallaxSection speed={0.3} direction="up">
-                  <div className="absolute bottom-8 left-4 rounded-2xl bg-white border border-gray-200 p-5 shadow-xl animate-breathe">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-[#c9a84c]/10 flex items-center justify-center">
-                        <span className="text-[#c9a84c] text-xl">♔</span>
-                      </div>
-                      <div>
-                        <p className="text-gray-900 font-bold text-sm">Next Tournament</p>
-                        <p className="text-[#c9a84c] text-xs font-medium">Registering now</p>
-                      </div>
-                    </div>
-                  </div>
-                </ParallaxSection>
-
-                {/* Floating badge — Impact */}
-                <ParallaxSection speed={0.4} direction="up">
-                  <div className="absolute top-4 right-4 rounded-2xl bg-[#2e7d5b] text-white p-5 shadow-xl shadow-[#2e7d5b]/15 animate-breathe" style={{ animationDelay: "1s" }}>
-                    <p className="text-3xl font-black leading-none">200+</p>
-                    <p className="text-white/80 text-[10px] font-semibold mt-1 uppercase tracking-wider">Lives Changed</p>
-                  </div>
-                </ParallaxSection>
-
-                {/* Floating badge — Coaches */}
-                <ParallaxSection speed={0.2} direction="down">
-                  <div className="absolute top-[45%] right-[-10px] rounded-2xl bg-white border border-gray-200 p-4 shadow-xl animate-breathe" style={{ animationDelay: "2s" }}>
-                    <p className="text-gray-900 font-black text-lg">♟ 15+</p>
-                    <p className="text-gray-400 text-[10px] font-semibold uppercase tracking-wider">Expert Coaches</p>
-                  </div>
-                </ParallaxSection>
-
-                {/* Gold ring accent */}
-                <div className="absolute top-[30%] left-[20%] w-40 h-40 rounded-full border border-[#c9a84c]/15 pointer-events-none" />
-                <div className="absolute top-[35%] left-[25%] w-28 h-28 rounded-full border border-[#c9a84c]/8 pointer-events-none" />
-              </div>
-            </AnimatedSection>
           </div>
         </div>
 
