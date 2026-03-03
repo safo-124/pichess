@@ -24,5 +24,3 @@ export default async function AdminContentPage() {
   const { posts, subscribers } = await getData();
   return <AdminNewsManager initialPosts={posts} initialSubscribers={subscribers} />;
 }
-  );
-}
