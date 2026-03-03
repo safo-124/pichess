@@ -22,6 +22,7 @@ const manageSections = [
 
 const contentSections = [
   { label: "Homepage", href: "/admin/homepage", icon: Home, color: "#ec4899", desc: "Hero images & text" },
+  { label: "Footer", href: "/admin/footer", icon: Settings, color: "#64748b", desc: "Contact, socials, text" },
   { label: "About Page", href: "/admin/about", icon: Users, color: "#6366f1", desc: "Hero, story, values" },
   { label: "Blog & News", href: "/admin/content", icon: FileText, color: "#f97316", desc: "Posts, subscribers" },
   { label: "Partners & Extras", href: "/admin/extras", icon: Puzzle, color: "#06b6d4", desc: "Partners, puzzles" },
