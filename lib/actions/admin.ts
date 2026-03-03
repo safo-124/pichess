@@ -404,6 +404,9 @@ export async function saveSiteContent(key: string, value: string) {
   } else if (zone === "about") {
     revalidatePath("/about");
     revalidatePath("/admin/about");
+  } else if (zone === "home") {
+    revalidatePath("/");
+    revalidatePath("/admin/homepage");
   } else {
     revalidatePath("/");
   }
