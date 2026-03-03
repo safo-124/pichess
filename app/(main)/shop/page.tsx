@@ -24,6 +24,28 @@ interface Product {
   createdAt: string;
 }
 
+/* ── category fallback images ──────────────────────────────── */
+const CATEGORY_FALLBACK: Record<string, string> = {
+  "chess sets": "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=600&h=600&fit=crop&q=80",
+  "accessories": "https://images.unsplash.com/photo-1560174038-da43ac74f01b?w=600&h=600&fit=crop&q=80",
+  "books": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=600&h=600&fit=crop&q=80",
+  "clocks": "https://images.unsplash.com/photo-1560174038-da43ac74f01b?w=600&h=600&fit=crop&q=80",
+  "boards": "https://images.unsplash.com/photo-1586165368502-1bad197a6461?w=600&h=600&fit=crop&q=80",
+  "apparel": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600&h=600&fit=crop&q=80",
+};
+const DEFAULT_FALLBACK = "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?w=600&h=600&fit=crop&q=80";
+
+function getFallbackImage(categoryName?: string) {
+  if (!categoryName) return DEFAULT_FALLBACK;
+  const lower = categoryName.toLowerCase();
+  for (const [key, url] of Object.entries(CATEGORY_FALLBACK)) {
+    if (lower.includes(key) || key.includes(lower)) return url;
+  }
+  return DEFAULT_FALLBACK;
+}
+
+const HERO_IMAGE = "https://images.unsplash.com/photo-1604948501466-4e9c339b9c24?w=900&h=700&fit=crop&q=80";
+
 /* ── page ──────────────────────────────────────────────────── */
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -75,57 +97,93 @@ export default function ShopPage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,rgba(139,114,48,0.03),transparent)]" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#c9a84c]/25 bg-[#c9a84c]/8 mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#c9a84c]" />
-              <span className="text-[#c9a84c] text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em]">
-                Official Store
-              </span>
-            </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 tracking-tight">
-              Chess Shop
-            </h1>
-            <p className="text-gray-400 text-sm sm:text-base mt-3 max-w-lg leading-relaxed">
-              Premium chess sets, boards, clocks, books, and apparel. Order directly via WhatsApp.
-            </p>
-          </motion.div>
-
-          {/* Search + Sort bar */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="mt-8 flex flex-col sm:flex-row gap-3"
-          >
-            {/* Search */}
-            <div className="relative flex-1 max-w-md">
-              <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/60 text-sm text-gray-700 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/30 focus:border-[#c9a84c]/40 transition-all"
-              />
-            </div>
-            {/* Sort */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/60 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/30 transition-all cursor-pointer"
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+            {/* Text */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex-1"
             >
-              <option value="featured">Featured First</option>
-              <option value="newest">Newest</option>
-              <option value="price-asc">Price: Low → High</option>
-              <option value="price-desc">Price: High → Low</option>
-            </select>
-          </motion.div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#c9a84c]/25 bg-[#c9a84c]/8 mb-4">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#c9a84c]" />
+                <span className="text-[#c9a84c] text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em]">
+                  Official Store
+                </span>
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 tracking-tight">
+                Chess Shop
+              </h1>
+              <p className="text-gray-400 text-sm sm:text-base mt-3 max-w-lg leading-relaxed">
+                Premium chess sets, boards, clocks, books, and apparel. Order directly via WhatsApp.
+              </p>
+
+              {/* Search + Sort bar */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+                className="mt-8 flex flex-col sm:flex-row gap-3"
+              >
+                {/* Search */}
+                <div className="relative flex-1 max-w-md">
+                  <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/60 text-sm text-gray-700 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/30 focus:border-[#c9a84c]/40 transition-all"
+                  />
+                </div>
+                {/* Sort */}
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                  className="px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/60 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/30 transition-all cursor-pointer"
+                >
+                  <option value="featured">Featured First</option>
+                  <option value="newest">Newest</option>
+                  <option value="price-asc">Price: Low → High</option>
+                  <option value="price-desc">Price: High → Low</option>
+                </select>
+              </motion.div>
+            </motion.div>
+
+            {/* Hero Image */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="relative hidden lg:block flex-shrink-0 w-[340px] xl:w-[400px]"
+            >
+              <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl shadow-gray-200/80">
+                <Image
+                  src={HERO_IMAGE}
+                  alt="Premium chess equipment"
+                  fill
+                  sizes="400px"
+                  className="object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#c9a84c] mb-1">
+                      Premium Collection
+                    </p>
+                    <p className="text-sm font-bold text-gray-900">
+                      Tournament-grade sets, DGT clocks & more
+                    </p>
+                  </div>
+                </div>
+              </div>
+              {/* Decorative accent */}
+              <div className="absolute -z-10 -bottom-3 -right-3 w-full h-full rounded-3xl bg-[#c9a84c]/10" />
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -273,9 +331,14 @@ function ProductCard({ product: p, whatsapp }: { product: Product; whatsapp: str
             onError={() => setImgError(true)}
           />
         ) : (
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-4xl sm:text-5xl opacity-20">♟</span>
-          </div>
+          <Image
+            src={getFallbackImage(p.category?.name)}
+            alt={p.name}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
+            onError={() => {}}
+          />
         )}
         {/* Featured badge */}
         {p.featured && (
