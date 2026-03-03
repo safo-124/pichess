@@ -164,8 +164,9 @@ export async function deleteCategory(fd: FormData) {
 
 export async function createPost(fd: FormData) {
   const title = fd.get("title") as string;
-  const slug = title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+  const slug = title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
   const tags = (fd.get("tags") as string ?? "").split(",").map(t => t.trim()).filter(Boolean);
+  const type = (fd.get("type") as string) || "news";
   await (prisma as any).content_Post.create({
     data: {
       title,
@@ -173,6 +174,7 @@ export async function createPost(fd: FormData) {
       content: fd.get("content") as string,
       excerpt: (fd.get("excerpt") as string) || null,
       image: (fd.get("image") as string) || null,
+      type,
       tags,
       published: fd.get("published") === "true",
     },
@@ -184,6 +186,7 @@ export async function createPost(fd: FormData) {
 export async function updatePost(fd: FormData) {
   const id = Number(fd.get("id"));
   const tags = (fd.get("tags") as string ?? "").split(",").map(t => t.trim()).filter(Boolean);
+  const type = (fd.get("type") as string) || "news";
   await (prisma as any).content_Post.update({
     where: { id },
     data: {
@@ -191,6 +194,7 @@ export async function updatePost(fd: FormData) {
       content: fd.get("content") as string,
       excerpt: (fd.get("excerpt") as string) || null,
       image: (fd.get("image") as string) || null,
+      type,
       tags,
       published: fd.get("published") === "true",
     },

@@ -251,6 +251,7 @@ model Content_Post {
   content   String
   excerpt   String?
   image     String?
+  type      String   @default("news") // "news" | "blog" | "article"
   tags      String[] // ["news","ngo","academy","learning"]
   published Boolean  @default(false)
   authorId  Int?
