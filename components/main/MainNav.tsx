@@ -84,10 +84,10 @@ export default function MainNav() {
                 ? "hover:text-black"
                 : "text-gray-400 hover:text-black"
               : isActive
-              ? "text-white"
-              : "text-white/70 hover:text-white"
+              ? "text-gray-900"
+              : "text-gray-500 hover:text-gray-900"
           }`}
-          style={scrolled && l.accent && !isActive ? { color: l.accent } : undefined}
+          style={!isActive && l.accent ? { color: l.accent } : undefined}
         >
           {l.label}
         </span>
@@ -97,7 +97,7 @@ export default function MainNav() {
           <motion.div
             layoutId="activeUnderline"
             className={`absolute bottom-0 left-3 right-3 h-[2px] ${
-              scrolled ? "bg-[#c9a84c]" : "bg-white"
+              scrolled ? "bg-[#c9a84c]" : "bg-gray-900"
             }`}
             transition={{ type: "spring", stiffness: 380, damping: 30 }}
           />
@@ -105,7 +105,7 @@ export default function MainNav() {
           <motion.div
             layoutId="hoverUnderline"
             className={`absolute bottom-0 left-3 right-3 h-[2px] ${
-              scrolled ? "bg-gray-300" : "bg-white/40"
+              scrolled ? "bg-gray-300" : "bg-gray-300"
             }`}
             transition={{ type: "spring", stiffness: 380, damping: 30 }}
           />
@@ -128,15 +128,15 @@ export default function MainNav() {
               animate={{ height: 32, opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="bg-black/40 backdrop-blur-sm text-white overflow-hidden"
+              className="bg-white/80 backdrop-blur-md border-b border-gray-100 text-gray-900 overflow-hidden"
             >
               <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-8 text-[11px] tracking-widest uppercase">
-                <span className="text-white/60">Ghana&apos;s Premier Chess Platform</span>
+                <span className="text-gray-400">Ghana&apos;s Premier Chess Platform</span>
                 <div className="flex items-center gap-4">
-                  <Link href="/login" className="text-white/70 hover:text-white transition-colors">
+                  <Link href="/login" className="text-gray-500 hover:text-gray-900 transition-colors">
                     Sign In
                   </Link>
-                  <span className="text-white/30">|</span>
+                  <span className="text-gray-300">|</span>
                   <Link href="/academy/enquire" className="text-[#c9a84c] hover:text-[#dbb95d] transition-colors font-semibold">
                     Join Academy
                   </Link>
@@ -149,13 +149,13 @@ export default function MainNav() {
         {/* Main nav bar */}
         <motion.div
           animate={{
-            backgroundColor: scrolled ? "rgba(255,255,255,0.97)" : "rgba(0,0,0,0)",
+            backgroundColor: scrolled ? "rgba(255,255,255,0.97)" : "rgba(255,255,255,0.6)",
           }}
           transition={{ duration: 0.4 }}
           className={`transition-all duration-500 ${
             scrolled
               ? "shadow-[0_4px_30px_rgba(0,0,0,0.06)] backdrop-blur-xl"
-              : "shadow-none"
+              : "shadow-none backdrop-blur-md"
           }`}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -171,10 +171,10 @@ export default function MainNav() {
               <Link href="/" className="flex items-center gap-3 group relative">
                 <div className="relative">
                   <div className={`w-11 h-11 rounded-lg overflow-hidden relative shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl ${
-                    scrolled ? "bg-black shadow-black/10 group-hover:shadow-black/20" : "bg-white/10 backdrop-blur-sm shadow-white/10 group-hover:shadow-white/20 border border-white/20"
+                    scrolled ? "bg-black shadow-black/10 group-hover:shadow-black/20" : "bg-black shadow-black/10 group-hover:shadow-black/20"
                   }`}>
                     <ChessPattern className={`absolute inset-0 w-full h-full ${
-                      scrolled ? "text-[#c9a84c]" : "text-white/80"
+                      scrolled ? "text-[#c9a84c]" : "text-[#c9a84c]"
                     }`} />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className="text-white font-black text-lg drop-shadow-md">♚</span>
@@ -182,20 +182,20 @@ export default function MainNav() {
                   </div>
                   {/* Gold corner dot */}
                   <div className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#c9a84c] border-2 shadow-sm ${
-                    scrolled ? "border-white" : "border-black/30"
+                    scrolled ? "border-white" : "border-white"
                   }`} />
                 </div>
                 <div className="flex flex-col">
                   <span className="font-black text-[24px] tracking-tight leading-none">
                     <span className={`transition-colors duration-300 ${
-                      scrolled ? "text-gray-900" : "text-white"
+                      scrolled ? "text-gray-900" : "text-gray-900"
                     }`}>Pi</span>
                     <span className="text-[#c9a84c]">Chess</span>
                   </span>
                   <div className="flex items-center gap-1">
                     <div className="w-3 h-[1px] bg-[#c9a84c]" />
                     <span className={`text-[8px] font-bold tracking-[0.3em] uppercase transition-colors duration-300 ${
-                      scrolled ? "text-gray-400" : "text-white/50"
+                      scrolled ? "text-gray-400" : "text-gray-400"
                     }`}>
                       Ghana
                     </span>
@@ -236,7 +236,7 @@ export default function MainNav() {
               <button
                 onClick={() => setOpen(!open)}
                 className={`lg:hidden absolute right-0 w-10 h-10 flex items-center justify-center rounded-lg transition-all ${
-                  scrolled ? "text-gray-900 hover:bg-gray-50" : "text-white hover:bg-white/10"
+                  scrolled ? "text-gray-900 hover:bg-gray-50" : "text-gray-900 hover:bg-gray-100"
                 }`}
                 aria-label="Toggle menu"
               >

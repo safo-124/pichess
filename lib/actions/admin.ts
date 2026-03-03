@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 // ─── TOURNAMENTS & EVENTS ───────────────────────────────────────────────────
 
-const tournamentPaths = ["/admin/tournaments", "/tournaments", "/academy/tournaments", "/"];
+const tournamentPaths = ["/admin/tournaments", "/tournaments", "/"];
 
 export async function createTournament(fd: FormData) {
   const tags = (fd.get("tags") as string ?? "").split(",").map(t => t.trim()).filter(Boolean);
@@ -394,7 +394,6 @@ export async function saveSiteContent(key: string, value: string) {
     revalidatePath("/academy");
     revalidatePath("/academy/lessons");
     revalidatePath("/academy/team");
-    revalidatePath("/academy/tournaments");
     revalidatePath("/academy/enquire");
   } else if (zone === "ngo") {
     revalidatePath("/ngo");

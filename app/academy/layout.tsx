@@ -20,7 +20,7 @@ function AcademyFooter() {
           <div className="flex items-center gap-6 text-gray-500 text-sm">
             <Link href="/academy/enquire" className="hover:text-[#c9a84c] transition-colors">Enquire</Link>
             <Link href="/academy/team" className="hover:text-[#c9a84c] transition-colors">Team</Link>
-            <Link href="/academy/tournaments" className="hover:text-[#c9a84c] transition-colors">Tournaments</Link>
+            <Link href="/tournaments" className="hover:text-[#c9a84c] transition-colors">Tournaments</Link>
             <Link href="/" className="hover:text-white transition-colors">← Main Site</Link>
           </div>
         </div>

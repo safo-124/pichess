@@ -1,151 +1,166 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
+import TextReveal from "@/components/shared/TextReveal";
+import MagneticButton from "@/components/shared/MagneticButton";
+import TournamentEventCards, { type TournamentItem } from "@/components/academy/TournamentEventCards";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 
-async function getTournaments() {
+export const metadata = {
+  title: "Tournaments & Events — PiChess",
+  description:
+    "Chess tournaments, events, and competitive experiences for players at every level across Ghana.",
+};
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+async function getData(): Promise<TournamentItem[]> {
   try {
-    return await prisma.tournament.findMany({
-      orderBy: { date: "asc" },
-      include: { registrations: { where: { status: "CONFIRMED" }, select: { id: true } } },
+    const rows = await (prisma as any).tournament.findMany({
+      orderBy: [{ status: "asc" }, { date: "desc" }],
+      include: {
+        photos: true,
+        registrations: { where: { status: "CONFIRMED" }, select: { id: true } },
+      },
     });
-  } catch { return []; }
+    return rows.map((t: any) => ({
+      id: t.id,
+      title: t.title,
+      description: t.description,
+      date: t.date instanceof Date ? t.date.toISOString() : String(t.date),
+      endDate: t.endDate ? (t.endDate instanceof Date ? t.endDate.toISOString() : String(t.endDate)) : null,
+      location: t.location,
+      venue: t.venue,
+      flyer: t.flyer,
+      registrationLink: t.registrationLink,
+      type: t.type ?? "TOURNAMENT",
+      tags: t.tags ?? [],
+      status: t.status,
+      featured: t.featured,
+      maxSpots: t.maxSpots ?? null,
+      registeredCount: t.registrations?.length ?? 0,
+      photos: t.photos?.map((p: any) => ({ id: p.id, url: p.url, caption: p.caption })) ?? [],
+    }));
+  } catch {
+    return [];
+  }
 }
 
-export const metadata = { title: "Tournaments" };
-
 export default async function TournamentsPage() {
-  const tournaments = await getTournaments();
-  const upcoming = tournaments.filter((t) => t.status === "UPCOMING");
-  const past = tournaments.filter((t) => t.status === "COMPLETED");
+  const items = await getData();
+
+  const upcomingCount = items.filter((i) => i.status === "UPCOMING" || i.status === "ONGOING").length;
+  const tournamentCount = items.filter((i) => i.type === "TOURNAMENT").length;
+  const eventCount = items.filter((i) => i.type === "EVENT").length;
 
   return (
-    <div className="min-h-screen bg-black pt-20">
-      {/* Header */}
-      <section className="py-20 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 chess-bg opacity-6 pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto">
+    <div className="overflow-x-hidden">
+      {/* ═══════════════════════════════════════════════════════
+          HERO
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative pt-32 pb-28 bg-white overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,168,76,0.08),transparent_50%)]" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_left,rgba(59,130,246,0.04),transparent_50%)]" />
+        <div className="absolute top-1/2 right-0 w-[600px] h-[600px] rounded-full bg-[#c9a84c]/[0.04] blur-[200px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] rounded-full bg-purple-200/[0.08] blur-[150px] pointer-events-none" />
+
+        {/* Floating decorative elements */}
+        <div className="absolute top-28 right-[10%] w-20 h-20 rounded-2xl bg-[#c9a84c]/5 border border-[#c9a84c]/10 rotate-12 hidden lg:flex items-center justify-center text-4xl opacity-60">
+          🏆
+        </div>
+        <div className="absolute bottom-16 left-[8%] w-16 h-16 rounded-2xl bg-blue-50 border border-blue-200 -rotate-6 hidden lg:flex items-center justify-center text-3xl opacity-40">
+          🎪
+        </div>
+
+        <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
           <AnimatedSection>
-            <span className="text-xs font-semibold text-[#c9a84c] uppercase tracking-widest">Events</span>
-            <h1 className="text-5xl sm:text-7xl font-black mt-2 mb-4">Tournaments</h1>
-            <p className="text-white/40 text-lg max-w-xl">
-              Compete. Grow. Dominate. Register for upcoming chess events across Ghana.
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/20 text-[#c9a84c] text-xs font-semibold uppercase tracking-widest mb-6">
+              Compete & Connect
+            </span>
+          </AnimatedSection>
+
+          <TextReveal
+            text="Tournaments & Events"
+            className="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 tracking-tight"
+          />
+
+          <AnimatedSection delay={0.2}>
+            <p className="text-gray-500 mt-6 max-w-2xl mx-auto text-lg leading-relaxed">
+              From exclusive competitions to special chess events — test your skills,
+              earn recognition, and be part of the PiChess community.
             </p>
           </AnimatedSection>
-        </div>
-      </section>
 
-      {/* Upcoming */}
-      <section className="py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          <AnimatedSection>
-            <h2 className="text-2xl font-black text-white mb-8">
-              Upcoming <span className="gradient-text-gold">Events</span>
-            </h2>
+          {/* Stats strip */}
+          <AnimatedSection delay={0.35}>
+            <div className="flex flex-wrap items-center justify-center gap-6 mt-10">
+              {[
+                { value: items.length, label: "Total", icon: "📊" },
+                { value: upcomingCount, label: "Upcoming", icon: "🔥" },
+                { value: tournamentCount, label: "Tournaments", icon: "🏆" },
+                { value: eventCount, label: "Events", icon: "🎪" },
+              ].map((stat) => (
+                <div key={stat.label} className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-gray-900 border border-gray-700 flex items-center justify-center text-base">
+                    {stat.icon}
+                  </div>
+                  <div className="text-left">
+                    <p className="text-gray-900 font-black text-lg leading-none">{stat.value}</p>
+                    <p className="text-gray-400 text-[11px] uppercase tracking-wider font-semibold">{stat.label}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </AnimatedSection>
-          {upcoming.length === 0 ? (
-            <AnimatedSection>
-              <div className="rounded-xl border border-white/10 bg-zinc-900 p-12 text-center text-white/30">
-                No upcoming tournaments yet. Check back soon.
-              </div>
-            </AnimatedSection>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {upcoming.map((t, i) => (
-                <AnimatedSection key={t.id} delay={i * 0.1}>
-                  <div className="rounded-xl border border-[#c9a84c]/20 bg-zinc-900 p-6 hover-lift h-full flex flex-col">
-                    <div className="flex items-center gap-2 mb-3 flex-wrap">
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#c9a84c]/15 text-[#c9a84c]">
-                        {t.status}
-                      </span>
-                      {t.tags.map((tag) => (
-                        <span key={tag} className="text-xs text-white/30 border border-white/10 px-2 py-0.5 rounded-full capitalize">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <h3 className="font-bold text-white text-xl mb-2">{t.title}</h3>
-                    {t.description && <p className="text-white/40 text-sm mb-3 flex-1">{t.description}</p>}
-                    <div className="text-white/40 text-sm space-y-1 mb-3">
-                      <p>📅 {new Date(t.date).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</p>
-                      <p>📍 {t.venue ? `${t.venue}, ` : ""}{t.location}</p>
-                    </div>
-                    {/* Spots indicator */}
-                    {(() => {
-                      const registered = (t as any).registrations?.length ?? 0;
-                      const max = t.maxSpots;
-                      if (max) {
-                        const left = Math.max(0, max - registered);
-                        const pct = Math.min(100, (registered / max) * 100);
-                        const color = pct >= 90 ? "bg-red-500" : pct >= 70 ? "bg-amber-500" : "bg-emerald-500";
-                        return (
-                          <div className="mb-4">
-                            <div className="flex justify-between text-xs mb-1">
-                              <span className="text-white/50">{registered} / {max} spots</span>
-                              <span className={left === 0 ? "text-red-400 font-semibold" : "text-emerald-400"}>{left === 0 ? "Full" : `${left} left`}</span>
-                            </div>
-                            <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                              <div className={`h-full ${color} rounded-full transition-all`} style={{ width: `${pct}%` }} />
-                            </div>
-                          </div>
-                        );
-                      }
-                      if (registered > 0) {
-                        return <p className="text-white/40 text-xs mb-4">👥 {registered} registered</p>;
-                      }
-                      return null;
-                    })()}
-                    <Link
-                      href="/academy/tournaments"
-                      className="mt-auto block text-center px-4 py-2.5 rounded-full bg-[#c9a84c] hover:bg-[#dbb95d] text-black text-sm font-bold transition-all hover:scale-105"
-                    >
-                      {t.maxSpots && ((t as any).registrations?.length ?? 0) >= t.maxSpots ? "Join Waitlist →" : "Register Now →"}
-                    </Link>
-                  </div>
-                </AnimatedSection>
-              ))}
-            </div>
-          )}
         </div>
       </section>
 
-      {/* Past */}
-      {past.length > 0 && (
-        <section className="py-12 px-4">
-          <div className="max-w-7xl mx-auto">
-            <AnimatedSection>
-              <h2 className="text-2xl font-black text-white mb-8">Past Events</h2>
-            </AnimatedSection>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {past.map((t, i) => (
-                <AnimatedSection key={t.id} delay={i * 0.08}>
-                  <div className="rounded-xl border border-white/6 bg-zinc-900/50 p-5 hover:border-white/15 transition-all">
-                    <h3 className="font-semibold text-white/70 mb-1">{t.title}</h3>
-                    <p className="text-white/30 text-xs">
-                      {new Date(t.date).toLocaleDateString("en-GB")} – {t.location}
-                    </p>
-                  </div>
-                </AnimatedSection>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* ═══════════════════════════════════════════════════════
+          MAIN CONTENT — Cards
+      ═══════════════════════════════════════════════════════ */}
+      <section className="py-20 bg-gray-50 px-4 relative">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#c9a84c]/20 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,168,76,0.02),transparent_50%)]" />
 
-      {/* Sponsor CTA */}
-      <section className="py-20 px-4">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-6xl mx-auto relative">
+          <TournamentEventCards items={items} />
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          SPONSOR CTA
+      ═══════════════════════════════════════════════════════ */}
+      <section className="py-24 px-4 bg-gray-900 relative">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#c9a84c]/20 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(201,168,76,0.08),transparent_50%)]" />
+        <div className="max-w-2xl mx-auto text-center relative">
           <AnimatedSection>
-            <div className="rounded-2xl border border-white/10 bg-zinc-900 p-10 text-center">
-              <h3 className="text-2xl font-black text-white mb-3">Become a Tournament Sponsor</h3>
-              <p className="text-white/40 mb-6">
-                Support Ghana&apos;s chess community and get your brand in front of thousands of chess enthusiasts.
-              </p>
-              <Link
-                href="/contact"
-                className="inline-block px-6 py-3 rounded-full bg-[#c9a84c] text-black font-bold hover:scale-105 transition-transform"
-              >
-                Sponsor a Tournament →
-              </Link>
+            <div className="relative rounded-3xl border border-gray-700 bg-gray-800/50 p-12 sm:p-16 overflow-hidden">
+              <div className="absolute inset-0 chess-bg opacity-[0.03] pointer-events-none" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-gradient-to-b from-[#c9a84c]/15 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+              <div className="relative">
+                <div className="text-5xl mb-4">🤝</div>
+                <TextReveal
+                  text="Become a Sponsor"
+                  className="text-3xl sm:text-4xl font-black text-white tracking-tight"
+                />
+                <AnimatedSection delay={0.2}>
+                  <p className="text-gray-400 mt-4 mb-8 max-w-md mx-auto">
+                    Support Ghana&apos;s chess community and get your brand in front of thousands of chess enthusiasts.
+                  </p>
+                </AnimatedSection>
+                <MagneticButton>
+                  <Link
+                    href="/contact"
+                    className="group relative inline-flex items-center gap-2 px-10 py-5 rounded-full text-base font-black transition-all overflow-hidden"
+                  >
+                    <span className="absolute inset-0 bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#dbb95d] group-hover:from-[#dbb95d] group-hover:to-[#c9a84c] transition-all" />
+                    <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.25),transparent_70%)]" />
+                    <span className="relative z-10 text-white">Sponsor a Tournament</span>
+                    <span className="relative z-10 text-white/60 group-hover:translate-x-1 transition-transform">→</span>
+                  </Link>
+                </MagneticButton>
+              </div>
             </div>
           </AnimatedSection>
         </div>

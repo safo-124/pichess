@@ -73,28 +73,49 @@ export default async function HomePage() {
     <div className="relative">
 
       {/* ═══════════════════════════════════════════════════════
-          HERO — Clean white with contained image
+          HERO — Dramatic gradient with geometric chess motifs
       ═══════════════════════════════════════════════════════ */}
-      <section className="relative min-h-[100dvh] flex items-center overflow-hidden bg-black">
-        {/* Full-width background image */}
+      <section className="relative min-h-[100dvh] flex items-center overflow-hidden bg-white">
+        {/* Layered gradient backgrounds */}
         <div className="absolute inset-0">
-          <Image
-            src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=1920&q=80"
-            alt="Chess background"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(201,168,76,0.08),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_80%_80%,rgba(46,125,91,0.05),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_60%,rgba(201,168,76,0.04),transparent)]" />
         </div>
+
+        {/* Animated grid pattern */}
+        <div className="absolute inset-0 opacity-[0.06]" style={{
+          backgroundImage: `
+            linear-gradient(rgba(201,168,76,0.15) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(201,168,76,0.15) 1px, transparent 1px)
+          `,
+          backgroundSize: "80px 80px",
+        }} />
+
+        {/* Large decorative chess piece silhouette */}
+        <div className="absolute right-[-5%] top-[10%] w-[500px] h-[700px] opacity-[0.04] pointer-events-none hidden lg:block">
+          <svg viewBox="0 0 200 300" fill="currentColor" className="w-full h-full text-[#c9a84c]">
+            <ellipse cx="100" cy="40" rx="28" ry="28" />
+            <path d="M85 65 Q75 90 70 120 L130 120 Q125 90 115 65 Z" />
+            <rect x="60" y="120" width="80" height="12" rx="6" />
+            <path d="M65 132 Q60 180 55 230 L145 230 Q140 180 135 132 Z" />
+            <rect x="45" y="230" width="110" height="15" rx="7" />
+            <rect x="35" y="245" width="130" height="20" rx="10" />
+          </svg>
+        </div>
+
+        {/* Floating geometric shapes */}
+        <div className="absolute top-[15%] left-[8%] w-20 h-20 border border-[#c9a84c]/15 rotate-45 rounded-lg animate-breathe pointer-events-none" />
+        <div className="absolute bottom-[20%] right-[12%] w-16 h-16 border border-[#c9a84c]/10 rounded-full animate-breathe pointer-events-none" style={{ animationDelay: "1.5s" }} />
+        <div className="absolute top-[40%] left-[3%] w-2 h-2 rounded-full bg-[#c9a84c]/30 animate-pulse-dot pointer-events-none" />
+        <div className="absolute top-[25%] right-[20%] w-3 h-3 rounded-full bg-[#2e7d5b]/20 animate-pulse-dot pointer-events-none" style={{ animationDelay: "0.8s" }} />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-32 pb-24 sm:pt-40 sm:pb-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Left — Text */}
             <div>
               <AnimatedSection delay={0}>
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-[#c9a84c]/40 bg-[#c9a84c]/10 backdrop-blur-sm mb-8">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-[#c9a84c]/30 bg-[#c9a84c]/10 mb-8">
                   <span className="w-2 h-2 rounded-full bg-[#c9a84c] animate-pulse-dot" />
                   <span className="text-[#c9a84c] text-[11px] font-bold uppercase tracking-[0.25em]">
                     Ghana&apos;s Premier Chess Platform
@@ -102,7 +123,7 @@ export default async function HomePage() {
                 </div>
               </AnimatedSection>
 
-              <h1 className="text-[2.75rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.03em] text-white leading-[1.05] mb-6">
+              <h1 className="text-[2.75rem] sm:text-6xl lg:text-[5.5rem] font-black tracking-[-0.03em] text-gray-900 leading-[1.02] mb-6">
                 <TextReveal text="Where Every" delay={0.1} />
                 <br />
                 <TextReveal text="Move" delay={0.25} />{" "}
@@ -112,7 +133,7 @@ export default async function HomePage() {
               </h1>
 
               <AnimatedSection delay={0.2}>
-                <p className="text-white/70 text-base sm:text-lg leading-relaxed max-w-lg mb-10">
+                <p className="text-gray-500 text-base sm:text-lg leading-relaxed max-w-lg mb-10">
                   A world-class chess academy, a life-changing foundation, and a thriving
                   community — all united by the world&apos;s greatest game.
                 </p>
@@ -123,7 +144,7 @@ export default async function HomePage() {
                   <MagneticButton>
                     <Link
                       href="/academy"
-                      className="group relative inline-block px-8 py-4 rounded-full bg-[#c9a84c] text-black font-bold text-sm transition-all hover:bg-[#dbb95d] hover:shadow-[0_0_40px_rgba(201,168,76,0.3)] hover:scale-[1.03] active:scale-[0.97] text-center"
+                      className="group relative inline-block px-8 py-4 rounded-full bg-[#c9a84c] text-black font-bold text-sm transition-all hover:bg-[#dbb95d] hover:shadow-[0_0_40px_rgba(201,168,76,0.25)] hover:scale-[1.03] active:scale-[0.97] text-center"
                     >
                       <span className="relative z-10 flex items-center gap-2">Join the Academy <span className="animate-wiggle inline-block">→</span></span>
                     </Link>
@@ -131,7 +152,7 @@ export default async function HomePage() {
                   <MagneticButton>
                     <Link
                       href="/ngo"
-                      className="inline-block px-8 py-4 rounded-full border border-white/30 text-white font-semibold text-sm hover:bg-white/10 hover:border-white/50 backdrop-blur-sm transition-all text-center"
+                      className="inline-block px-8 py-4 rounded-full border border-gray-300 text-gray-700 font-semibold text-sm hover:bg-gray-50 hover:border-gray-400 transition-all text-center"
                     >
                       Support Our Mission
                     </Link>
@@ -141,52 +162,73 @@ export default async function HomePage() {
 
               {/* Mini stats row */}
               <AnimatedSection delay={0.45}>
-                <div className="flex items-center gap-8 mt-12 pt-8 border-t border-white/15">
+                <div className="flex items-center gap-8 mt-12 pt-8 border-t border-gray-200">
                   {[
                     { val: "500+", label: "Students" },
                     { val: "50+", label: "Events" },
                     { val: "15+", label: "Coaches" },
                   ].map((s) => (
                     <div key={s.label}>
-                      <p className="text-2xl sm:text-3xl font-black text-white">{s.val}</p>
-                      <p className="text-white/50 text-xs font-medium uppercase tracking-wider mt-0.5">{s.label}</p>
+                      <p className="text-2xl sm:text-3xl font-black text-gray-900">{s.val}</p>
+                      <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mt-0.5">{s.label}</p>
                     </div>
                   ))}
                 </div>
               </AnimatedSection>
             </div>
 
-            {/* Right — Floating badges only (image is now background) */}
+            {/* Right — Interactive chess board visual + floating badges */}
             <AnimatedSection delay={0.2} direction="right" className="hidden lg:block">
-              <div className="relative h-[500px]">
-                {/* Floating badge */}
+              <div className="relative h-[520px]">
+                {/* Decorative chess board grid */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] grid grid-cols-8 grid-rows-8 rounded-2xl overflow-hidden rotate-6 opacity-30 border border-gray-200">
+                  {Array.from({ length: 64 }).map((_, i) => {
+                    const row = Math.floor(i / 8);
+                    const col = i % 8;
+                    const isDark = (row + col) % 2 === 1;
+                    return (
+                      <div
+                        key={i}
+                        className={isDark ? "bg-[#c9a84c]/20" : "bg-gray-50"}
+                      />
+                    );
+                  })}
+                </div>
+
+                {/* Floating badge — Tournament */}
                 <ParallaxSection speed={0.3} direction="up">
-                  <div className="absolute bottom-12 left-0 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 p-5 shadow-xl animate-breathe">
+                  <div className="absolute bottom-8 left-4 rounded-2xl bg-white border border-gray-200 p-5 shadow-xl animate-breathe">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-[#c9a84c]/20 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-xl bg-[#c9a84c]/10 flex items-center justify-center">
                         <span className="text-[#c9a84c] text-xl">♔</span>
                       </div>
                       <div>
-                        <p className="text-white font-bold text-sm">Next Tournament</p>
+                        <p className="text-gray-900 font-bold text-sm">Next Tournament</p>
                         <p className="text-[#c9a84c] text-xs font-medium">Registering now</p>
                       </div>
                     </div>
                   </div>
                 </ParallaxSection>
-                {/* Floating green badge */}
+
+                {/* Floating badge — Impact */}
                 <ParallaxSection speed={0.4} direction="up">
-                  <div className="absolute top-8 right-8 rounded-xl bg-[#2e7d5b] text-white p-4 shadow-xl shadow-[#2e7d5b]/20 animate-breathe" style={{ animationDelay: "1s" }}>
-                    <p className="text-2xl font-black leading-none">200+</p>
+                  <div className="absolute top-4 right-4 rounded-2xl bg-[#2e7d5b] text-white p-5 shadow-xl shadow-[#2e7d5b]/15 animate-breathe" style={{ animationDelay: "1s" }}>
+                    <p className="text-3xl font-black leading-none">200+</p>
                     <p className="text-white/80 text-[10px] font-semibold mt-1 uppercase tracking-wider">Lives Changed</p>
                   </div>
                 </ParallaxSection>
-                {/* Floating stat badge */}
+
+                {/* Floating badge — Coaches */}
                 <ParallaxSection speed={0.2} direction="down">
-                  <div className="absolute top-1/2 right-0 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 p-4 shadow-xl animate-breathe" style={{ animationDelay: "2s" }}>
-                    <p className="text-white font-black text-lg">♟ 15+</p>
-                    <p className="text-white/60 text-[10px] font-semibold uppercase tracking-wider">Expert Coaches</p>
+                  <div className="absolute top-[45%] right-[-10px] rounded-2xl bg-white border border-gray-200 p-4 shadow-xl animate-breathe" style={{ animationDelay: "2s" }}>
+                    <p className="text-gray-900 font-black text-lg">♟ 15+</p>
+                    <p className="text-gray-400 text-[10px] font-semibold uppercase tracking-wider">Expert Coaches</p>
                   </div>
                 </ParallaxSection>
+
+                {/* Gold ring accent */}
+                <div className="absolute top-[30%] left-[20%] w-40 h-40 rounded-full border border-[#c9a84c]/15 pointer-events-none" />
+                <div className="absolute top-[35%] left-[25%] w-28 h-28 rounded-full border border-[#c9a84c]/8 pointer-events-none" />
               </div>
             </AnimatedSection>
           </div>
@@ -195,9 +237,9 @@ export default async function HomePage() {
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
           <div className="flex flex-col items-center gap-2">
-            <span className="text-white/40 text-[10px] font-semibold uppercase tracking-widest">Scroll</span>
-            <div className="w-5 h-8 rounded-full border border-white/30 flex items-start justify-center pt-1.5">
-              <div className="w-1 h-1.5 rounded-full bg-white/60 animate-bounce" />
+            <span className="text-gray-300 text-[10px] font-semibold uppercase tracking-widest">Scroll</span>
+            <div className="w-5 h-8 rounded-full border border-gray-300 flex items-start justify-center pt-1.5">
+              <div className="w-1 h-1.5 rounded-full bg-gray-400 animate-bounce" />
             </div>
           </div>
         </div>
@@ -205,9 +247,9 @@ export default async function HomePage() {
 
 
       {/* ═══════════════════════════════════════════════════════
-          TICKER — Scrolling achievements
+          TICKER — Scrolling achievements (gold accent)
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-4 bg-black overflow-hidden">
+      <section className="py-4 bg-gray-50 border-t border-gray-200 overflow-hidden">
         <div className="flex animate-ticker whitespace-nowrap">
           {[...Array(2)].map((_, setIdx) => (
             <div key={setIdx} className="flex items-center">
@@ -219,9 +261,9 @@ export default async function HomePage() {
                 "❤️ 200+ Lives Transformed",
                 "🎯 Expert-Led Training",
               ].map((item, i) => (
-                <span key={`${setIdx}-${i}`} className="flex items-center gap-3 mx-8 text-white/80 text-sm font-bold">
+                <span key={`${setIdx}-${i}`} className="flex items-center gap-3 mx-8 text-gray-600 text-sm font-bold">
                   {item}
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/30" />
+                  <span className="w-1 h-1 rounded-full bg-[#c9a84c]/50" />
                 </span>
               ))}
             </div>
@@ -231,12 +273,15 @@ export default async function HomePage() {
 
 
       {/* ═══════════════════════════════════════════════════════
-          ABOUT — Elegant intro
+          ABOUT — Elegant intro with visual cards
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-gray-50 relative">
+      <section className="py-28 sm:py-36 bg-white relative overflow-hidden">
+        {/* Subtle background accent */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#c9a84c]/[0.03] blur-[150px] pointer-events-none" />
+
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <AnimatedSection>
-            <p className="text-gray-400 text-xs font-bold uppercase tracking-[0.3em] mb-6">About PiChess</p>
+            <p className="text-[#c9a84c] text-xs font-bold uppercase tracking-[0.3em] mb-6">About PiChess</p>
           </AnimatedSection>
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-gray-900 tracking-tight leading-[1.1] mb-8">
             <TextReveal text="Building Africa's Strongest" delay={0.1} />
@@ -252,9 +297,28 @@ export default async function HomePage() {
               under one vision — chess as a tool for discipline, strategy, and excellence.
             </p>
           </AnimatedSection>
-          {/* Decorative line */}
+
+          {/* Three pillar icons */}
           <AnimatedSection delay={0.3}>
-            <div className="mx-auto mt-10 w-16 h-[2px] bg-gradient-to-r from-transparent via-[#c9a84c]/60 to-transparent" />
+            <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-14 max-w-2xl mx-auto">
+              {[
+                { icon: "♔", label: "Academy", color: "#c9a84c" },
+                { icon: "❤️", label: "Foundation", color: "#2e7d5b" },
+                { icon: "♟", label: "Shop", color: "#d97706" },
+              ].map((p) => (
+                <div key={p.label} className="flex flex-col items-center gap-3">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl" style={{ backgroundColor: `${p.color}10`, border: `1px solid ${p.color}20` }}>
+                    {p.icon}
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-wider" style={{ color: p.color }}>{p.label}</span>
+                </div>
+              ))}
+            </div>
+          </AnimatedSection>
+
+          {/* Decorative line */}
+          <AnimatedSection delay={0.4}>
+            <div className="mx-auto mt-14 w-20 h-[2px] bg-gradient-to-r from-transparent via-[#c9a84c]/50 to-transparent" />
           </AnimatedSection>
         </div>
       </section>
@@ -263,7 +327,7 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           ACADEMY — Premium card showcase
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-white relative overflow-hidden">
+      <section className="py-24 sm:py-32 bg-gray-50 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-[700px] h-[700px] rounded-full bg-[#c9a84c]/[0.04] blur-[200px] pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -285,22 +349,26 @@ export default async function HomePage() {
 
           {/* Program cards — 3 column featured layout */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
-            {/* Card 1 — Flagship */}
+            {/* Card 1 — Flagship (gradient instead of image) */}
             <AnimatedSection delay={0} className="md:row-span-2">
-              <div className="group relative h-full min-h-[400px] md:min-h-[520px] rounded-3xl overflow-hidden card-shine">
-                <Image
-                  src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=800&q=80"
-                  alt="Chess training session"
-                  fill
-                  className="object-cover img-zoom"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+              <div className="group relative h-full min-h-[400px] md:min-h-[520px] rounded-3xl overflow-hidden card-shine bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+                {/* Chess pattern overlay */}
+                <div className="absolute inset-0 opacity-[0.06]" style={{
+                  backgroundImage: `
+                    linear-gradient(rgba(201,168,76,0.5) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(201,168,76,0.5) 1px, transparent 1px)
+                  `,
+                  backgroundSize: "40px 40px",
+                }} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                {/* Large chess piece accent */}
+                <div className="absolute top-8 right-8 text-[120px] leading-none text-[#c9a84c]/10 font-serif pointer-events-none select-none">♔</div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 z-10">
                   <span className="inline-block px-3 py-1 rounded-full bg-[#c9a84c]/20 text-[#c9a84c] text-[10px] font-bold uppercase tracking-wider mb-3 backdrop-blur-sm border border-[#c9a84c]/20">
                     Flagship Program
                   </span>
                   <h3 className="text-2xl sm:text-3xl font-black text-white mb-2">Elite Chess Academy</h3>
-                  <p className="text-white/60 text-sm leading-relaxed max-w-sm">
+                  <p className="text-white/50 text-sm leading-relaxed max-w-sm">
                     From opening theory to endgame mastery — our coaches prepare students
                     for national and international competition.
                   </p>
@@ -376,13 +444,13 @@ export default async function HomePage() {
           <AnimatedSection delay={0.2} className="mt-12 flex flex-col sm:flex-row items-center gap-4">
             <Link
               href="/academy"
-              className="px-8 py-3.5 rounded-full bg-black hover:bg-gray-800 text-white font-bold text-sm transition-all hover:shadow-lg hover:scale-[1.03] active:scale-[0.97]"
+              className="px-8 py-3.5 rounded-full bg-gray-900 hover:bg-black text-white font-bold text-sm transition-all hover:shadow-lg hover:scale-[1.03] active:scale-[0.97]"
             >
               Explore Programs →
             </Link>
             <Link
               href="/academy/enquire"
-              className="px-8 py-3.5 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold text-sm transition-all"
+              className="px-8 py-3.5 rounded-full border border-gray-300 text-gray-700 hover:bg-white font-semibold text-sm transition-all"
             >
               Enquire Now
             </Link>
@@ -392,23 +460,22 @@ export default async function HomePage() {
 
 
       {/* ═══════════════════════════════════════════════════════
-          STATS — Dramatic counter strip with background
+          STATS — Dramatic counter strip (pure CSS, no image)
       ═══════════════════════════════════════════════════════ */}
-      <section className="relative py-20 sm:py-24 overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1560174038-da43ac74f01b?w=1920&q=80"
-          alt="Chess board dramatic lighting"
-          fill
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
-        <div className="absolute inset-0 chess-bg opacity-[0.03] pointer-events-none" />
+      <section className="relative py-20 sm:py-28 overflow-hidden bg-gray-50">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(201,168,76,0.04),transparent)]" />
+        {/* Accent lines */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/15 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/15 to-transparent" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection className="text-center mb-12">
+            <span className="text-[#c9a84c] text-xs font-bold uppercase tracking-[0.3em]">By the Numbers</span>
+          </AnimatedSection>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
             <StatsCounter end={500} label="Students Trained" suffix="+" color="gold" />
-            <StatsCounter end={50} label="Tournaments Hosted" suffix="+" color="white" />
+            <StatsCounter end={50} label="Tournaments Hosted" suffix="+" color="dark" />
             <StatsCounter end={200} label="Lives Impacted" suffix="+" color="green" />
-            <StatsCounter end={15} label="Expert Coaches" color="white" />
+            <StatsCounter end={15} label="Expert Coaches" color="dark" />
           </div>
         </div>
       </section>
@@ -418,7 +485,7 @@ export default async function HomePage() {
           TESTIMONIALS — Bold quote cards
       ═══════════════════════════════════════════════════════ */}
       {testimonials.length > 0 && (
-        <section className="py-24 sm:py-32 bg-gray-50 relative">
+        <section className="py-24 sm:py-32 bg-white relative">
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimatedSection className="text-center mb-14">
               <span className="text-xs font-bold text-[#c9a84c] uppercase tracking-[0.25em]">Testimonials</span>
@@ -430,7 +497,7 @@ export default async function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {testimonials.map((t, i) => (
                 <AnimatedSection key={t.id} delay={i * 0.1}>
-                  <div className="group rounded-3xl border border-gray-200 bg-white p-7 sm:p-8 h-full flex flex-col hover:border-[#c9a84c]/30 hover:shadow-lg transition-all duration-500">
+                  <div className="group rounded-3xl border border-gray-100 bg-gray-50 p-7 sm:p-8 h-full flex flex-col hover:border-[#c9a84c]/30 hover:shadow-xl hover:bg-white transition-all duration-500">
                     {/* Stars */}
                     <div className="flex gap-1 mb-5">
                       {Array.from({ length: t.rating }).map((_, si) => (
@@ -442,7 +509,7 @@ export default async function HomePage() {
                       &ldquo;{t.content}&rdquo;
                     </p>
                     {/* Author */}
-                    <div className="mt-6 pt-5 border-t border-gray-100 flex items-center gap-3">
+                    <div className="mt-6 pt-5 border-t border-gray-200/80 flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#c9a84c]/20 to-[#c9a84c]/5 flex items-center justify-center text-[#c9a84c] text-sm font-bold ring-2 ring-[#c9a84c]/10">
                         {t.name.charAt(0)}
                       </div>
@@ -463,7 +530,7 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           FOUNDATION — Split layout with emotional imagery
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-white relative overflow-hidden">
+      <section className="py-24 sm:py-32 bg-gray-50 relative overflow-hidden">
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full bg-[#2e7d5b]/5 blur-[200px] pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -472,7 +539,7 @@ export default async function HomePage() {
             <AnimatedSection direction="left">
               <div className="relative">
                 {/* Main image */}
-                <div className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-xl shadow-black/5 ring-1 ring-gray-200">
+                <div className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-xl shadow-black/5 ring-1 ring-gray-100">
                   <Image
                     src="https://images.unsplash.com/photo-1604948501466-4e9c339b9c24?w=1000&q=80"
                     alt="Children learning chess"
@@ -559,7 +626,7 @@ export default async function HomePage() {
           TOURNAMENTS — Featured events & tournaments
       ═══════════════════════════════════════════════════════ */}
       {tournaments.length > 0 && (
-        <section className="py-24 sm:py-32 bg-gray-50 relative overflow-hidden">
+        <section className="py-24 sm:py-32 bg-white relative overflow-hidden">
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimatedSection className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-14 gap-4">
               <div>
@@ -569,7 +636,7 @@ export default async function HomePage() {
                 </h2>
                 <p className="text-gray-400 mt-2 text-base max-w-lg">Don&apos;t miss out — register early for limited spots.</p>
               </div>
-              <Link href="/academy/tournaments" className="text-[#c9a84c] text-sm font-bold hover:underline hidden sm:block whitespace-nowrap">
+              <Link href="/tournaments" className="text-[#c9a84c] text-sm font-bold hover:underline hidden sm:block whitespace-nowrap">
                 See all events →
               </Link>
             </AnimatedSection>
@@ -689,7 +756,7 @@ export default async function HomePage() {
                         ) : null}
 
                         <Link
-                          href="/academy/tournaments"
+                          href="/tournaments"
                           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-black hover:bg-gray-800 text-white text-xs font-bold transition-all w-full hover:shadow-md"
                         >
                           {spotsLeft === 0
@@ -704,7 +771,7 @@ export default async function HomePage() {
             </div>
 
             <div className="mt-8 text-center sm:hidden">
-              <Link href="/academy/tournaments" className="text-[#c9a84c] text-sm font-bold hover:underline">
+              <Link href="/tournaments" className="text-[#c9a84c] text-sm font-bold hover:underline">
                 See all events →
               </Link>
             </div>
@@ -716,7 +783,7 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           SHOP — Product showcase
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-white relative overflow-hidden">
+      <section className="py-24 sm:py-32 bg-gray-50 relative overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-14 gap-4">
             <div>
@@ -802,7 +869,7 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           ZONE CARDS — Explore pillars
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-gray-50 relative">
+      <section className="py-24 sm:py-32 bg-white relative">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-16">
             <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-gray-900">
@@ -893,19 +960,21 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           CTA — Final dramatic banner
       ═══════════════════════════════════════════════════════ */}
-      <section className="relative py-28 sm:py-36 overflow-hidden bg-black">
-        <div className="absolute inset-0 chess-bg opacity-[0.03] pointer-events-none" />
+      <section className="relative py-32 sm:py-40 overflow-hidden bg-white">
+        {/* Background effects */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(201,168,76,0.06),transparent)]" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/15 to-transparent" />
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <AnimatedSection>
-            <div className="mb-6">
-              <TextReveal text="Ready to Make" className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.05]" as="span" />
+            <div className="mb-8">
+              <TextReveal text="Ready to Make" className="text-4xl sm:text-6xl lg:text-7xl font-black text-gray-900 tracking-tight leading-[1.05]" as="span" />
               <br className="hidden sm:block" />
-              <TextReveal text="Your" className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.05]" delay={0.15} as="span" />
+              <TextReveal text="Your" className="text-4xl sm:text-6xl lg:text-7xl font-black text-gray-900 tracking-tight leading-[1.05]" delay={0.15} as="span" />
               {" "}
               <TextReveal text="Move?" className="text-4xl sm:text-6xl lg:text-7xl font-black gradient-text-gold tracking-tight leading-[1.05]" delay={0.25} as="span" />
             </div>
-            <p className="text-white/50 text-base sm:text-lg mb-12 max-w-xl mx-auto leading-relaxed">
+            <p className="text-gray-500 text-base sm:text-lg mb-14 max-w-xl mx-auto leading-relaxed">
               Join hundreds of students building discipline, critical thinking, and
               competitive excellence through the game of chess.
             </p>
@@ -913,7 +982,7 @@ export default async function HomePage() {
               <MagneticButton>
                 <Link
                   href="/academy/enquire"
-                  className="w-full sm:w-auto px-10 py-4 rounded-full bg-white hover:bg-gray-100 text-black font-bold text-base transition-all hover:shadow-[0_0_50px_rgba(255,255,255,0.15)] hover:scale-[1.03] active:scale-[0.97] inline-block"
+                  className="w-full sm:w-auto px-10 py-4 rounded-full bg-[#c9a84c] hover:bg-[#dbb95d] text-black font-bold text-base transition-all hover:shadow-[0_0_40px_rgba(201,168,76,0.2)] hover:scale-[1.03] active:scale-[0.97] inline-block"
                 >
                   Start Your Journey <span className="inline-block animate-wiggle">→</span>
                 </Link>
@@ -921,7 +990,7 @@ export default async function HomePage() {
               <MagneticButton>
                 <Link
                   href="/shop"
-                  className="w-full sm:w-auto px-10 py-4 rounded-full border border-white/20 text-white hover:bg-white/10 font-semibold text-base transition-all backdrop-blur-sm inline-block"
+                  className="w-full sm:w-auto px-10 py-4 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-semibold text-base transition-all inline-block"
                 >
                   Visit the Shop
                 </Link>
@@ -929,7 +998,7 @@ export default async function HomePage() {
               <MagneticButton>
                 <Link
                   href="/ngo/apply"
-                  className="w-full sm:w-auto px-10 py-4 rounded-full border border-white/20 text-white hover:bg-white/10 font-semibold text-base transition-all backdrop-blur-sm inline-block"
+                  className="w-full sm:w-auto px-10 py-4 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-semibold text-base transition-all inline-block"
                 >
                   Apply for Support
                 </Link>

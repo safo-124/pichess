@@ -8,7 +8,7 @@ interface Props {
   suffix?: string;
   prefix?: string;
   duration?: number;
-  color?: "gold" | "green" | "white";
+  color?: "gold" | "green" | "white" | "dark";
 }
 
 export default function StatsCounter({
@@ -37,6 +37,7 @@ export default function StatsCounter({
     gold:  "text-[#c9a84c]",
     green: "text-[#2e7d5b]",
     white: "text-white",
+    dark:  "text-gray-900",
   };
 
   return (
@@ -46,7 +47,9 @@ export default function StatsCounter({
         <motion.span>{rounded}</motion.span>
         {suffix}
       </div>
-      <p className="mt-1 text-sm font-medium text-white/60 uppercase tracking-widest">
+      <p className={`mt-1 text-sm font-medium uppercase tracking-widest ${
+        color === "white" ? "text-white/60" : "text-gray-400"
+      }`}>
         {label}
       </p>
     </div>
