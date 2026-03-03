@@ -76,7 +76,7 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           HERO — Dramatic gradient with geometric chess motifs
       ═══════════════════════════════════════════════════════ */}
-      <section className="relative min-h-[100dvh] flex items-center overflow-hidden bg-white">
+      <section className="relative min-h-0 lg:min-h-[100dvh] flex items-center overflow-hidden bg-white">
         {/* Layered gradient backgrounds */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(201,168,76,0.08),transparent)]" />
@@ -111,25 +111,25 @@ export default async function HomePage() {
         <div className="absolute top-[40%] left-[3%] w-2 h-2 rounded-full bg-[#c9a84c]/30 animate-pulse-dot pointer-events-none" />
         <div className="absolute top-[25%] right-[20%] w-3 h-3 rounded-full bg-[#2e7d5b]/20 animate-pulse-dot pointer-events-none" style={{ animationDelay: "0.8s" }} />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-32 pb-24 sm:pt-40 sm:pb-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-24 pb-10 sm:pt-32 sm:pb-20 lg:pt-40 lg:pb-32">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-10 lg:gap-16 items-center">
             {/* Chess Board — left on desktop, below text on mobile */}
             <AnimatedSection delay={0.1} className="order-2 lg:order-1">
-              <AnimatedChessBoard className="w-[65%] sm:w-[55%] lg:w-full max-w-[480px] mx-auto lg:mx-0" />
+              <AnimatedChessBoard className="w-[58%] sm:w-[50%] lg:w-full max-w-[480px] mx-auto lg:mx-0" />
             </AnimatedSection>
 
             {/* Text — right on desktop, above board on mobile */}
             <div className="order-1 lg:order-2">
               <AnimatedSection delay={0}>
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-[#c9a84c]/30 bg-[#c9a84c]/10 mb-8">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:gap-2.5 sm:px-4 sm:py-2 rounded-full border border-[#c9a84c]/30 bg-[#c9a84c]/10 mb-5 sm:mb-8">
                   <span className="w-2 h-2 rounded-full bg-[#c9a84c] animate-pulse-dot" />
-                  <span className="text-[#c9a84c] text-[11px] font-bold uppercase tracking-[0.25em]">
+                  <span className="text-[#c9a84c] text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] sm:tracking-[0.25em]">
                     Ghana&apos;s Premier Chess Platform
                   </span>
                 </div>
               </AnimatedSection>
 
-              <h1 className="text-[2.75rem] sm:text-6xl lg:text-[5.5rem] font-black tracking-[-0.03em] text-gray-900 leading-[1.02] mb-6">
+              <h1 className="text-[2rem] sm:text-5xl lg:text-[5.5rem] font-black tracking-[-0.03em] text-gray-900 leading-[1.05] sm:leading-[1.02] mb-4 sm:mb-6">
                 <TextReveal text="Where Every" delay={0.1} />
                 <br />
                 <TextReveal text="Move" delay={0.25} />{" "}
@@ -139,18 +139,18 @@ export default async function HomePage() {
               </h1>
 
               <AnimatedSection delay={0.2}>
-                <p className="text-gray-500 text-base sm:text-lg leading-relaxed max-w-lg mb-10">
+                <p className="text-gray-500 text-sm sm:text-base lg:text-lg leading-relaxed max-w-lg mb-6 sm:mb-10">
                   A world-class chess academy, a life-changing foundation, and a thriving
                   community — all united by the world&apos;s greatest game.
                 </p>
               </AnimatedSection>
 
               <AnimatedSection delay={0.3}>
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
                   <MagneticButton>
                     <Link
                       href="/academy"
-                      className="group relative inline-block px-8 py-4 rounded-full bg-[#c9a84c] text-black font-bold text-sm transition-all hover:bg-[#dbb95d] hover:shadow-[0_0_40px_rgba(201,168,76,0.25)] hover:scale-[1.03] active:scale-[0.97] text-center"
+                      className="group relative inline-block px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-[#c9a84c] text-black font-bold text-xs sm:text-sm transition-all hover:bg-[#dbb95d] hover:shadow-[0_0_40px_rgba(201,168,76,0.25)] hover:scale-[1.03] active:scale-[0.97] text-center"
                     >
                       <span className="relative z-10 flex items-center gap-2">Join the Academy <span className="animate-wiggle inline-block">→</span></span>
                     </Link>
@@ -158,7 +158,7 @@ export default async function HomePage() {
                   <MagneticButton>
                     <Link
                       href="/ngo"
-                      className="inline-block px-8 py-4 rounded-full border border-gray-300 text-gray-700 font-semibold text-sm hover:bg-gray-50 hover:border-gray-400 transition-all text-center"
+                      className="inline-block px-6 py-3 sm:px-8 sm:py-4 rounded-full border border-gray-300 text-gray-700 font-semibold text-xs sm:text-sm hover:bg-gray-50 hover:border-gray-400 transition-all text-center"
                     >
                       Support Our Mission
                     </Link>
@@ -168,15 +168,15 @@ export default async function HomePage() {
 
               {/* Mini stats row */}
               <AnimatedSection delay={0.45}>
-                <div className="flex items-center gap-8 mt-12 pt-8 border-t border-gray-200">
+                <div className="flex items-center gap-6 sm:gap-8 mt-8 pt-6 sm:mt-12 sm:pt-8 border-t border-gray-200">
                   {[
                     { val: "500+", label: "Students" },
                     { val: "50+", label: "Events" },
                     { val: "15+", label: "Coaches" },
                   ].map((s) => (
                     <div key={s.label}>
-                      <p className="text-2xl sm:text-3xl font-black text-gray-900">{s.val}</p>
-                      <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mt-0.5">{s.label}</p>
+                      <p className="text-lg sm:text-2xl lg:text-3xl font-black text-gray-900">{s.val}</p>
+                      <p className="text-gray-400 text-[10px] sm:text-xs font-medium uppercase tracking-wider mt-0.5">{s.label}</p>
                     </div>
                   ))}
                 </div>
@@ -188,7 +188,7 @@ export default async function HomePage() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+        <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 z-10 hidden lg:flex">
           <div className="flex flex-col items-center gap-2">
             <span className="text-gray-300 text-[10px] font-semibold uppercase tracking-widest">Scroll</span>
             <div className="w-5 h-8 rounded-full border border-gray-300 flex items-start justify-center pt-1.5">

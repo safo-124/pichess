@@ -129,15 +129,27 @@ export default function AnimatedChessBoard({
 
   const CELL = 12.5;
 
-  /* thick‑edge height (px) — keeps ratio stable across screens */
-  const EDGE = 14;
+  /* responsive 3D params — gentler tilt on mobile */
+  const [isLg, setIsLg] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const handler = () => setIsLg(mq.matches);
+    handler();
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  const EDGE = isLg ? 14 : 8;
+  const TILT_X = isLg ? 28 : 18;
+  const TILT_Z = isLg ? -2 : -1;
+  const PERSPECTIVE = isLg ? 1100 : 800;
 
   return (
     <div className={className}>
       {/* ── perspective wrapper ─────────────────────────────── */}
       <div
         className="flex items-center justify-center"
-        style={{ perspective: "1100px" }}
+        style={{ perspective: `${PERSPECTIVE}px` }}
       >
         <div
           className={`relative w-full transition-opacity duration-500 ${
@@ -145,7 +157,7 @@ export default function AnimatedChessBoard({
           }`}
           style={{
             transformStyle: "preserve-3d",
-            transform: "rotateX(28deg) rotateZ(-2deg)",
+            transform: `rotateX(${TILT_X}deg) rotateZ(${TILT_Z}deg)`,
           }}
         >
           {/* ── ground shadow ──────────────────────────────── */}
