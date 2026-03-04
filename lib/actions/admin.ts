@@ -407,11 +407,11 @@ export async function saveSiteContent(key: string, value: string) {
   } else if (zone === "home") {
     revalidatePath("/");
     revalidatePath("/admin/homepage");
-  } else if (zone === "footer") {
+  } else if (zone === "site") {
     revalidatePath("/");
+    revalidatePath("/about");
+    revalidatePath("/contact");
     revalidatePath("/admin/footer");
-    // Footer is on every page, revalidate all
-    revalidatePath("/", "layout");
   } else {
     revalidatePath("/");
   }
