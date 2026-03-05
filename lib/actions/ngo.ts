@@ -9,12 +9,14 @@ export async function submitNGOApplication(formData: FormData) {
   const email = formData.get("email") as string;
   const phone = formData.get("phone") as string;
   const age = formData.get("age") as string;
+  const location = formData.get("location") as string;
   const school = formData.get("school") as string;
   const chess_level = formData.get("chess_level") as string;
   const essay = formData.get("essay") as string;
   const guardian_name = formData.get("guardian_name") as string;
   const guardian_phone = formData.get("guardian_phone") as string;
   const region = formData.get("region") as string;
+  const reason = formData.get("reason") as string;
 
   if (!name || !email || !phone) {
     return { error: "Name, email and phone are required." };
@@ -27,12 +29,14 @@ export async function submitNGOApplication(formData: FormData) {
         email,
         phone,
         age: age ? parseInt(age, 10) : null,
+        location: location || null,
         school: school || null,
         chess_level: chess_level || null,
         essay: essay || null,
         guardian_name: guardian_name || null,
         guardian_phone: guardian_phone || null,
         region: region || null,
+        reason: reason || null,
         status: "pending",
       },
     });

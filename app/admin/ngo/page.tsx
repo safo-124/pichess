@@ -82,6 +82,7 @@ export default async function AdminNGOPage() {
                   <th className="text-left px-5 py-3">Age</th>
                   <th className="text-left px-5 py-3">Region</th>
                   <th className="text-left px-5 py-3">Level</th>
+                  <th className="text-left px-5 py-3">Location</th>
                   <th className="text-left px-5 py-3">Status</th>
                   <th className="text-left px-5 py-3">Date</th>
                   <th className="text-left px-5 py-3">Actions</th>
@@ -89,16 +90,21 @@ export default async function AdminNGOPage() {
               </thead>
               <tbody className="divide-y divide-zinc-50">
                 {applications.length === 0 ? (
-                  <tr><td colSpan={8} className="text-center text-zinc-300 py-16 text-sm">No applications yet</td></tr>
+                  <tr><td colSpan={9} className="text-center text-zinc-300 py-16 text-sm">No applications yet</td></tr>
                 ) : applications.map((a: any) => (
+                  <>
                   <tr key={a.id} className="hover:bg-zinc-50/50 transition-colors">
-                    <td className="px-5 py-3 font-semibold text-zinc-800">{a.name}</td>
-                    <td className="px-5 py-3 text-zinc-500 text-xs">{a.email}</td>
+                    <td className="px-5 py-3 font-semibold text-zinc-800">
+                      <div>{a.name}</div>
+                      <div className="text-[10px] text-zinc-400">{a.email}</div>
+                      {a.phone && <div className="text-[10px] text-zinc-400">{a.phone}</div>}
+                    </td>
                     <td className="px-5 py-3 text-zinc-500 text-xs">{a.age || "—"}</td>
                     <td className="px-5 py-3 text-zinc-500 text-xs">{a.region || "—"}</td>
                     <td className="px-5 py-3 text-zinc-500 text-xs">{a.chess_level || "—"}</td>
+                    <td className="px-5 py-3 text-zinc-500 text-xs">{a.location || "—"}</td>
                     <td className="px-5 py-3">
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${statusStyle[a.status] ?? "bg-zinc-100 text-zinc-500"}`}>{a.status}</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${statusStyle[a.status?.toUpperCase()] ?? statusStyle[a.status] ?? "bg-zinc-100 text-zinc-500"}`}>{a.status}</span>
                     </td>
                     <td className="px-5 py-3 text-zinc-400 text-[11px]">{new Date(a.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}</td>
                     <td className="px-5 py-3">
@@ -117,6 +123,19 @@ export default async function AdminNGOPage() {
                       </div>
                     </td>
                   </tr>
+                  {(a.reason || a.essay || a.guardian_name || a.school) && (
+                    <tr key={`${a.id}-details`} className="bg-zinc-50/50">
+                      <td colSpan={9} className="px-5 py-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                          {a.school && <div><span className="text-zinc-400 font-semibold">School:</span> <span className="text-zinc-600">{a.school}</span></div>}
+                          {a.guardian_name && <div><span className="text-zinc-400 font-semibold">Guardian:</span> <span className="text-zinc-600">{a.guardian_name} {a.guardian_phone ? `(${a.guardian_phone})` : ""}</span></div>}
+                          {a.reason && <div className="col-span-2"><span className="text-zinc-400 font-semibold">Reason:</span> <span className="text-zinc-600">{a.reason}</span></div>}
+                          {a.essay && <div className="col-span-2"><span className="text-zinc-400 font-semibold">Essay:</span> <span className="text-zinc-600 line-clamp-2">{a.essay}</span></div>}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  </>
                 ))}
               </tbody>
             </table>
