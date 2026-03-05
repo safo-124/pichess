@@ -92,27 +92,31 @@ export default async function NGOPage() {
         </div>
       </section>
 
-      {/* Stories */}
+      {/* Stories Teaser */}
       {stories.length > 0 && (
-        <section id="stories" className="py-24 bg-white px-4">
-          <div className="max-w-7xl mx-auto">
-            <AnimatedSection className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-black text-zinc-900">Stories of Impact</h2>
+        <section id="stories" className="py-24 bg-zinc-50 px-4">
+          <div className="max-w-5xl mx-auto text-center">
+            <AnimatedSection>
+              <span className="inline-block px-4 py-1.5 rounded-full bg-[#2e7d5b]/10 text-[#2e7d5b] text-xs font-bold uppercase tracking-widest mb-4">
+                Stories of Impact
+              </span>
+              <h2 className="text-3xl sm:text-5xl font-black text-zinc-900 tracking-tight mb-4">Voices From Our Community</h2>
+              <p className="text-zinc-500 text-base sm:text-lg max-w-xl mx-auto mb-10">
+                Real stories from the children, families, and communities transformed by chess. {stories.length} stories and counting.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+                {stories.slice(0, 3).map((s) => (
+                  <div key={s.id} className="rounded-2xl bg-white border border-zinc-100 p-5 text-left shadow-sm">
+                    <h3 className="font-bold text-zinc-900 text-sm mb-2 line-clamp-1">{s.title}</h3>
+                    <p className="text-zinc-400 text-xs line-clamp-2">{s.content}</p>
+                  </div>
+                ))}
+              </div>
+              <Link href="/ngo/stories" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#2e7d5b] hover:bg-[#3a9970] text-white font-bold text-base transition-all duration-300 hover:scale-105 shadow-lg shadow-[#2e7d5b]/20">
+                Read All Stories
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </Link>
             </AnimatedSection>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {stories.map((s, i) => (
-                <AnimatedSection key={s.id} delay={i * 0.1}>
-                  <article className="rounded-xl border border-zinc-100 bg-white overflow-hidden shadow-sm hover-lift">
-                    {s.image && <div className="aspect-video bg-zinc-100 overflow-hidden"><img src={s.image} alt={s.title} className="w-full h-full object-cover" /></div>}
-                    {!s.image && <div className="aspect-video bg-[#d4ede3] flex items-center justify-center text-5xl opacity-40">♟</div>}
-                    <div className="p-5">
-                      <h3 className="font-bold text-zinc-900 text-lg mb-2">{s.title}</h3>
-                      <p className="text-zinc-500 text-sm line-clamp-3">{s.content}</p>
-                    </div>
-                  </article>
-                </AnimatedSection>
-              ))}
-            </div>
           </div>
         </section>
       )}

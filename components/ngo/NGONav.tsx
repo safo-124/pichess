@@ -11,7 +11,7 @@ const links = [
   { label: "Programs", href: "/ngo/programs" },
   { label: "Apply for Support", href: "/ngo/apply" },
   { label: "Volunteer", href: "/ngo/volunteer" },
-  { label: "Stories", href: "/ngo#stories" },
+  { label: "Stories", href: "/ngo/stories" },
 ];
 
 export default function NGONav() {

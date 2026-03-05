@@ -326,6 +326,23 @@ export async function createNGOStory(fd: FormData) {
   });
   revalidatePath("/admin/ngo");
   revalidatePath("/ngo");
+  revalidatePath("/ngo/stories");
+}
+
+export async function updateNGOStory(fd: FormData) {
+  const id = Number(fd.get("id"));
+  await (prisma as any).nGO_Story.update({
+    where: { id },
+    data: {
+      title: fd.get("title") as string,
+      content: fd.get("content") as string,
+      image: (fd.get("image") as string) || null,
+      published: fd.get("published") === "true",
+    },
+  });
+  revalidatePath("/admin/ngo");
+  revalidatePath("/ngo");
+  revalidatePath("/ngo/stories");
 }
 
 export async function deleteNGOStory(fd: FormData) {
@@ -333,6 +350,7 @@ export async function deleteNGOStory(fd: FormData) {
   await (prisma as any).nGO_Story.delete({ where: { id } });
   revalidatePath("/admin/ngo");
   revalidatePath("/ngo");
+  revalidatePath("/ngo/stories");
 }
 
 // ─── PARTNERS ───────────────────────────────────────────────────────────────

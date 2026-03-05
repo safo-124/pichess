@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import {
   updateApplicationStatus, deleteApplication,
   updateVolunteerStatus, deleteVolunteer,
-  deleteDonation, createNGOStory, deleteNGOStory,
+  deleteDonation, createNGOStory, updateNGOStory, deleteNGOStory,
 } from "@/lib/actions/admin";
 import AdminTabs from "@/components/admin/AdminTabs";
 
@@ -272,21 +272,43 @@ export default async function AdminNGOPage() {
               </div>
               <div className="divide-y divide-zinc-50">
                 {stories.map((s: any) => (
-                  <div key={s.id} className="px-5 py-3 flex items-center justify-between hover:bg-zinc-50/50 transition-colors">
-                    <div className="min-w-0 mr-4">
-                      <p className="font-semibold text-zinc-800 text-sm">{s.title}</p>
-                      <p className="text-zinc-400 text-xs line-clamp-1">{s.content.slice(0, 100)}...</p>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${s.published ? "bg-green-50 text-green-600" : "bg-zinc-100 text-zinc-400"}`}>
-                        {s.published ? "Published" : "Draft"}
-                      </span>
-                      <form action={deleteNGOStory}>
+                  <details key={s.id} className="group">
+                    <summary className="px-5 py-3 flex items-center justify-between hover:bg-zinc-50/50 transition-colors cursor-pointer list-none">
+                      <div className="min-w-0 mr-4 flex items-center gap-3">
+                        {s.image && <img src={s.image} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />}
+                        <div className="min-w-0">
+                          <p className="font-semibold text-zinc-800 text-sm">{s.title}</p>
+                          <p className="text-zinc-400 text-xs line-clamp-1">{s.content.slice(0, 100)}...</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${s.published ? "bg-green-50 text-green-600" : "bg-zinc-100 text-zinc-400"}`}>
+                          {s.published ? "Published" : "Draft"}
+                        </span>
+                        <span className="text-zinc-300 text-xs group-open:rotate-180 transition-transform">▼</span>
+                      </div>
+                    </summary>
+                    <div className="px-5 pb-4 pt-2 bg-zinc-50/50 border-t border-zinc-100">
+                      <form action={updateNGOStory} className="grid sm:grid-cols-2 gap-3">
                         <input type="hidden" name="id" value={s.id} />
-                        <button type="submit" className="text-[11px] bg-red-50 text-red-500 px-2.5 py-1 rounded-lg hover:bg-red-100 font-semibold">Delete</button>
+                        <input name="title" defaultValue={s.title} required placeholder="Title" className={`col-span-full ${inputCls}`} />
+                        <textarea name="content" rows={3} defaultValue={s.content} required placeholder="Content" className={`col-span-full ${inputCls} resize-none`} />
+                        <input name="image" defaultValue={s.image ?? ""} placeholder="Image URL" className={inputCls} />
+                        <div className="flex items-center gap-4">
+                          <label className="flex items-center gap-2 text-sm text-zinc-600 cursor-pointer">
+                            <input type="checkbox" name="published" value="true" defaultChecked={s.published} className="rounded border-zinc-300" /> Published
+                          </label>
+                        </div>
+                        <div className="col-span-full flex items-center gap-2">
+                          <button type="submit" className="text-[11px] bg-[#2e7d5b] text-white px-4 py-2 rounded-lg hover:bg-[#3a9970] font-semibold transition-colors">Save Changes</button>
+                        </div>
+                      </form>
+                      <form action={deleteNGOStory} className="mt-2">
+                        <input type="hidden" name="id" value={s.id} />
+                        <button type="submit" className="text-[11px] bg-red-50 text-red-500 px-3 py-1.5 rounded-lg hover:bg-red-100 font-semibold">Delete Story</button>
                       </form>
                     </div>
-                  </div>
+                  </details>
                 ))}
               </div>
             </div>
