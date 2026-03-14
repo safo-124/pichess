@@ -26,6 +26,7 @@ const contentSections = [
   { label: "Blog & News", href: "/admin/content", icon: FileText, color: "#f97316", desc: "Posts, subscribers" },
   { label: "Partners & Extras", href: "/admin/extras", icon: Puzzle, color: "#06b6d4", desc: "Partners, puzzles" },
   { label: "Footer", href: "/admin/footer", icon: Footprints, color: "#64748b", desc: "Contact, social, CTA" },
+  { label: "Settings", href: "/admin/settings", icon: Settings, color: "#10b981", desc: "Site Logo & Config" },
 ];
 
 export default function AdminSidebar() {

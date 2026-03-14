@@ -13,7 +13,7 @@ const links = [
   { label: "Testimonials", href: "/academy#testimonials" },
 ];
 
-export default function AcademyNav() {
+export default function AcademyNav({ logoUrl }: { logoUrl?: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -40,21 +40,30 @@ export default function AcademyNav() {
         <div className="flex items-center justify-between h-[70px]">
           {/* Logo */}
           <Link href="/academy" className="flex items-center gap-3 group">
-            <motion.div
-              whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
-              transition={{ duration: 0.5 }}
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#c9a84c] via-[#d4b15a] to-[#a8893d] flex items-center justify-center shadow-lg shadow-[#c9a84c]/25"
-            >
-              <Crown size={20} className="text-white" />
-            </motion.div>
-            <div className="leading-tight">
-              <div className="font-black text-gray-900 text-lg tracking-tight leading-none">
-                PiChess
+            {logoUrl ? (
+              <div className="h-10 flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={logoUrl} alt="PiChess Academy Logo" className="h-full w-auto object-contain" />
               </div>
-              <div className="text-[10px] font-bold text-[#c9a84c] tracking-[0.25em] uppercase">
-                Academy
-              </div>
-            </div>
+            ) : (
+              <>
+                <motion.div
+                  whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
+                  transition={{ duration: 0.5 }}
+                  className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#c9a84c] via-[#d4b15a] to-[#a8893d] flex items-center justify-center shadow-lg shadow-[#c9a84c]/25"
+                >
+                  <Crown size={20} className="text-white" />
+                </motion.div>
+                <div className="leading-tight">
+                  <div className="font-black text-gray-900 text-lg tracking-tight leading-none">
+                    PiChess
+                  </div>
+                  <div className="text-[10px] font-bold text-[#c9a84c] tracking-[0.25em] uppercase">
+                    Academy
+                  </div>
+                </div>
+              </>
+            )}
           </Link>
 
           {/* Desktop nav — pill style */}

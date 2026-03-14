@@ -45,7 +45,7 @@ function ChessPattern({ className }: { className?: string }) {
   );
 }
 
-export default function MainNav() {
+export default function MainNav({ logoUrl }: { logoUrl?: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
@@ -143,39 +143,48 @@ export default function MainNav() {
 
               {/* Center Logo */}
               <Link href="/" className="flex items-center gap-3 group relative">
-                <div className="relative">
-                  <div className={`w-11 h-11 rounded-lg overflow-hidden relative shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl ${
-                    scrolled ? "bg-black shadow-black/10 group-hover:shadow-black/20" : "bg-black shadow-black/10 group-hover:shadow-black/20"
-                  }`}>
-                    <ChessPattern className={`absolute inset-0 w-full h-full ${
-                      scrolled ? "text-[#c9a84c]" : "text-[#c9a84c]"
-                    }`} />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-white font-black text-lg drop-shadow-md">♚</span>
+                {logoUrl ? (
+                  <div className="h-11 flex items-center justify-center">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={logoUrl} alt="PiChess Logo" className="h-full w-auto object-contain" />
+                  </div>
+                ) : (
+                  <>
+                    <div className="relative">
+                      <div className={`w-11 h-11 rounded-lg overflow-hidden relative shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl ${
+                        scrolled ? "bg-black shadow-black/10 group-hover:shadow-black/20" : "bg-black shadow-black/10 group-hover:shadow-black/20"
+                      }`}>
+                        <ChessPattern className={`absolute inset-0 w-full h-full ${
+                          scrolled ? "text-[#c9a84c]" : "text-[#c9a84c]"
+                        }`} />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-white font-black text-lg drop-shadow-md">♚</span>
+                        </div>
+                      </div>
+                      {/* Gold corner dot */}
+                      <div className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#c9a84c] border-2 shadow-sm ${
+                        scrolled ? "border-white" : "border-white"
+                      }`} />
                     </div>
-                  </div>
-                  {/* Gold corner dot */}
-                  <div className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#c9a84c] border-2 shadow-sm ${
-                    scrolled ? "border-white" : "border-white"
-                  }`} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-black text-[24px] tracking-tight leading-none">
-                    <span className={`transition-colors duration-300 ${
-                      scrolled ? "text-gray-900" : "text-gray-900"
-                    }`}>Pi</span>
-                    <span className="text-[#c9a84c]">Chess</span>
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <div className="w-3 h-[1px] bg-[#c9a84c]" />
-                    <span className={`text-[8px] font-bold tracking-[0.3em] uppercase transition-colors duration-300 ${
-                      scrolled ? "text-gray-400" : "text-gray-400"
-                    }`}>
-                      Ghana
-                    </span>
-                    <div className="w-3 h-[1px] bg-[#c9a84c]" />
-                  </div>
-                </div>
+                    <div className="flex flex-col">
+                      <span className="font-black text-[24px] tracking-tight leading-none">
+                        <span className={`transition-colors duration-300 ${
+                          scrolled ? "text-gray-900" : "text-gray-900"
+                        }`}>Pi</span>
+                        <span className="text-[#c9a84c]">Chess</span>
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-[1px] bg-[#c9a84c]" />
+                        <span className={`text-[8px] font-bold tracking-[0.3em] uppercase transition-colors duration-300 ${
+                          scrolled ? "text-gray-400" : "text-gray-400"
+                        }`}>
+                          Ghana
+                        </span>
+                        <div className="w-3 h-[1px] bg-[#c9a84c]" />
+                      </div>
+                    </div>
+                  </>
+                )}
               </Link>
 
               {/* Right nav (desktop) */}

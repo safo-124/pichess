@@ -14,7 +14,7 @@ const links = [
   { label: "Stories", href: "/ngo/stories" },
 ];
 
-export default function NGONav() {
+export default function NGONav({ logoUrl }: { logoUrl?: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -39,17 +39,26 @@ export default function NGONav() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/ngo" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-full border-2 border-[#2e7d5b] flex items-center justify-center group-hover:bg-[#2e7d5b] transition-all">
-              <Heart size={16} className="text-[#2e7d5b] group-hover:text-white transition-colors" />
-            </div>
-            <div className="leading-tight">
-              <div className={`font-black text-base tracking-tight leading-none ${scrolled ? "text-zinc-900" : "text-zinc-800"}`}>
-                PiChess
+            {logoUrl ? (
+              <div className="h-9 flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={logoUrl} alt="PiChess Foundation Logo" className="h-full w-auto object-contain" />
               </div>
-              <div className="text-[10px] font-semibold text-[#2e7d5b] tracking-[0.2em] uppercase">
-                Foundation
-              </div>
-            </div>
+            ) : (
+              <>
+                <div className="w-9 h-9 rounded-full border-2 border-[#2e7d5b] flex items-center justify-center group-hover:bg-[#2e7d5b] transition-all">
+                  <Heart size={16} className="text-[#2e7d5b] group-hover:text-white transition-colors" />
+                </div>
+                <div className="leading-tight">
+                  <div className={`font-black text-base tracking-tight leading-none ${scrolled ? "text-zinc-900" : "text-zinc-800"}`}>
+                    PiChess
+                  </div>
+                  <div className="text-[10px] font-semibold text-[#2e7d5b] tracking-[0.2em] uppercase">
+                    Foundation
+                  </div>
+                </div>
+              </>
+            )}
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">

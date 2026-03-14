@@ -5,11 +5,21 @@ import MainFooter from "@/components/main/MainFooter";
 import ScrollPawn from "@/components/shared/ScrollPawn";
 import FloatingPieces from "@/components/shared/FloatingPieces";
 import HomePage from "./(main)/page";
+import { getSiteContent } from "@/lib/actions/admin";
 
-export default function RootPage() {
+export default async function RootPage() {
+  let logoUrl = "";
+  try {
+    const rawLogo = await getSiteContent("site_logo");
+    if (rawLogo) {
+      const parsed = JSON.parse(rawLogo);
+      logoUrl = parsed.logoUrl || "";
+    }
+  } catch {}
+
   return (
     <div className="min-h-screen bg-white text-gray-900">
-      <MainNav />
+      <MainNav logoUrl={logoUrl} />
       <FloatingPieces />
       <ScrollPawn />
       <main>

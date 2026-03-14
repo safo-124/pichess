@@ -443,12 +443,11 @@ export async function saveSiteContent(key: string, value: string) {
     revalidatePath("/");
     revalidatePath("/admin/homepage");
   } else if (zone === "site") {
-    revalidatePath("/");
-    revalidatePath("/about");
-    revalidatePath("/contact");
+    revalidatePath("/", "layout");
     revalidatePath("/admin/footer");
+    revalidatePath("/admin/settings");
   } else {
-    revalidatePath("/");
+    revalidatePath("/", "layout");
   }
 }
 
