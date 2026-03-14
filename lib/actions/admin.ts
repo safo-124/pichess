@@ -248,6 +248,23 @@ export async function createTeamMember(fd: FormData) {
   revalidatePath("/academy/team");
 }
 
+export async function updateTeamMember(fd: FormData) {
+  const id = Number(fd.get("id"));
+  await (prisma as any).academy_Team.update({
+    where: { id },
+    data: {
+      name: fd.get("name") as string,
+      role: fd.get("role") as string,
+      bio: (fd.get("bio") as string) || null,
+      image: (fd.get("image") as string) || null,
+      order: Number(fd.get("order") || 0),
+      published: fd.get("published") !== "false",
+    },
+  });
+  revalidatePath("/admin/academy");
+  revalidatePath("/academy/team");
+}
+
 export async function deleteTeamMember(fd: FormData) {
   const id = Number(fd.get("id"));
   await (prisma as any).academy_Team.delete({ where: { id } });

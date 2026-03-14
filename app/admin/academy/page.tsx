@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import prisma from "@/lib/prisma";
-import { updateLeadStatus, deleteLead, createTeamMember, deleteTeamMember, createTestimonial, deleteTestimonial } from "@/lib/actions/admin";
+import { updateLeadStatus, deleteLead, createTeamMember, updateTeamMember, deleteTeamMember, createTestimonial, deleteTestimonial } from "@/lib/actions/admin";
 import AdminTabs from "@/components/admin/AdminTabs";
 import AcademyContentEditor from "@/components/admin/AcademyContentEditor";
 import {
@@ -193,32 +193,50 @@ export default async function AdminAcademyPage() {
               </div>
               <div className="divide-y divide-zinc-50">
                 {team.map((m: any) => (
-                  <div key={m.id} className="flex items-center justify-between px-5 py-3 hover:bg-zinc-50/50 transition-colors">
-                    <div className="flex items-center gap-3">
-                      {m.image ? (
-                        <div className="w-9 h-9 rounded-lg bg-zinc-100 overflow-hidden shrink-0">
-                          <img src={m.image} alt={m.name} className="w-full h-full object-cover" />
+                  <details key={m.id} className="group">
+                    <summary className="flex items-center justify-between px-5 py-3 hover:bg-zinc-50/50 transition-colors cursor-pointer list-none">
+                      <div className="flex items-center gap-3">
+                        {m.image ? (
+                          <div className="w-9 h-9 rounded-lg bg-zinc-100 overflow-hidden shrink-0">
+                            <img src={m.image} alt={m.name} className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="w-9 h-9 rounded-lg bg-[#c9a84c]/10 flex items-center justify-center text-[#c9a84c] font-bold text-sm shrink-0">
+                            {m.name.charAt(0)}
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-semibold text-zinc-800 text-sm">{m.name}</p>
+                          <p className="text-zinc-400 text-xs">{m.role} · Order: {m.order}</p>
                         </div>
-                      ) : (
-                        <div className="w-9 h-9 rounded-lg bg-[#c9a84c]/10 flex items-center justify-center text-[#c9a84c] font-bold text-sm shrink-0">
-                          {m.name.charAt(0)}
-                        </div>
-                      )}
-                      <div>
-                        <p className="font-semibold text-zinc-800 text-sm">{m.name}</p>
-                        <p className="text-zinc-400 text-xs">{m.role} · Order: {m.order}</p>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${m.published ? "bg-green-50 text-green-600" : "bg-zinc-100 text-zinc-400"}`}>
-                        {m.published ? "Published" : "Hidden"}
-                      </span>
-                      <form action={deleteTeamMember}>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${m.published ? "bg-green-50 text-green-600" : "bg-zinc-100 text-zinc-400"}`}>
+                          {m.published ? "Published" : "Hidden"}
+                        </span>
+                        <span className="text-zinc-300 text-xs group-open:rotate-180 transition-transform">▼</span>
+                      </div>
+                    </summary>
+                    <div className="px-5 pb-4 pt-2 bg-zinc-50/50 border-t border-zinc-100">
+                      <form action={updateTeamMember} className="grid sm:grid-cols-2 gap-3">
                         <input type="hidden" name="id" value={m.id} />
-                        <button type="submit" className="text-[11px] bg-red-50 text-red-500 px-2.5 py-1 rounded-lg hover:bg-red-100 font-semibold">Delete</button>
+                        <input name="name" defaultValue={m.name} required placeholder="Full name *" className={inputCls} />
+                        <input name="role" defaultValue={m.role} required placeholder="Role *" className={inputCls} />
+                        <textarea name="bio" defaultValue={m.bio || ""} rows={2} placeholder="Short bio" className={`col-span-full ${inputCls} resize-none`} />
+                        <input name="image" defaultValue={m.image || ""} placeholder="Photo URL" className={inputCls} />
+                        <input name="order" type="number" defaultValue={m.order} placeholder="Display order" className={inputCls} />
+                        <div className="col-span-full flex items-center justify-between mt-2">
+                          <label className="flex items-center gap-2 text-sm text-zinc-600 cursor-pointer">
+                            <input type="checkbox" name="published" value="true" defaultChecked={m.published} className="rounded border-zinc-300" /> Publish
+                          </label>
+                          <div className="flex gap-2">
+                            <button formAction={deleteTeamMember} className="px-4 py-2 bg-red-50 text-red-600 rounded-xl text-sm font-bold hover:bg-red-100 transition-colors">Delete</button>
+                            <button type="submit" className="px-4 py-2 bg-zinc-900 text-white rounded-xl text-sm font-bold hover:bg-zinc-800 transition-colors">Save Changes</button>
+                          </div>
+                        </div>
                       </form>
                     </div>
-                  </div>
+                  </details>
                 ))}
               </div>
             </div>
