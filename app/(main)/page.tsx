@@ -176,9 +176,9 @@ export default async function HomePage() {
           <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 mb-16">
             <AnimatedSection>
               <span className="text-xs font-bold text-[#c9a84c] uppercase tracking-[0.25em]">Academy</span>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 mt-3 tracking-tight">
-                <TextReveal text="Train Like a" /><br />
-                <span className="gradient-text-gold"><TextReveal text="Grandmaster." delay={0.2} /></span>
+              <h2 className="text-3xl min-[400px]:text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 mt-3 tracking-tight">
+                <TextReveal text="Train Like a" /><br className="hidden min-[400px]:block" />
+                <span className="gradient-text-gold inline-block mt-1 sm:mt-0"><TextReveal text="Grandmaster." delay={0.2} /></span>
               </h2>
             </AnimatedSection>
             <AnimatedSection delay={0.15}>

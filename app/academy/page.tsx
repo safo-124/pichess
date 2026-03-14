@@ -74,8 +74,8 @@ export default async function AcademyPage() {
               </AnimatedSection>
 
               <div className="mb-8">
-                <TextReveal text={hero.title1} className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-gray-900 tracking-tight leading-[0.95]" as="div" />
-                <TextReveal text={hero.title2} className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight leading-[0.95] bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#dbb95d] bg-clip-text text-transparent" delay={0.2} as="div" />
+                <TextReveal text={hero.title1} className="text-4xl min-[400px]:text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-gray-900 tracking-tight leading-[1] sm:leading-[0.95]" as="div" />
+                <TextReveal text={hero.title2} className="text-4xl min-[400px]:text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight leading-[1] sm:leading-[0.95] bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#dbb95d] bg-clip-text text-transparent pb-1" delay={0.2} as="div" />
               </div>
 
               <AnimatedSection delay={0.3}>
