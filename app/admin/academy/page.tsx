@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { updateLeadStatus, deleteLead, createTeamMember, updateTeamMember, deleteTeamMember, createTestimonial, deleteTestimonial } from "@/lib/actions/admin";
 import AdminTabs from "@/components/admin/AdminTabs";
 import AcademyContentEditor from "@/components/admin/AcademyContentEditor";
+import ImageUploadInput from "@/components/admin/ImageUploadInput";
 import {
   defaultHero, defaultStats, defaultLessons, defaultFeatures, defaultCTA, defaultLessonsHero,
   type AcademyHero, type AcademyStat, type AcademyLesson, type AcademyFeature, type AcademyCTA, type AcademyLessonsHero,
@@ -176,7 +177,7 @@ export default async function AdminAcademyPage() {
               <input name="name" required placeholder="Full name *" className={inputCls} />
               <input name="role" required placeholder="Role (e.g. Head Coach) *" className={inputCls} />
               <textarea name="bio" rows={2} placeholder="Short bio" className={`col-span-full ${inputCls} resize-none`} />
-              <input name="image" placeholder="Photo URL" className={inputCls} />
+              <ImageUploadInput name="image" placeholder="Photo URL" />
               <input name="order" type="number" defaultValue={0} placeholder="Display order" className={inputCls} />
               <div className="col-span-full">
                 <button type="submit" className={btnCls}>Add Team Member</button>
@@ -223,7 +224,7 @@ export default async function AdminAcademyPage() {
                         <input name="name" defaultValue={m.name} required placeholder="Full name *" className={inputCls} />
                         <input name="role" defaultValue={m.role} required placeholder="Role *" className={inputCls} />
                         <textarea name="bio" defaultValue={m.bio || ""} rows={2} placeholder="Short bio" className={`col-span-full ${inputCls} resize-none`} />
-                        <input name="image" defaultValue={m.image || ""} placeholder="Photo URL" className={inputCls} />
+                        <ImageUploadInput name="image" defaultValue={m.image || ""} placeholder="Photo URL" />
                         <input name="order" type="number" defaultValue={m.order} placeholder="Display order" className={inputCls} />
                         <div className="col-span-full flex items-center justify-between mt-2">
                           <label className="flex items-center gap-2 text-sm text-zinc-600 cursor-pointer">
@@ -252,7 +253,7 @@ export default async function AdminAcademyPage() {
               <input name="name" required placeholder="Student / parent name *" className={inputCls} />
               <input name="program" placeholder="Program (e.g. Junior, Elite)" className={inputCls} />
               <textarea name="content" rows={3} required placeholder="Testimonial text *" className={`col-span-full ${inputCls} resize-none`} />
-              <input name="image" placeholder="Photo URL" className={inputCls} />
+              <ImageUploadInput name="image" placeholder="Photo URL" />
               <div className="flex items-center gap-6">
                 <select name="rating" defaultValue="5" className={`${inputCls} !px-3`}>
                   {[5,4,3,2,1].map(r => <option key={r} value={r}>{"★".repeat(r)} ({r})</option>)}
