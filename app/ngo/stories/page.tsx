@@ -8,10 +8,15 @@ export const metadata = {
 };
 
 export default async function StoriesPage() {
-  const stories = await prisma.nGO_Story.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-  });
+  let stories: any[] = [];
+  try {
+    stories = await prisma.nGO_Story.findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Failed to fetch stories:", error);
+  }
 
   return (
     <NGOStoriesPage
