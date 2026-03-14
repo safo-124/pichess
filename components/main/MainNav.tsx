@@ -120,32 +120,6 @@ export default function MainNav() {
         className="fixed top-0 left-0 right-0 w-full"
         style={{ zIndex: 99999 }}
       >
-        {/* Top bar — visible only before scroll */}
-        <AnimatePresence>
-          {!scrolled && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 32, opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="bg-white/80 backdrop-blur-md border-b border-gray-100 text-gray-900 overflow-hidden"
-            >
-              <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-8 text-[11px] tracking-widest uppercase">
-                <span className="text-gray-400">Ghana&apos;s Premier Chess Platform</span>
-                <div className="flex items-center gap-4">
-                  <Link href="/login" className="text-gray-500 hover:text-gray-900 transition-colors">
-                    Sign In
-                  </Link>
-                  <span className="text-gray-300">|</span>
-                  <Link href="/academy/enquire" className="text-[#c9a84c] hover:text-[#dbb95d] transition-colors font-semibold">
-                    Join Academy
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Main nav bar */}
         <motion.div
           animate={{
@@ -381,42 +355,6 @@ export default function MainNav() {
                 })}
               </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.4 }}
-                className="mt-10 space-y-3"
-              >
-                <Link
-                  href="/academy/enquire"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-4 rounded-xl bg-black text-white text-sm font-bold uppercase tracking-widest hover:bg-[#c9a84c] hover:text-black transition-all duration-300"
-                >
-                  Join the Academy
-                  <ArrowRight className="w-4 h-4" strokeWidth={2} />
-                </Link>
-                <Link
-                  href="/login"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center justify-center w-full py-4 rounded-xl text-sm font-semibold uppercase tracking-widest text-gray-400 border border-gray-200 hover:border-gray-400 hover:text-gray-600 transition-all"
-                >
-                  Sign In
-                </Link>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="mt-10 flex items-center gap-2"
-              >
-                <div className="w-4 h-4">
-                  <ChessPattern className="w-full h-full text-gray-200" />
-                </div>
-                <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-gray-300">
-                  Ghana&apos;s Premier Chess Platform
-                </span>
-              </motion.div>
             </div>
           </motion.div>
         )}
