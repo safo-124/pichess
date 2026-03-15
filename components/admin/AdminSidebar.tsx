@@ -7,6 +7,7 @@ import {
   LayoutDashboard, GraduationCap, Heart, ShoppingBag,
   FileText, Trophy, Settings, LogOut, Crown,
   PanelLeftClose, PanelLeft, Globe, Puzzle, Users, Home, Footprints,
+  HelpCircle,
 } from "lucide-react";
 
 const mainNav = [
@@ -25,6 +26,7 @@ const contentSections = [
   { label: "About Page", href: "/admin/about", icon: Users, color: "#6366f1", desc: "Hero, story, values" },
   { label: "Blog & News", href: "/admin/content", icon: FileText, color: "#f97316", desc: "Posts, subscribers" },
   { label: "Partners & Extras", href: "/admin/extras", icon: Puzzle, color: "#06b6d4", desc: "Partners, puzzles" },
+  { label: "FAQ", href: "/admin/faq", icon: HelpCircle, color: "#f59e0b", desc: "Frequently asked questions" },
   { label: "Footer", href: "/admin/footer", icon: Footprints, color: "#64748b", desc: "Contact, social, CTA" },
   { label: "Settings", href: "/admin/settings", icon: Settings, color: "#10b981", desc: "Site Logo & Config" },
 ];

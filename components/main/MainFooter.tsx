@@ -47,6 +47,7 @@ const zoneLinks = [
 const companyLinks = [
   ["About", "/about"],
   ["Contact", "/contact"],
+  ["FAQ", "/faq"],
   ["Login", "/login"],
 ];
 
