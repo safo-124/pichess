@@ -9,12 +9,15 @@ import { getSiteContent } from "@/lib/actions/admin";
 
 export default async function RootPage() {
   let logoUrl = "";
+  let footerData = null;
   try {
     const rawLogo = await getSiteContent("site_logo");
     if (rawLogo) {
       const parsed = JSON.parse(rawLogo);
       logoUrl = parsed.logoUrl || "";
     }
+    const rawFooter = await getSiteContent("site_footer");
+    if (rawFooter) footerData = JSON.parse(rawFooter);
   } catch {}
 
   return (
@@ -25,7 +28,7 @@ export default async function RootPage() {
       <main>
         <HomePage />
       </main>
-      <MainFooter />
+      <MainFooter footerData={footerData} />
     </div>
   );
 }
