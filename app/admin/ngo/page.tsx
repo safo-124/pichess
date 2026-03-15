@@ -4,21 +4,34 @@ import {
   updateApplicationStatus, deleteApplication,
   updateVolunteerStatus, deleteVolunteer,
   deleteDonation, createNGOStory, updateNGOStory, deleteNGOStory,
+  getSiteContent,
 } from "@/lib/actions/admin";
 import AdminTabs from "@/components/admin/AdminTabs";
+import NGOContentEditor from "@/components/admin/NGOContentEditor";
 
 export const metadata = { title: "NGO Management | Admin" };
 
+const ngoContentKeys = [
+  "ngo_hero", "ngo_stats", "ngo_mission_teaser", "ngo_programs_teaser",
+  "ngo_pillars", "ngo_values", "ngo_story_section", "ngo_programs",
+  "ngo_process_steps", "ngo_testimonials", "ngo_timeline", "ngo_programs_stats",
+  "ngo_apply", "ngo_volunteer", "ngo_donate", "ngo_stories_content", "ngo_cta",
+  "ngo_programs_hero", "ngo_mission_hero",
+];
+
 async function getData() {
   try {
-    const [applications, volunteers, donations, stories] = await Promise.all([
+    const [applications, volunteers, donations, stories, ...contentValues] = await Promise.all([
       (prisma as any).nGO_Application.findMany({ orderBy: { createdAt: "desc" } }),
       (prisma as any).nGO_Volunteer.findMany({ orderBy: { createdAt: "desc" } }),
       (prisma as any).nGO_Donation.findMany({ orderBy: { createdAt: "desc" } }),
       (prisma as any).nGO_Story.findMany({ orderBy: { createdAt: "desc" } }),
+      ...ngoContentKeys.map(k => getSiteContent(k)),
     ]);
-    return { applications, volunteers, donations, stories };
-  } catch { return { applications: [], volunteers: [], donations: [], stories: [] }; }
+    const contentData: Record<string, string | null> = {};
+    ngoContentKeys.forEach((k, i) => { contentData[k] = contentValues[i]; });
+    return { applications, volunteers, donations, stories, contentData };
+  } catch { return { applications: [], volunteers: [], donations: [], stories: [], contentData: {} as Record<string, string | null> }; }
 }
 
 const statusStyle: Record<string, string> = {
@@ -31,7 +44,7 @@ const inputCls = "w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 
 const btnCls = "px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#2e7d5b] to-[#256b4d] text-white text-sm font-semibold hover:shadow-lg hover:shadow-[#2e7d5b]/20 transition-all";
 
 export default async function AdminNGOPage() {
-  const { applications, volunteers, donations, stories } = await getData();
+  const { applications, volunteers, donations, stories, contentData } = await getData();
   const totalDonations = donations.reduce((sum: number, d: any) => sum + (d.amount || 0), 0);
 
   return (
@@ -61,12 +74,16 @@ export default async function AdminNGOPage() {
       <AdminTabs
         accentColor="#2e7d5b"
         tabs={[
+          { id: "content", label: "Content", icon: "✏️" },
           { id: "applications", label: "Applications", icon: "📋", count: applications.length },
           { id: "volunteers", label: "Volunteers", icon: "🤝", count: volunteers.length },
           { id: "donations", label: "Donations", icon: "💰", count: donations.length },
           { id: "stories", label: "Impact Stories", icon: "📖", count: stories.length },
         ]}
       >
+        {/* ═══ TAB: Content ════════════════════════════════════════════ */}
+        <NGOContentEditor initialData={contentData} />
+
         {/* ═══ TAB: Applications ═══════════════════════════════════════ */}
         <div className="rounded-2xl bg-white border border-zinc-200/80 overflow-hidden">
           <div className="px-5 py-4 border-b border-zinc-100 flex items-center justify-between">

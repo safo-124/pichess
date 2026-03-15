@@ -4,32 +4,55 @@ import NGOHero from "@/components/ngo/NGOHero";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
+import { getSiteContent } from "@/lib/actions/admin";
+import {
+  defaultNGOHero, defaultNGOStats, defaultNGOMissionTeaser, defaultNGOProgramsTeaser,
+  type NGOHeroData, type NGOStat, type NGOMissionTeaser, type NGOProgramsTeaser,
+} from "@/lib/ngo-content";
 
 export const metadata = { title: "PiChess Foundation" };
 
-async function getStories() {
+function parse<T>(raw: string | null, fallback: T): T {
+  try { return raw ? JSON.parse(raw) : fallback; } catch { return fallback; }
+}
+
+async function getPageData() {
   try {
-    return await prisma.nGO_Story.findMany({ where: { published: true }, take: 3, orderBy: { createdAt: "desc" } });
-  } catch { return []; }
+    const [stories, heroRaw, statsRaw, missionRaw, programsRaw] = await Promise.all([
+      prisma.nGO_Story.findMany({ where: { published: true }, take: 3, orderBy: { createdAt: "desc" } }),
+      getSiteContent("ngo_hero"),
+      getSiteContent("ngo_stats"),
+      getSiteContent("ngo_mission_teaser"),
+      getSiteContent("ngo_programs_teaser"),
+    ]);
+    return {
+      stories,
+      hero: parse<NGOHeroData>(heroRaw, defaultNGOHero),
+      stats: parse<NGOStat[]>(statsRaw, defaultNGOStats),
+      mission: parse<NGOMissionTeaser>(missionRaw, defaultNGOMissionTeaser),
+      programs: parse<NGOProgramsTeaser>(programsRaw, defaultNGOProgramsTeaser),
+    };
+  } catch {
+    return { stories: [], hero: defaultNGOHero, stats: defaultNGOStats, mission: defaultNGOMissionTeaser, programs: defaultNGOProgramsTeaser };
+  }
 }
 
 export default async function NGOPage() {
-  const stories = await getStories();
+  const { stories, hero, stats, mission, programs } = await getPageData();
 
   return (
     <div className="overflow-x-hidden text-zinc-900 bg-white">
       {/* Hero */}
-      <NGOHero />
+      <NGOHero data={hero} />
 
       {/* Impact stats */}
       <section className="py-20 bg-[#2e7d5b] relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 chess-bg pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-            <StatsCounter end={200} label="Beneficiaries" suffix="+" color="white" />
-            <StatsCounter end={10} label="Communities" color="white" />
-            <StatsCounter end={50} label="Donors" suffix="+" color="white" />
-            <StatsCounter end={5} label="Years of Impact" color="white" />
+            {stats.map((s, i) => (
+              <StatsCounter key={i} end={s.value} label={s.label} suffix={s.suffix} color="white" />
+            ))}
           </div>
         </div>
       </section>
@@ -38,7 +61,7 @@ export default async function NGOPage() {
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1560174038-da43ac74f01b?w=1600&q=80"
+            src={mission.backgroundImage}
             alt="Children playing chess in community"
             fill
             className="object-cover"
@@ -50,17 +73,17 @@ export default async function NGOPage() {
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
           <AnimatedSection>
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white/80 text-xs font-semibold uppercase tracking-widest mb-6">
-              Our Mission
+              {mission.badge}
             </span>
             <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight mb-6">
-              Empowering Youth Through{" "}
-              <span className="bg-gradient-to-r from-[#5cc99a] via-[#2e7d5b] to-[#5cc99a] bg-clip-text text-transparent">the Royal Game</span>
+              {mission.heading}{" "}
+              <span className="bg-gradient-to-r from-[#5cc99a] via-[#2e7d5b] to-[#5cc99a] bg-clip-text text-transparent">{mission.headingHighlight}</span>
             </h2>
             <p className="max-w-2xl mx-auto text-white/60 text-lg leading-relaxed mb-10">
-              We bring chess to underserved communities across Ghana — free equipment, school programs, scholarships, and mentorship for every child.
+              {mission.description}
             </p>
             <Link href="/ngo/mission" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-bold text-base transition-all duration-300 hover:scale-105">
-              Learn About Our Mission
+              {mission.ctaText}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
             </Link>
           </AnimatedSection>
@@ -73,19 +96,19 @@ export default async function NGOPage() {
         <div className="max-w-5xl mx-auto text-center">
           <AnimatedSection>
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2e7d5b]/10 text-[#2e7d5b] text-xs font-bold uppercase tracking-widest mb-6">
-              Our Programs
+              {programs.badge}
             </span>
-            <h2 className="text-3xl sm:text-5xl font-black text-zinc-900 tracking-tight mb-4">Six Programs, One Goal</h2>
+            <h2 className="text-3xl sm:text-5xl font-black text-zinc-900 tracking-tight mb-4">{programs.heading}</h2>
             <p className="max-w-2xl mx-auto text-zinc-500 text-lg leading-relaxed mb-8">
-              From free chess equipment and school programs to scholarships, mentorship, community hubs, and tournaments — we build a complete support system for every child.
+              {programs.description}
             </p>
             <div className="flex flex-wrap justify-center gap-6 mb-10">
-              {["♟ Equipment", "🏫 Schools", "🎓 Scholarships", "🤝 Mentorship", "🌍 Hubs", "🏆 Tournaments"].map((p) => (
+              {programs.tags.map((p) => (
                 <span key={p} className="px-4 py-2 rounded-full bg-white border border-zinc-200 text-zinc-700 text-sm font-semibold shadow-sm">{p}</span>
               ))}
             </div>
             <Link href="/ngo/programs" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#2e7d5b] hover:bg-[#3a9970] text-white font-bold text-base transition-all duration-300 hover:scale-105 shadow-lg shadow-[#2e7d5b]/20">
-              Explore All Programs
+              {programs.ctaText}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
             </Link>
           </AnimatedSection>

@@ -4,52 +4,11 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import type {
+  NGOMissionHero, NGOStorySection, NGOPillar, NGOValue, NGOCTA,
+} from "@/lib/ngo-content";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
-
-/* ═══ Data ═══ */
-const pillars = [
-  {
-    icon: "♟",
-    title: "Free Equipment",
-    desc: "We distribute chess sets, boards, clocks, and learning materials to schools and community centres that can\u2019t afford them.",
-    image: "https://images.unsplash.com/photo-1586165368502-1bad197a6461?w=600&q=80",
-  },
-  {
-    icon: "🏫",
-    title: "School Programs",
-    desc: "Our trained coaches run regular in-school sessions, integrating chess into after-school activities and PE curricula at no cost.",
-    image: "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=600&q=80",
-  },
-  {
-    icon: "🎓",
-    title: "Scholarships",
-    desc: "Talented players from underserved backgrounds receive fully funded spots at the PiChess Academy for advanced training.",
-    image: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=600&q=80",
-  },
-  {
-    icon: "🤝",
-    title: "Mentorship",
-    desc: "We pair young players with experienced mentors — chess masters, educators, and community leaders — for ongoing guidance.",
-    image: "https://images.unsplash.com/photo-1604948501466-4e9c339b9c24?w=600&q=80",
-  },
-];
-
-const values = [
-  { title: "Access", desc: "Every child deserves the chance to learn chess, regardless of their socioeconomic background.", icon: "🔓" },
-  { title: "Discipline", desc: "Chess instils patience, focus and strategic thinking — skills that transfer to every area of life.", icon: "🎯" },
-  { title: "Community", desc: "We build lasting bonds between players, coaches, schools, and families through the game.", icon: "🤗" },
-  { title: "Excellence", desc: "We maintain high coaching standards so every student receives world-class chess education.", icon: "⭐" },
-  { title: "Sustainability", desc: "We train local coaches and build self-sustaining chess clubs in every community we serve.", icon: "🌱" },
-  { title: "Joy", desc: "Above all, chess should be fun. We keep the love of the game at the heart of everything.", icon: "😊" },
-];
-
-const stats = [
-  { value: "200+", label: "Beneficiaries" },
-  { value: "10", label: "Communities" },
-  { value: "50+", label: "Donors" },
-  { value: "5", label: "Years of Impact" },
-];
 
 /* ═══ Section helper ═══ */
 function AnimSection({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
@@ -69,7 +28,16 @@ function AnimSection({ children, className, delay = 0 }: { children: React.React
 }
 
 /* ═══ Main Component ═══ */
-export default function NGOMissionPage() {
+interface MissionPageProps {
+  missionHero: NGOMissionHero;
+  storySection: NGOStorySection;
+  pillars: NGOPillar[];
+  values: NGOValue[];
+  stats: { value: string; label: string }[];
+  cta: NGOCTA;
+}
+
+export default function NGOMissionPage({ missionHero, storySection, pillars, values, stats, cta }: MissionPageProps) {
   return (
     <div className="bg-white text-zinc-900 overflow-x-hidden">
 
@@ -77,7 +45,7 @@ export default function NGOMissionPage() {
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1560174038-da43ac74f01b?w=1600&q=80"
+            src={missionHero.backgroundImage}
             alt="Children playing chess in community"
             fill
             priority
@@ -96,7 +64,7 @@ export default function NGOMissionPage() {
             className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white/80 text-xs font-semibold uppercase tracking-widest mb-8"
           >
             <span className="w-2 h-2 rounded-full bg-[#2e7d5b] animate-pulse" />
-            Our Mission
+            {missionHero.badge}
           </motion.span>
 
           <motion.h1
@@ -105,10 +73,10 @@ export default function NGOMissionPage() {
             transition={{ duration: 0.8, delay: 0.1, ease }}
             className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1] mb-6"
           >
-            Empowering Youth Through
+            {missionHero.heading}
             <br />
             <span className="bg-gradient-to-r from-[#5cc99a] via-[#2e7d5b] to-[#5cc99a] bg-clip-text text-transparent">
-              the Royal Game
+              {missionHero.headingHighlight}
             </span>
           </motion.h1>
 
@@ -118,8 +86,7 @@ export default function NGOMissionPage() {
             transition={{ duration: 0.7, delay: 0.25, ease }}
             className="max-w-2xl mx-auto text-white/65 text-lg sm:text-xl leading-relaxed"
           >
-            We bring chess to underserved communities across Ghana, using it as a
-            tool for education, discipline, and opportunity.
+            {missionHero.subtitle}
           </motion.p>
         </div>
 
@@ -146,25 +113,12 @@ export default function NGOMissionPage() {
           <AnimSection>
             <span className="text-xs font-bold text-[#2e7d5b] uppercase tracking-widest">Our Story</span>
             <h2 className="text-3xl sm:text-4xl font-black mt-3 mb-6 text-zinc-900 leading-tight">
-              From a Single Board to a National Movement
+              {storySection.heading}
             </h2>
             <div className="space-y-4 text-zinc-500 leading-relaxed">
-              <p>
-                PiChess Foundation started with a simple idea: every child in Ghana deserves
-                the chance to learn chess. In 2021, we began with one chess set and a small
-                group of eager students in Accra.
-              </p>
-              <p>
-                Today, we serve over 200 beneficiaries across 10 communities, running
-                free programs in schools, community centres, and public spaces. Our coaches —
-                many of whom were once students themselves — lead sessions that teach far
-                more than the game.
-              </p>
-              <p>
-                Chess teaches patience, critical thinking, and resilience. For many of our
-                students, it becomes a pathway to scholarships, competitions, and futures
-                they never imagined possible.
-              </p>
+              {storySection.paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
             </div>
           </AnimSection>
 
@@ -172,7 +126,7 @@ export default function NGOMissionPage() {
             <div className="relative">
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
                 <Image
-                  src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=900&q=80"
+                  src={storySection.image}
                   alt="Students learning chess"
                   fill
                   className="object-cover"
@@ -183,10 +137,10 @@ export default function NGOMissionPage() {
               {/* Floating accent card */}
               <div className="absolute -bottom-5 -left-5 bg-white rounded-xl shadow-xl p-4 border border-zinc-100">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#2e7d5b] flex items-center justify-center text-white font-black text-sm">5</div>
+                  <div className="w-10 h-10 rounded-lg bg-[#2e7d5b] flex items-center justify-center text-white font-black text-sm">{storySection.accentValue}</div>
                   <div>
-                    <p className="text-xs text-zinc-400">Years of</p>
-                    <p className="font-bold text-zinc-900 text-sm">Changing Lives</p>
+                    <p className="text-xs text-zinc-400">{storySection.accentLabel.split(" ").slice(0, -1).join(" ") || storySection.accentLabel}</p>
+                    <p className="font-bold text-zinc-900 text-sm">{storySection.accentLabel.split(" ").pop()}</p>
                   </div>
                 </div>
               </div>
@@ -302,30 +256,34 @@ export default function NGOMissionPage() {
         <div className="max-w-3xl mx-auto text-center">
           <AnimSection>
             <h2 className="text-3xl sm:text-4xl font-black text-zinc-900 mb-4">
-              Be Part of the Mission
+              {cta.heading}{" "}
+              {cta.headingHighlight && (
+                <span className="bg-gradient-to-r from-[#2e7d5b] to-[#5cc99a] bg-clip-text text-transparent">
+                  {cta.headingHighlight}
+                </span>
+              )}
             </h2>
             <p className="text-zinc-500 text-lg mb-10 leading-relaxed">
-              Whether you donate, volunteer, or simply share our story — every action
-              helps put a chess board in front of a child who needs it.
+              {cta.description}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="/ngo/donate"
+                href={cta.cta1Link}
                 className="px-8 py-4 rounded-full bg-[#2e7d5b] hover:bg-[#3a9970] text-white font-bold text-base transition-all duration-300 hover:scale-105 shadow-xl shadow-[#2e7d5b]/25"
               >
-                Donate Now ❤️
+                {cta.cta1Text}
               </Link>
               <Link
-                href="/ngo/volunteer"
+                href={cta.cta2Link}
                 className="px-8 py-4 rounded-full border-2 border-[#2e7d5b]/25 text-[#2e7d5b] hover:bg-[#2e7d5b]/5 font-semibold text-base transition-all duration-300 hover:scale-105"
               >
-                Volunteer With Us
+                {cta.cta2Text}
               </Link>
               <Link
-                href="/ngo/apply"
+                href={cta.cta3Link}
                 className="px-8 py-4 rounded-full border-2 border-zinc-200 text-zinc-600 hover:bg-zinc-50 font-semibold text-base transition-all duration-300 hover:scale-105"
               >
-                Apply for Support
+                {cta.cta3Text}
               </Link>
             </div>
           </AnimSection>

@@ -4,6 +4,7 @@ import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import type { NGOStoriesContent } from "@/lib/ngo-content";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -18,32 +19,6 @@ interface Story {
   image: string | null;
   createdAt: string | Date;
 }
-
-const charityImages = [
-  "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80",
-  "https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=800&q=80",
-  "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=800&q=80",
-  "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&q=80",
-  "https://images.unsplash.com/photo-1547347298-4f21aa2dfaee?w=800&q=80",
-  "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800&q=80",
-];
-
-const galleryImages = [
-  { src: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80", alt: "Community gathering" },
-  { src: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&q=80", alt: "Children learning" },
-  { src: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=600&q=80", alt: "Chess lesson" },
-  { src: "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=600&q=80", alt: "Charity event" },
-  { src: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&q=80", alt: "Young players" },
-  { src: "https://images.unsplash.com/photo-1547347298-4f21aa2dfaee?w=600&q=80", alt: "Tournament" },
-  { src: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=600&q=80", alt: "Volunteers" },
-  { src: "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=600&q=80", alt: "School program" },
-];
-
-const impactQuotes = [
-  { quote: "Chess saved me from the streets. Now I dream of becoming a Grandmaster.", name: "Kofi, 13", location: "Nima, Accra" },
-  { quote: "My children have somewhere safe to go after school now. It means everything.", name: "Ama, Parent", location: "Kumasi" },
-  { quote: "The scholarship changed my entire future. I never imagined this was possible.", name: "Adjoa, 16", location: "Tamale" },
-];
 
 /* ═══════════════════════════════════════════════════════════
    HELPERS
@@ -215,7 +190,8 @@ function StoryGridCard({ story, index }: { story: Story; index: number }) {
    MAIN PAGE
    ═══════════════════════════════════════════════════════════ */
 
-export default function NGOStoriesPage({ stories }: { stories: Story[] }) {
+export default function NGOStoriesPage({ stories, content }: { stories: Story[]; content: NGOStoriesContent }) {
+  const { galleryImages, impactQuotes } = content;
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(heroScroll, [0, 1], ["0%", "25%"]);
@@ -244,7 +220,7 @@ export default function NGOStoriesPage({ stories }: { stories: Story[] }) {
         </motion.div>
 
         {/* Floating charity images */}
-        {charityImages.slice(0, 4).map((src, i) => {
+        {galleryImages.slice(0, 4).map((img, i) => {
           const positions = [
             "top-[12%] left-[4%] w-24 h-24 sm:w-32 sm:h-32 rotate-[-6deg]",
             "top-[8%] right-[5%] w-20 h-28 sm:w-28 sm:h-36 rotate-[4deg]",
@@ -264,7 +240,7 @@ export default function NGOStoriesPage({ stories }: { stories: Story[] }) {
                 transition={{ duration: 5 + i, repeat: Infinity, ease: "easeInOut" }}
                 className="w-full h-full"
               >
-                <Image src={src} alt="" fill className="object-cover" sizes="150px" />
+                <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="150px" />
               </motion.div>
             </motion.div>
           );
@@ -301,18 +277,7 @@ export default function NGOStoriesPage({ stories }: { stories: Story[] }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.15, ease }}
           >
-            Every Move{" "}
-            <span className="relative">
-              <span className="bg-gradient-to-r from-[#5cc99a] via-[#8ce8be] to-[#5cc99a] bg-clip-text text-transparent">
-                Tells a Story
-              </span>
-              <motion.span
-                className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#5cc99a] to-transparent rounded-full"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 1, delay: 0.8, ease }}
-              />
-            </span>
+            {content.heading}
           </motion.h1>
 
           <motion.p
@@ -321,7 +286,7 @@ export default function NGOStoriesPage({ stories }: { stories: Story[] }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease }}
           >
-            Real stories from the children, families, and communities transformed by chess. Every story is a testament to the power of the royal game.
+            {content.subtitle}
           </motion.p>
 
           <motion.div

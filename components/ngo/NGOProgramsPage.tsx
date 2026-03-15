@@ -4,130 +4,12 @@ import { motion, useInView, useScroll, useTransform, AnimatePresence } from "fra
 import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import type {
+  NGOProgramsHero, NGOProgram, NGOProcessStep, NGOTestimonial,
+  NGOTimelineItem, NGOProgramsImpactStat, NGOCTA,
+} from "@/lib/ngo-content";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
-
-/* ═══════════════════════════════════════════════════════════
-   DATA
-   ═══════════════════════════════════════════════════════════ */
-
-const programs = [
-  {
-    id: "equipment",
-    badge: "Core Program",
-    icon: "♟",
-    title: "Free Chess Equipment",
-    subtitle: "Removing the first barrier to entry",
-    desc: "We distribute professional-grade chess sets, boards, clocks, and learning materials to schools and community centres that can't afford them. Every child who wants to play chess should have the tools to do so.",
-    details: [
-      "Full tournament-standard chess sets & boards",
-      "Digital chess clocks for competitive play",
-      "Printed workbooks & puzzle sheets",
-      "Storage bags & replacement pieces program",
-    ],
-    impact: "2,000+ sets distributed",
-    image: "https://images.unsplash.com/photo-1586165368502-1bad197a6461?w=800&q=80",
-    color: "#2e7d5b",
-  },
-  {
-    id: "schools",
-    badge: "Education",
-    icon: "🏫",
-    title: "School Chess Programs",
-    subtitle: "Bringing chess into the classroom",
-    desc: "Our trained coaches run regular in-school sessions, integrating chess into after-school activities and PE curricula at no cost. We partner with schools to make chess a permanent part of their educational offering.",
-    details: [
-      "Weekly coaching sessions during school hours",
-      "After-school chess clubs with supervision",
-      "Inter-school tournaments & friendly matches",
-      "Teacher training for chess instruction",
-    ],
-    impact: "45+ schools enrolled",
-    image: "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=800&q=80",
-    color: "#1a6847",
-  },
-  {
-    id: "scholarships",
-    badge: "Talent Development",
-    icon: "🎓",
-    title: "Chess Scholarships",
-    subtitle: "Investing in exceptional talent",
-    desc: "Talented players from underserved backgrounds receive fully funded spots at the PiChess Academy for advanced training. Our scholarship covers coaching fees, tournament entry, travel, and all equipment.",
-    details: [
-      "Full PiChess Academy tuition coverage",
-      "National & international tournament sponsorship",
-      "Travel & accommodation for competitions",
-      "Ongoing mentorship & career guidance",
-    ],
-    impact: "30+ scholars funded",
-    image: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=800&q=80",
-    color: "#3a9970",
-  },
-  {
-    id: "mentorship",
-    badge: "Guidance",
-    icon: "🤝",
-    title: "Mentorship Network",
-    subtitle: "Every player deserves a guide",
-    desc: "We pair young players with experienced mentors — chess masters, educators, and community leaders — for ongoing guidance. Beyond chess skills, mentors help develop life skills, discipline, and academic focus.",
-    details: [
-      "1-on-1 pairing with titled players",
-      "Monthly group mentoring sessions",
-      "Life skills & academic support workshops",
-      "Career pathway & educational guidance",
-    ],
-    impact: "80+ active mentor pairs",
-    image: "https://images.unsplash.com/photo-1604948501466-4e9c339b9c24?w=800&q=80",
-    color: "#4db585",
-  },
-  {
-    id: "community",
-    badge: "Outreach",
-    icon: "🌍",
-    title: "Community Chess Hubs",
-    subtitle: "Safe spaces to learn and play",
-    desc: "We establish permanent chess hubs in community centres, libraries, and public spaces across Ghana. These hubs provide a safe, supervised environment where children can practise, socialise, and grow through chess.",
-    details: [
-      "Permanent setup in community centres",
-      "Weekend open-play sessions for all ages",
-      "Local chess leagues & ladder systems",
-      "Community coach training programs",
-    ],
-    impact: "10 hubs across Ghana",
-    image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80",
-    color: "#2e7d5b",
-  },
-  {
-    id: "tournaments",
-    badge: "Competition",
-    icon: "🏆",
-    title: "Foundation Tournaments",
-    subtitle: "Competitive play for everyone",
-    desc: "We organise free-to-enter tournaments exclusively for foundation beneficiaries, giving underserved players their first taste of competitive chess in a supportive, encouraging environment.",
-    details: [
-      "Quarterly regional tournaments",
-      "Annual PiChess Foundation Championship",
-      "Prizes, medals & certificates for all",
-      "Talent scouting for scholarship program",
-    ],
-    impact: "12 events per year",
-    image: "https://images.unsplash.com/photo-1611329857570-f02f340e7378?w=800&q=80",
-    color: "#1a6847",
-  },
-];
-
-const processSteps = [
-  { num: "01", title: "Identify", desc: "Partner with schools and communities in underserved areas across Ghana." },
-  { num: "02", title: "Equip", desc: "Deliver chess sets, materials, and set up dedicated chess spaces." },
-  { num: "03", title: "Train", desc: "Deploy qualified coaches and train local teachers in chess instruction." },
-  { num: "04", title: "Grow", desc: "Nurture talent, organise competitions, and award scholarships." },
-];
-
-const testimonials = [
-  { quote: "Chess taught me to think three moves ahead — in the game and in life.", name: "Kwame A.", role: "Foundation Scholar, Age 14", avatar: "♚" },
-  { quote: "My daughter's grades improved dramatically after joining the chess program.", name: "Abena M.", role: "Parent, Accra", avatar: "♛" },
-  { quote: "The foundation gave our school something special. The kids can't wait for chess day.", name: "Mr. Osei", role: "Head Teacher, Kumasi", avatar: "♜" },
-];
 
 /* ═══════════════════════════════════════════════════════════
    COMPONENTS
@@ -183,7 +65,7 @@ function FloatingShape({ className, delay = 0 }: { className: string; delay?: nu
    PROGRAM CARD (expandable)
    ═══════════════════════════════════════════════════════════ */
 
-function ProgramCard({ program, index }: { program: typeof programs[0]; index: number }) {
+function ProgramCard({ program, index }: { program: NGOProgram; index: number }) {
   const [expanded, setExpanded] = useState(false);
   const isEven = index % 2 === 0;
 
@@ -318,7 +200,25 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
    MAIN PAGE
    ═══════════════════════════════════════════════════════════ */
 
-export default function NGOProgramsPage() {
+interface ProgramsPageProps {
+  programsHero: NGOProgramsHero;
+  programs: NGOProgram[];
+  processSteps: NGOProcessStep[];
+  testimonials: NGOTestimonial[];
+  timeline: NGOTimelineItem[];
+  impactStats: NGOProgramsImpactStat[];
+  cta: NGOCTA;
+}
+
+export default function NGOProgramsPage({
+  programsHero,
+  programs,
+  processSteps,
+  testimonials,
+  timeline,
+  impactStats,
+  cta,
+}: ProgramsPageProps) {
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(heroScroll, [0, 1], ["0%", "30%"]);
@@ -332,8 +232,8 @@ export default function NGOProgramsPage() {
         {/* Parallax background */}
         <motion.div style={{ y: heroY }} className="absolute inset-0 scale-110">
           <Image
-            src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=80"
-            alt="Children learning chess together"
+            src={programsHero.backgroundImage}
+            alt={programsHero.title}
             fill
             priority
             className="object-cover"
@@ -374,7 +274,7 @@ export default function NGOProgramsPage() {
           >
             <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white/80 text-xs font-bold uppercase tracking-[0.2em] mb-8">
               <span className="w-2 h-2 rounded-full bg-[#5cc99a] animate-pulse" />
-              Our Programs
+              {programsHero.badge}
             </span>
           </motion.div>
 
@@ -384,10 +284,10 @@ export default function NGOProgramsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.15, ease }}
           >
-            Changing Lives,{" "}
+            {programsHero.title}{" "}
             <span className="relative">
               <span className="bg-gradient-to-r from-[#5cc99a] via-[#8ce8be] to-[#5cc99a] bg-clip-text text-transparent">
-                One Move
+                {programsHero.titleHighlight}
               </span>
               <motion.span
                 className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#5cc99a] to-transparent rounded-full"
@@ -396,7 +296,7 @@ export default function NGOProgramsPage() {
                 transition={{ duration: 1, delay: 0.8, ease }}
               />
             </span>{" "}
-            at a Time
+            {programsHero.titleEnd}
           </motion.h1>
 
           <motion.p
@@ -405,7 +305,7 @@ export default function NGOProgramsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease }}
           >
-            From free equipment to scholarships, our six programs work together to ensure every child in Ghana has access to chess — and the life skills it teaches.
+            {programsHero.subtitle}
           </motion.p>
 
           <motion.div
@@ -415,16 +315,16 @@ export default function NGOProgramsPage() {
             transition={{ duration: 0.8, delay: 0.5, ease }}
           >
             <Link
-              href="#programs"
+              href={programsHero.ctaLink}
               className="px-8 py-4 rounded-full bg-[#2e7d5b] hover:bg-[#3a9970] text-white font-bold text-base transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-[#2e7d5b]/30"
             >
-              Explore Programs ↓
+              {programsHero.ctaText}
             </Link>
             <Link
-              href="/ngo/apply"
+              href={programsHero.secondaryCtaLink}
               className="px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-bold text-base transition-all duration-300 hover:scale-105"
             >
-              Apply for Support
+              {programsHero.secondaryCtaText}
             </Link>
           </motion.div>
         </motion.div>
@@ -548,12 +448,7 @@ export default function NGOProgramsPage() {
           </AnimSection>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { value: "2,000+", label: "Chess Sets Distributed", icon: "♟" },
-              { value: "45+", label: "Partner Schools", icon: "🏫" },
-              { value: "200+", label: "Active Beneficiaries", icon: "👦" },
-              { value: "30+", label: "Scholars Funded", icon: "🎓" },
-            ].map((stat, i) => (
+            {impactStats.map((stat, i) => (
               <AnimSection key={stat.label} delay={i * 0.12}>
                 <motion.div
                   className="text-center p-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 hover:bg-white/15 transition-all duration-500"
@@ -639,14 +534,7 @@ export default function NGOProgramsPage() {
             {/* Vertical line */}
             <div className="absolute left-4 sm:left-1/2 sm:-translate-x-px top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#2e7d5b] via-[#5cc99a] to-[#2e7d5b]/20" />
 
-            {[
-              { year: "2021", title: "The Beginning", desc: "Started with 10 chess sets donated to 2 schools in Accra." },
-              { year: "2022", title: "First Expansion", desc: "Grew to 5 schools, launched our first scholarship program." },
-              { year: "2023", title: "Community Hubs", desc: "Opened 4 community chess hubs and trained 12 local coaches." },
-              { year: "2024", title: "National Reach", desc: "Expanded to 10 communities across 4 regions of Ghana." },
-              { year: "2025", title: "Foundation Tournaments", desc: "Launched quarterly tournaments with 200+ participants." },
-              { year: "2026", title: "The Future", desc: "Goal: 50 schools, 20 hubs, and 100 scholars by year's end." },
-            ].map((item, i) => {
+            {timeline.map((item, i) => {
               const isLeft = i % 2 === 0;
               return (
                 <AnimSection key={item.year} delay={i * 0.1}>
@@ -711,23 +599,23 @@ export default function NGOProgramsPage() {
             </motion.div>
 
             <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight mb-6">
-              Ready to Make a{" "}
+              {cta.heading}{" "}
               <span className="bg-gradient-to-r from-[#8ce8be] to-[#5cc99a] bg-clip-text text-transparent">
-                Difference
+                {cta.headingHighlight}
               </span>
               ?
             </h2>
             <p className="text-white/60 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-              Whether you donate, volunteer, or apply for support — every action moves us closer to a Ghana where every child can play chess.
+              {cta.description}
             </p>
 
             <div className="flex flex-wrap justify-center gap-4">
               <Link
-                href="/ngo/donate"
+                href={cta.cta1Link}
                 className="group px-8 py-4 rounded-full bg-white text-[#2e7d5b] font-bold text-base transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl shadow-black/20"
               >
                 <span className="flex items-center gap-2">
-                  💚 Donate Now
+                  {cta.cta1Text}
                   <motion.span
                     className="inline-block"
                     animate={{ x: [0, 4, 0] }}
@@ -736,16 +624,16 @@ export default function NGOProgramsPage() {
                 </span>
               </Link>
               <Link
-                href="/ngo/volunteer"
+                href={cta.cta2Link}
                 className="px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-bold text-base transition-all duration-300 hover:scale-105"
               >
-                🤲 Volunteer
+                {cta.cta2Text}
               </Link>
               <Link
-                href="/ngo/apply"
+                href={cta.cta3Link}
                 className="px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-bold text-base transition-all duration-300 hover:scale-105"
               >
-                🙏 Apply for Support
+                {cta.cta3Text}
               </Link>
             </div>
           </AnimSection>
