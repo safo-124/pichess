@@ -443,7 +443,10 @@ export async function saveSiteContent(key: string, value: string) {
     revalidatePath("/");
     revalidatePath("/admin/homepage");
   } else if (zone === "site") {
+    revalidatePath("/");
     revalidatePath("/", "layout");
+    revalidatePath("/academy");
+    revalidatePath("/ngo");
     revalidatePath("/admin/footer");
     revalidatePath("/admin/settings");
   } else {

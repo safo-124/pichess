@@ -17,6 +17,7 @@ const links = [
 export default function NGONav({ logoUrl }: { logoUrl?: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [logoError, setLogoError] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -39,10 +40,10 @@ export default function NGONav({ logoUrl }: { logoUrl?: string }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/ngo" className="flex items-center gap-2 group">
-            {logoUrl ? (
+            {logoUrl && !logoError ? (
               <div className="h-9 flex items-center justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={logoUrl} alt="PiChess Foundation Logo" className="h-full w-auto object-contain" />
+                <img src={logoUrl} alt="PiChess Foundation Logo" className="h-full w-auto object-contain" onError={() => setLogoError(true)} />
               </div>
             ) : (
               <>

@@ -16,6 +16,7 @@ const links = [
 export default function AcademyNav({ logoUrl }: { logoUrl?: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [logoError, setLogoError] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -40,10 +41,10 @@ export default function AcademyNav({ logoUrl }: { logoUrl?: string }) {
         <div className="flex items-center justify-between h-[70px]">
           {/* Logo */}
           <Link href="/academy" className="flex items-center gap-3 group">
-            {logoUrl ? (
+            {logoUrl && !logoError ? (
               <div className="h-10 flex items-center justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={logoUrl} alt="PiChess Academy Logo" className="h-full w-auto object-contain" />
+                <img src={logoUrl} alt="PiChess Academy Logo" className="h-full w-auto object-contain" onError={() => setLogoError(true)} />
               </div>
             ) : (
               <>

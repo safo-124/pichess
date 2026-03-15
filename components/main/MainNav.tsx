@@ -49,6 +49,7 @@ export default function MainNav({ logoUrl }: { logoUrl?: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [logoError, setLogoError] = useState(false);
   const pathname = usePathname();
 
   const handleScroll = useCallback(() => {
@@ -143,10 +144,10 @@ export default function MainNav({ logoUrl }: { logoUrl?: string }) {
 
               {/* Center Logo */}
               <Link href="/" className="flex items-center gap-3 group relative">
-                {logoUrl ? (
+                {logoUrl && !logoError ? (
                   <div className="h-11 flex items-center justify-center">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={logoUrl} alt="PiChess Logo" className="h-full w-auto object-contain" />
+                    <img src={logoUrl} alt="PiChess Logo" className="h-full w-auto object-contain" onError={() => setLogoError(true)} />
                   </div>
                 ) : (
                   <>
