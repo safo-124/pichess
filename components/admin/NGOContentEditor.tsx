@@ -294,11 +294,12 @@ export default function NGOContentEditor({ initialData }: Props) {
       </Section>
 
       {/* ═══ Programs ═══ */}
-      <Section id="programs" title="Programs Page — Six Programs" icon="🎯" open={isOpen("programs")} onToggle={() => toggle("programs")}>
+      <Section id="programs" title={`Programs Page — Programs (${programs.length})`} icon="🎯" open={isOpen("programs")} onToggle={() => toggle("programs")}>
         {programs.map((p, i) => (
-          <details key={i} className="border border-zinc-100 rounded-xl overflow-hidden">
+          <details key={p.id} className="border border-zinc-100 rounded-xl overflow-hidden">
             <summary className="px-4 py-3 cursor-pointer hover:bg-zinc-50 font-semibold text-sm text-zinc-700 flex items-center gap-2">
-              <span>{p.icon}</span> {p.title || `Program ${i + 1}`}
+              <span>{p.icon}</span> <span className="flex-1">{p.title || `Program ${i + 1}`}</span>
+              <button onClick={e => { e.preventDefault(); setPrograms(programs.filter((_, j) => j !== i)); }} className="text-red-400 hover:text-red-600 text-xs font-bold px-2" title="Remove program">✕</button>
             </summary>
             <div className="p-4 space-y-3 bg-zinc-50/30">
               <div className="grid grid-cols-3 gap-3">
@@ -324,38 +325,50 @@ export default function NGOContentEditor({ initialData }: Props) {
             </div>
           </details>
         ))}
+        <button onClick={() => setPrograms([...programs, { id: Math.random().toString(36).slice(2, 10), badge: "New Program", icon: "♟", title: "", subtitle: "", desc: "", details: [], impact: "", image: "", color: "#2e7d5b" }])} className="text-xs text-[#2e7d5b] font-bold mt-2">+ Add Program</button>
       </Section>
 
       {/* ═══ Process Steps ═══ */}
       <Section id="process" title="Programs Page — Process Steps" icon="⚙️" open={isOpen("process")} onToggle={() => toggle("process")}>
         {processSteps.map((s, i) => (
-          <div key={i} className="grid grid-cols-4 gap-3 p-3 border border-zinc-100 rounded-xl">
-            <div><label className={labelCls}>Number</label><input className={inputCls} value={s.num} onChange={e => { const ns = [...processSteps]; ns[i] = { ...ns[i], num: e.target.value }; setProcessSteps(ns); }} /></div>
-            <div><label className={labelCls}>Title</label><input className={inputCls} value={s.title} onChange={e => { const ns = [...processSteps]; ns[i] = { ...ns[i], title: e.target.value }; setProcessSteps(ns); }} /></div>
-            <div className="col-span-2"><label className={labelCls}>Description</label><input className={inputCls} value={s.desc} onChange={e => { const ns = [...processSteps]; ns[i] = { ...ns[i], desc: e.target.value }; setProcessSteps(ns); }} /></div>
+          <div key={i} className="flex gap-2 items-start p-3 border border-zinc-100 rounded-xl">
+            <div className="grid grid-cols-4 gap-3 flex-1">
+              <div><label className={labelCls}>Number</label><input className={inputCls} value={s.num} onChange={e => { const ns = [...processSteps]; ns[i] = { ...ns[i], num: e.target.value }; setProcessSteps(ns); }} /></div>
+              <div><label className={labelCls}>Title</label><input className={inputCls} value={s.title} onChange={e => { const ns = [...processSteps]; ns[i] = { ...ns[i], title: e.target.value }; setProcessSteps(ns); }} /></div>
+              <div className="col-span-2"><label className={labelCls}>Description</label><input className={inputCls} value={s.desc} onChange={e => { const ns = [...processSteps]; ns[i] = { ...ns[i], desc: e.target.value }; setProcessSteps(ns); }} /></div>
+            </div>
+            <button onClick={() => setProcessSteps(processSteps.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-600 text-xs font-bold px-2 mt-6" title="Remove">✕</button>
           </div>
         ))}
+        <button onClick={() => setProcessSteps([...processSteps, { num: String(processSteps.length + 1).padStart(2, "0"), title: "", desc: "" }])} className="text-xs text-[#2e7d5b] font-bold mt-2">+ Add Step</button>
       </Section>
 
       {/* ═══ Impact Stats ═══ */}
       <Section id="prog-stats" title="Programs Page — Impact Numbers" icon="📈" open={isOpen("prog-stats")} onToggle={() => toggle("prog-stats")}>
         {programsStats.map((s, i) => (
-          <div key={i} className="grid grid-cols-3 gap-3 p-3 border border-zinc-100 rounded-xl">
-            <div><label className={labelCls}>Icon</label><input className={inputCls} value={s.icon} onChange={e => { const ns = [...programsStats]; ns[i] = { ...ns[i], icon: e.target.value }; setProgramsStats(ns); }} /></div>
-            <div><label className={labelCls}>Value</label><input className={inputCls} value={s.value} onChange={e => { const ns = [...programsStats]; ns[i] = { ...ns[i], value: e.target.value }; setProgramsStats(ns); }} /></div>
-            <div><label className={labelCls}>Label</label><input className={inputCls} value={s.label} onChange={e => { const ns = [...programsStats]; ns[i] = { ...ns[i], label: e.target.value }; setProgramsStats(ns); }} /></div>
+          <div key={i} className="flex gap-2 items-start p-3 border border-zinc-100 rounded-xl">
+            <div className="grid grid-cols-3 gap-3 flex-1">
+              <div><label className={labelCls}>Icon</label><input className={inputCls} value={s.icon} onChange={e => { const ns = [...programsStats]; ns[i] = { ...ns[i], icon: e.target.value }; setProgramsStats(ns); }} /></div>
+              <div><label className={labelCls}>Value</label><input className={inputCls} value={s.value} onChange={e => { const ns = [...programsStats]; ns[i] = { ...ns[i], value: e.target.value }; setProgramsStats(ns); }} /></div>
+              <div><label className={labelCls}>Label</label><input className={inputCls} value={s.label} onChange={e => { const ns = [...programsStats]; ns[i] = { ...ns[i], label: e.target.value }; setProgramsStats(ns); }} /></div>
+            </div>
+            <button onClick={() => setProgramsStats(programsStats.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-600 text-xs font-bold px-2 mt-6" title="Remove">✕</button>
           </div>
         ))}
+        <button onClick={() => setProgramsStats([...programsStats, { icon: "📊", value: "", label: "" }])} className="text-xs text-[#2e7d5b] font-bold mt-2">+ Add Stat</button>
       </Section>
 
       {/* ═══ Testimonials ═══ */}
       <Section id="testimonials" title="Programs Page — Testimonials" icon="💬" open={isOpen("testimonials")} onToggle={() => toggle("testimonials")}>
         {testimonials.map((t, i) => (
           <div key={i} className="p-4 border border-zinc-100 rounded-xl space-y-3">
-            <div className="grid grid-cols-3 gap-3">
-              <div><label className={labelCls}>Avatar (emoji)</label><input className={inputCls} value={t.avatar} onChange={e => { const nt = [...testimonials]; nt[i] = { ...nt[i], avatar: e.target.value }; setTestimonials(nt); }} /></div>
-              <div><label className={labelCls}>Name</label><input className={inputCls} value={t.name} onChange={e => { const nt = [...testimonials]; nt[i] = { ...nt[i], name: e.target.value }; setTestimonials(nt); }} /></div>
-              <div><label className={labelCls}>Role</label><input className={inputCls} value={t.role} onChange={e => { const nt = [...testimonials]; nt[i] = { ...nt[i], role: e.target.value }; setTestimonials(nt); }} /></div>
+            <div className="flex items-start gap-2">
+              <div className="grid grid-cols-3 gap-3 flex-1">
+                <div><label className={labelCls}>Avatar (emoji)</label><input className={inputCls} value={t.avatar} onChange={e => { const nt = [...testimonials]; nt[i] = { ...nt[i], avatar: e.target.value }; setTestimonials(nt); }} /></div>
+                <div><label className={labelCls}>Name</label><input className={inputCls} value={t.name} onChange={e => { const nt = [...testimonials]; nt[i] = { ...nt[i], name: e.target.value }; setTestimonials(nt); }} /></div>
+                <div><label className={labelCls}>Role</label><input className={inputCls} value={t.role} onChange={e => { const nt = [...testimonials]; nt[i] = { ...nt[i], role: e.target.value }; setTestimonials(nt); }} /></div>
+              </div>
+              <button onClick={() => setTestimonials(testimonials.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-600 text-xs font-bold px-2 mt-6" title="Remove">✕</button>
             </div>
             <div><label className={labelCls}>Quote</label><textarea className={`${inputCls} resize-none`} rows={2} value={t.quote} onChange={e => { const nt = [...testimonials]; nt[i] = { ...nt[i], quote: e.target.value }; setTestimonials(nt); }} /></div>
           </div>
@@ -366,10 +379,13 @@ export default function NGOContentEditor({ initialData }: Props) {
       {/* ═══ Timeline ═══ */}
       <Section id="timeline" title="Programs Page — Timeline" icon="📅" open={isOpen("timeline")} onToggle={() => toggle("timeline")}>
         {timeline.map((t, i) => (
-          <div key={i} className="grid grid-cols-4 gap-3 p-3 border border-zinc-100 rounded-xl">
-            <div><label className={labelCls}>Year</label><input className={inputCls} value={t.year} onChange={e => { const nt = [...timeline]; nt[i] = { ...nt[i], year: e.target.value }; setTimeline(nt); }} /></div>
-            <div><label className={labelCls}>Title</label><input className={inputCls} value={t.title} onChange={e => { const nt = [...timeline]; nt[i] = { ...nt[i], title: e.target.value }; setTimeline(nt); }} /></div>
-            <div className="col-span-2"><label className={labelCls}>Description</label><input className={inputCls} value={t.desc} onChange={e => { const nt = [...timeline]; nt[i] = { ...nt[i], desc: e.target.value }; setTimeline(nt); }} /></div>
+          <div key={i} className="flex gap-2 items-start p-3 border border-zinc-100 rounded-xl">
+            <div className="grid grid-cols-4 gap-3 flex-1">
+              <div><label className={labelCls}>Year</label><input className={inputCls} value={t.year} onChange={e => { const nt = [...timeline]; nt[i] = { ...nt[i], year: e.target.value }; setTimeline(nt); }} /></div>
+              <div><label className={labelCls}>Title</label><input className={inputCls} value={t.title} onChange={e => { const nt = [...timeline]; nt[i] = { ...nt[i], title: e.target.value }; setTimeline(nt); }} /></div>
+              <div className="col-span-2"><label className={labelCls}>Description</label><input className={inputCls} value={t.desc} onChange={e => { const nt = [...timeline]; nt[i] = { ...nt[i], desc: e.target.value }; setTimeline(nt); }} /></div>
+            </div>
+            <button onClick={() => setTimeline(timeline.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-600 text-xs font-bold px-2 mt-6" title="Remove">✕</button>
           </div>
         ))}
         <button onClick={() => setTimeline([...timeline, { year: "", title: "", desc: "" }])} className="text-xs text-[#2e7d5b] font-bold">+ Add Milestone</button>
