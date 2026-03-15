@@ -1,8 +1,8 @@
 import NGOProgramsPage from "@/components/ngo/NGOProgramsPage";
 import { getSiteContent } from "@/lib/actions/admin";
 import {
-  defaultNGOProgramsHero, defaultPrograms, defaultProcessSteps,
-  defaultTestimonials, defaultTimeline, defaultProgramsImpactStats, defaultCTA,
+  defaultNGOProgramsHero, defaultNGOPrograms, defaultNGOProcessSteps,
+  defaultNGOTestimonials, defaultNGOTimeline, defaultNGOProgramsStats, defaultNGOCTA,
   type NGOProgramsHero, type NGOProgram, type NGOProcessStep,
   type NGOTestimonial, type NGOTimelineItem, type NGOProgramsImpactStat, type NGOCTA,
 } from "@/lib/ngo-content";
@@ -32,12 +32,12 @@ export default async function ProgramsPage() {
   return (
     <NGOProgramsPage
       programsHero={parse<NGOProgramsHero>(heroRaw, defaultNGOProgramsHero)}
-      programs={parse<NGOProgram[]>(programsRaw, defaultPrograms)}
-      processSteps={parse<NGOProcessStep[]>(stepsRaw, defaultProcessSteps)}
-      testimonials={parse<NGOTestimonial[]>(testimonialsRaw, defaultTestimonials)}
-      timeline={parse<NGOTimelineItem[]>(timelineRaw, defaultTimeline)}
-      impactStats={parse<NGOProgramsImpactStat[]>(statsRaw, defaultProgramsImpactStats)}
-      cta={parse<NGOCTA>(ctaRaw, defaultCTA)}
+      programs={parse<NGOProgram[]>(programsRaw, defaultNGOPrograms)}
+      processSteps={parse<NGOProcessStep[]>(stepsRaw, defaultNGOProcessSteps)}
+      testimonials={parse<NGOTestimonial[]>(testimonialsRaw, defaultNGOTestimonials)}
+      timeline={parse<NGOTimelineItem[]>(timelineRaw, defaultNGOTimeline)}
+      impactStats={parse<NGOProgramsImpactStat[]>(statsRaw, defaultNGOProgramsStats)}
+      cta={parse<NGOCTA>(ctaRaw, defaultNGOCTA)}
     />
   );
 }
