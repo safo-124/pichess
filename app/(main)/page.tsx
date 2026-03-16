@@ -786,9 +786,9 @@ export default async function HomePage() {
               {[...partners, ...partners].map((p, i) => (
                 <div key={`${p.id}-${i}`} className="flex-shrink-0 mx-8 sm:mx-12 flex items-center gap-3">
                   {p.logo ? (
-                    <img src={p.logo} alt={p.name} className="h-8 sm:h-10 object-contain opacity-40 hover:opacity-80 transition-opacity grayscale hover:grayscale-0 duration-500" />
+                    <img src={p.logo} alt={p.name} className="h-12 sm:h-16 object-contain transition-opacity hover:opacity-80 duration-500" />
                   ) : (
-                    <span className="text-gray-300 text-sm font-bold hover:text-gray-600 transition-colors duration-500">{p.name}</span>
+                    <span className="text-gray-600 text-base font-bold hover:text-gray-900 transition-colors duration-500">{p.name}</span>
                   )}
                 </div>
               ))}
