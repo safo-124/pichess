@@ -290,22 +290,46 @@ export const defaultNGOProgramsStats: NGOProgramsImpactStat[] = [
 
 // ── Apply page ──
 export interface NGOApplyContent {
+  heroImage: string;
+  heroBadge: string;
   heading: string;
   subtitle: string;
+  ctaButtonText: string;
+  benefitsBadge: string;
+  benefitsHeading: string;
   benefits: { icon: string; title: string; desc: string }[];
+  formBadgePrefix: string;
+  formHeading: string;
+  successHeading: string;
+  successMessage: string;
   faqs: { q: string; a: string }[];
+  bottomCta: {
+    icon: string;
+    heading: string;
+    description: string;
+    links: { label: string; href: string }[];
+  };
 }
 
 export const defaultNGOApply: NGOApplyContent = {
+  heroImage: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=80",
+  heroBadge: "PiChess Foundation",
   heading: "Partner with Us",
   subtitle:
     "Every child deserves the chance to learn chess. Fill out our application and we'll match you with the right program — completely free.",
+  ctaButtonText: "Start Application ↓",
+  benefitsBadge: "What You Get",
+  benefitsHeading: "Free Support, Real Impact",
   benefits: [
     { icon: "♟", title: "Free Equipment", desc: "Chess sets, boards, clocks & materials" },
     { icon: "🏫", title: "School Programs", desc: "Regular coaching at your school" },
     { icon: "🎓", title: "Scholarships", desc: "Funded spots at PiChess Academy" },
     { icon: "🤝", title: "Mentorship", desc: "Paired with experienced players" },
   ],
+  formBadgePrefix: "Step",
+  formHeading: "Application Form",
+  successHeading: "Application Received!",
+  successMessage: "We'll review your application and get back to you within 7 working days. Thank you for reaching out to PiChess Foundation!",
   faqs: [
     { q: "Who can apply?", a: "Anyone aged 5-25 who wants to learn or improve their chess skills. We prioritise applicants from underserved communities." },
     { q: "Is there a fee?", a: "No. All PiChess Foundation programs are completely free. We cover equipment, coaching, and tournament fees." },
@@ -313,6 +337,16 @@ export const defaultNGOApply: NGOApplyContent = {
     { q: "What if I don't have equipment?", a: "Don't worry! If accepted, we provide everything you need — chess set, board, workbook, and clock." },
     { q: "Can a parent apply on behalf of a child?", a: "Absolutely. Fill in the child's details and your own in the guardian section." },
   ],
+  bottomCta: {
+    icon: "♟",
+    heading: "Not ready to apply yet?",
+    description: "Explore our programs or get in touch — we're always here to help.",
+    links: [
+      { label: "View Programs", href: "/ngo/programs" },
+      { label: "Back to Foundation", href: "/ngo" },
+      { label: "Contact Us", href: "/contact" },
+    ],
+  },
 };
 
 // ── Volunteer page ──

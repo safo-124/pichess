@@ -13,13 +13,6 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
    DATA
    ═══════════════════════════════════════════════════════════ */
 
-const steps = [
-  { id: 1, label: "Personal", icon: "👤" },
-  { id: 2, label: "Chess", icon: "♟" },
-  { id: 3, label: "Guardian", icon: "👨‍👩‍👦" },
-  { id: 4, label: "Story", icon: "📝" },
-];
-
 const regions = [
   "Greater Accra", "Ashanti", "Central", "Western", "Eastern",
   "Northern", "Volta", "Bono", "Upper East", "Upper West",
@@ -35,6 +28,8 @@ const chessLevels = [
 /* ═══════════════════════════════════════════════════════════
    HELPERS
    ═══════════════════════════════════════════════════════════ */
+
+interface PartnerData { id: number; name: string; logo: string | null; website: string | null }
 
 function AnimSection({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -60,9 +55,8 @@ const labelCls = "block text-xs font-bold text-zinc-500 uppercase tracking-wides
    MAIN
    ═══════════════════════════════════════════════════════════ */
 
-export default function ApplyPage({ content }: { content: NGOApplyContent }) {
-  const { benefits, faqs } = content;
-  const [step, setStep] = useState(1);
+export default function ApplyPage({ content, partners = [] }: { content: NGOApplyContent; partners?: PartnerData[] }) {
+  const { benefits, faqs, bottomCta } = content;
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -76,15 +70,10 @@ export default function ApplyPage({ content }: { content: NGOApplyContent }) {
   const set = (key: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  const canNext = () => {
-    if (step === 1) return form.name && form.email && form.phone;
-    if (step === 2) return true;
-    if (step === 3) return true;
-    if (step === 4) return form.reason;
-    return true;
-  };
+  const canSubmit = form.name && form.email && form.phone && form.reason;
 
-  async function handleSubmit() {
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
     setStatus("loading");
     const fd = new FormData();
     Object.entries(form).forEach(([k, v]) => fd.set(k, v));
@@ -104,8 +93,8 @@ export default function ApplyPage({ content }: { content: NGOApplyContent }) {
       <section className="relative min-h-[50vh] sm:min-h-[55vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=80"
-            alt="Children learning chess"
+            src={content.heroImage}
+            alt="Partner with PiChess"
             fill
             priority
             className="object-cover"
@@ -140,7 +129,7 @@ export default function ApplyPage({ content }: { content: NGOApplyContent }) {
           >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white/80 text-xs font-bold uppercase tracking-[0.2em] mb-6">
               <span className="w-2 h-2 rounded-full bg-[#5cc99a] animate-pulse" />
-              PiChess Foundation
+              {content.heroBadge}
             </span>
           </motion.div>
 
@@ -177,7 +166,7 @@ export default function ApplyPage({ content }: { content: NGOApplyContent }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.45, ease }}
           >
-            Start Application ↓
+            {content.ctaButtonText}
           </motion.a>
         </div>
 
@@ -196,16 +185,38 @@ export default function ApplyPage({ content }: { content: NGOApplyContent }) {
         </motion.div>
       </section>
 
+      {/* ──── PARTNERS MARQUEE ──── */}
+      {partners.length > 0 && (
+        <section className="py-10 bg-white border-b border-zinc-100 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 mb-6 text-center">
+            <p className="text-zinc-300 text-[10px] font-bold uppercase tracking-[0.3em]">Trusted By</p>
+          </div>
+          <div className="relative">
+            <div className="flex animate-marquee whitespace-nowrap">
+              {[...partners, ...partners].map((p, i) => (
+                <div key={`${p.id}-${i}`} className="flex-shrink-0 mx-8 sm:mx-12 flex items-center gap-3">
+                  {p.logo ? (
+                    <img src={p.logo} alt={p.name} className="h-10 sm:h-14 object-contain transition-opacity hover:opacity-80 duration-500" />
+                  ) : (
+                    <span className="text-zinc-600 text-base font-bold hover:text-zinc-900 transition-colors duration-500">{p.name}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ──── WHAT YOU GET ──── */}
       <section className="py-16 sm:py-20 bg-zinc-50 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#2e7d5b]/20 to-transparent" />
         <div className="max-w-6xl mx-auto px-4">
           <AnimSection className="text-center mb-12">
             <span className="inline-block px-4 py-1.5 rounded-full bg-[#2e7d5b]/10 text-[#2e7d5b] text-xs font-bold uppercase tracking-widest mb-3">
-              What You Get
+              {content.benefitsBadge}
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-zinc-900 tracking-tight">
-              Free Support, Real Impact
+              {content.benefitsHeading}
             </h2>
           </AnimSection>
 
@@ -233,7 +244,7 @@ export default function ApplyPage({ content }: { content: NGOApplyContent }) {
         </div>
       </section>
 
-      {/* ──── APPLICATION FORM ──── */}
+      {/* ──── APPLICATION FORM (single page) ──── */}
       <section id="apply-form" className="py-16 sm:py-24 bg-white relative">
         <div className="max-w-3xl mx-auto px-4">
 
@@ -246,7 +257,6 @@ export default function ApplyPage({ content }: { content: NGOApplyContent }) {
                 transition={{ duration: 0.6, ease }}
                 className="text-center py-16"
               >
-                {/* Success animation */}
                 <motion.div
                   className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-[#d4ede3] mx-auto mb-8 flex items-center justify-center"
                   initial={{ scale: 0 }}
@@ -269,7 +279,7 @@ export default function ApplyPage({ content }: { content: NGOApplyContent }) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, ease }}
                 >
-                  Application Received!
+                  {content.successHeading}
                 </motion.h2>
                 <motion.p
                   className="text-zinc-500 max-w-md mx-auto mb-8 text-sm sm:text-base"
@@ -277,7 +287,7 @@ export default function ApplyPage({ content }: { content: NGOApplyContent }) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6, ease }}
                 >
-                  We&apos;ll review your application and get back to you within 7 working days. Thank you for reaching out to PiChess Foundation!
+                  {content.successMessage}
                 </motion.p>
 
                 <motion.div
@@ -305,336 +315,194 @@ export default function ApplyPage({ content }: { content: NGOApplyContent }) {
                 {/* Header */}
                 <div className="text-center mb-10 sm:mb-14">
                   <span className="inline-block px-4 py-1.5 rounded-full bg-[#2e7d5b]/10 text-[#2e7d5b] text-xs font-bold uppercase tracking-widest mb-3">
-                    Step {step} of {steps.length}
+                    {content.formBadgePrefix}
                   </span>
                   <h2 className="text-2xl sm:text-4xl font-black text-zinc-900 tracking-tight">
-                    Application Form
+                    {content.formHeading}
                   </h2>
                 </div>
 
-                {/* Step indicator */}
-                <div className="flex items-center justify-center gap-2 sm:gap-4 mb-10 sm:mb-14">
-                  {steps.map((s, i) => {
-                    const isActive = s.id === step;
-                    const isDone = s.id < step;
-                    return (
-                      <div key={s.id} className="flex items-center gap-2 sm:gap-4">
-                        <motion.button
-                          onClick={() => {
-                            if (isDone || isActive) setStep(s.id);
-                          }}
-                          className={`relative flex flex-col items-center gap-1 sm:gap-2 ${isDone || isActive ? "cursor-pointer" : "cursor-default"}`}
-                          whileHover={isDone || isActive ? { scale: 1.05 } : {}}
-                          whileTap={isDone || isActive ? { scale: 0.95 } : {}}
-                        >
-                          <motion.div
-                            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-xl sm:text-2xl transition-all duration-500 ${
-                              isActive
-                                ? "bg-[#2e7d5b] shadow-lg shadow-[#2e7d5b]/30 text-white"
-                                : isDone
-                                ? "bg-[#d4ede3] text-[#2e7d5b]"
-                                : "bg-zinc-100 text-zinc-300"
-                            }`}
-                            layout
-                            transition={{ duration: 0.4, ease }}
-                          >
-                            {isDone ? (
-                              <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-lg">✓</motion.span>
-                            ) : (
-                              s.icon
-                            )}
-                          </motion.div>
-                          <span className={`text-[10px] sm:text-xs font-bold tracking-wide ${
-                            isActive ? "text-[#2e7d5b]" : isDone ? "text-[#2e7d5b]/60" : "text-zinc-300"
-                          }`}>
-                            {s.label}
-                          </span>
-                        </motion.button>
-                        {i < steps.length - 1 && (
-                          <div className="relative w-8 sm:w-16 h-0.5 bg-zinc-100 rounded-full overflow-hidden -mt-4 sm:-mt-5">
-                            <motion.div
-                              className="absolute inset-y-0 left-0 bg-[#2e7d5b] rounded-full"
-                              initial={{ width: "0%" }}
-                              animate={{ width: isDone ? "100%" : "0%" }}
-                              transition={{ duration: 0.5, ease }}
-                            />
-                          </div>
-                        )}
+                <form onSubmit={handleSubmit} className="bg-white rounded-3xl border-2 border-zinc-100 shadow-sm p-6 sm:p-10 space-y-8">
+
+                  {/* ── Personal Information ── */}
+                  <div>
+                    <div className="mb-5">
+                      <h3 className="text-base sm:text-lg font-black text-zinc-900 flex items-center gap-2">
+                        <span className="w-8 h-8 rounded-xl bg-[#2e7d5b] text-white flex items-center justify-center text-sm">👤</span>
+                        Personal Information
+                      </h3>
+                      <p className="text-zinc-400 text-sm mt-1 ml-10">Tell us about the applicant.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                      <div>
+                        <label className={labelCls}>Full Name *</label>
+                        <input value={form.name} onChange={set("name")} placeholder="e.g. Kwame Asante" className={inputCls} required />
                       </div>
-                    );
-                  })}
-                </div>
+                      <div>
+                        <label className={labelCls}>Email Address *</label>
+                        <input value={form.email} onChange={set("email")} type="email" placeholder="kwame@example.com" className={inputCls} required />
+                      </div>
+                    </div>
 
-                {/* Progress bar */}
-                <div className="h-1 bg-zinc-100 rounded-full mb-10 sm:mb-14 overflow-hidden">
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-[#2e7d5b] to-[#5cc99a] rounded-full"
-                    animate={{ width: `${(step / steps.length) * 100}%` }}
-                    transition={{ duration: 0.5, ease }}
-                  />
-                </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-5">
+                      <div>
+                        <label className={labelCls}>Phone Number *</label>
+                        <input value={form.phone} onChange={set("phone")} type="tel" placeholder="024 XXXX XXX" className={inputCls} required />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Age</label>
+                        <input value={form.age} onChange={set("age")} type="number" min="3" max="99" placeholder="e.g. 12" className={inputCls} />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Region</label>
+                        <select value={form.region} onChange={set("region")} className={inputCls}>
+                          <option value="">Select region</option>
+                          {regions.map((r) => <option key={r} value={r}>{r}</option>)}
+                        </select>
+                      </div>
+                    </div>
 
-                {/* Form card */}
-                <div className="bg-white rounded-3xl border-2 border-zinc-100 shadow-sm p-6 sm:p-10">
-                  <AnimatePresence mode="wait">
-                    {/* ── Step 1: Personal ── */}
-                    {step === 1 && (
-                      <motion.div
-                        key="step1"
-                        initial={{ opacity: 0, x: 40 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -40 }}
-                        transition={{ duration: 0.4, ease }}
-                        className="space-y-5"
-                      >
-                        <div className="mb-6">
-                          <h3 className="text-lg sm:text-xl font-black text-zinc-900 mb-1">Personal Information</h3>
-                          <p className="text-zinc-400 text-sm">Tell us about the applicant.</p>
-                        </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
+                      <div>
+                        <label className={labelCls}>Location / Community</label>
+                        <input value={form.location} onChange={set("location")} placeholder="e.g. Nima, Accra" className={inputCls} />
+                      </div>
+                      <div>
+                        <label className={labelCls}>School / Institution</label>
+                        <input value={form.school} onChange={set("school")} placeholder="e.g. Accra Academy" className={inputCls} />
+                      </div>
+                    </div>
+                  </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                          <div>
-                            <label className={labelCls}>Full Name *</label>
-                            <input value={form.name} onChange={set("name")} placeholder="e.g. Kwame Asante" className={inputCls} required />
-                          </div>
-                          <div>
-                            <label className={labelCls}>Email Address *</label>
-                            <input value={form.email} onChange={set("email")} type="email" placeholder="kwame@example.com" className={inputCls} required />
-                          </div>
-                        </div>
+                  <div className="h-px bg-zinc-100" />
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                          <div>
-                            <label className={labelCls}>Phone Number *</label>
-                            <input value={form.phone} onChange={set("phone")} type="tel" placeholder="024 XXXX XXX" className={inputCls} required />
-                          </div>
-                          <div>
-                            <label className={labelCls}>Age</label>
-                            <input value={form.age} onChange={set("age")} type="number" min="3" max="99" placeholder="e.g. 12" className={inputCls} />
-                          </div>
-                        </div>
+                  {/* ── Chess Background ── */}
+                  <div>
+                    <div className="mb-5">
+                      <h3 className="text-base sm:text-lg font-black text-zinc-900 flex items-center gap-2">
+                        <span className="w-8 h-8 rounded-xl bg-[#2e7d5b] text-white flex items-center justify-center text-sm">♟</span>
+                        Chess Background
+                      </h3>
+                      <p className="text-zinc-400 text-sm mt-1 ml-10">Help us understand your chess experience.</p>
+                    </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                          <div>
-                            <label className={labelCls}>Location / Community</label>
-                            <input value={form.location} onChange={set("location")} placeholder="e.g. Nima, Accra" className={inputCls} />
-                          </div>
-                          <div>
-                            <label className={labelCls}>Region</label>
-                            <select value={form.region} onChange={set("region")} className={inputCls}>
-                              <option value="">Select region</option>
-                              {regions.map((r) => <option key={r} value={r}>{r}</option>)}
-                            </select>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
+                    <label className={labelCls}>Chess Level</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {chessLevels.map((level) => (
+                        <motion.button
+                          key={level.value}
+                          type="button"
+                          onClick={() => setForm((f) => ({ ...f, chess_level: level.value }))}
+                          className={`relative rounded-2xl border-2 p-4 sm:p-5 text-left transition-all duration-300 ${
+                            form.chess_level === level.value
+                              ? "border-[#2e7d5b] bg-[#2e7d5b]/5 shadow-sm"
+                              : "border-zinc-200 bg-white hover:border-zinc-300"
+                          }`}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          {form.chess_level === level.value && (
+                            <motion.div
+                              className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#2e7d5b] flex items-center justify-center"
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{ duration: 0.3, ease }}
+                            >
+                              <span className="text-white text-[10px] font-bold">✓</span>
+                            </motion.div>
+                          )}
+                          <div className="text-sm font-black text-zinc-900">{level.label}</div>
+                          <div className="text-xs text-zinc-400 mt-1">{level.desc}</div>
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
 
-                    {/* ── Step 2: Chess ── */}
-                    {step === 2 && (
-                      <motion.div
-                        key="step2"
-                        initial={{ opacity: 0, x: 40 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -40 }}
-                        transition={{ duration: 0.4, ease }}
-                        className="space-y-5"
-                      >
-                        <div className="mb-6">
-                          <h3 className="text-lg sm:text-xl font-black text-zinc-900 mb-1">Chess Background</h3>
-                          <p className="text-zinc-400 text-sm">Help us understand your chess experience.</p>
-                        </div>
+                  <div className="h-px bg-zinc-100" />
 
-                        <div>
-                          <label className={labelCls}>School / Institution</label>
-                          <input value={form.school} onChange={set("school")} placeholder="e.g. Accra Academy" className={inputCls} />
-                        </div>
+                  {/* ── Guardian Details ── */}
+                  <div>
+                    <div className="mb-5">
+                      <h3 className="text-base sm:text-lg font-black text-zinc-900 flex items-center gap-2">
+                        <span className="w-8 h-8 rounded-xl bg-[#2e7d5b] text-white flex items-center justify-center text-sm">👨‍👩‍👦</span>
+                        Guardian Details
+                      </h3>
+                      <p className="text-zinc-400 text-sm mt-1 ml-10">Optional — recommended for applicants under 18.</p>
+                    </div>
 
-                        <div>
-                          <label className={labelCls}>Chess Level</label>
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-1">
-                            {chessLevels.map((level) => (
-                              <motion.button
-                                key={level.value}
-                                type="button"
-                                onClick={() => setForm((f) => ({ ...f, chess_level: level.value }))}
-                                className={`relative rounded-2xl border-2 p-4 sm:p-5 text-left transition-all duration-300 ${
-                                  form.chess_level === level.value
-                                    ? "border-[#2e7d5b] bg-[#2e7d5b]/5 shadow-sm"
-                                    : "border-zinc-200 bg-white hover:border-zinc-300"
-                                }`}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                              >
-                                {form.chess_level === level.value && (
-                                  <motion.div
-                                    className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#2e7d5b] flex items-center justify-center"
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ duration: 0.3, ease }}
-                                  >
-                                    <span className="text-white text-[10px] font-bold">✓</span>
-                                  </motion.div>
-                                )}
-                                <div className="text-sm font-black text-zinc-900">{level.label}</div>
-                                <div className="text-xs text-zinc-400 mt-1">{level.desc}</div>
-                              </motion.button>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                      <div>
+                        <label className={labelCls}>Guardian&apos;s Name</label>
+                        <input value={form.guardian_name} onChange={set("guardian_name")} placeholder="e.g. Ama Asante" className={inputCls} />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Guardian&apos;s Phone</label>
+                        <input value={form.guardian_phone} onChange={set("guardian_phone")} type="tel" placeholder="024 XXXX XXX" className={inputCls} />
+                      </div>
+                    </div>
+                  </div>
 
-                    {/* ── Step 3: Guardian ── */}
-                    {step === 3 && (
-                      <motion.div
-                        key="step3"
-                        initial={{ opacity: 0, x: 40 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -40 }}
-                        transition={{ duration: 0.4, ease }}
-                        className="space-y-5"
-                      >
-                        <div className="mb-6">
-                          <h3 className="text-lg sm:text-xl font-black text-zinc-900 mb-1">Guardian Details</h3>
-                          <p className="text-zinc-400 text-sm">If the applicant is under 18, please provide a guardian&apos;s contact details.</p>
-                        </div>
+                  <div className="h-px bg-zinc-100" />
 
-                        <div className="rounded-2xl bg-[#2e7d5b]/5 border border-[#2e7d5b]/10 p-4 sm:p-5 flex items-start gap-3 mb-2">
-                          <span className="text-lg mt-0.5">ℹ️</span>
-                          <p className="text-[#2e7d5b] text-sm leading-relaxed">
-                            Guardian details are optional but recommended for applicants under 18. This helps us communicate effectively.
-                          </p>
-                        </div>
+                  {/* ── Your Story ── */}
+                  <div>
+                    <div className="mb-5">
+                      <h3 className="text-base sm:text-lg font-black text-zinc-900 flex items-center gap-2">
+                        <span className="w-8 h-8 rounded-xl bg-[#2e7d5b] text-white flex items-center justify-center text-sm">📝</span>
+                        Your Story
+                      </h3>
+                      <p className="text-zinc-400 text-sm mt-1 ml-10">Tell us why you need support and how chess can change your life.</p>
+                    </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                          <div>
-                            <label className={labelCls}>Guardian&apos;s Name</label>
-                            <input value={form.guardian_name} onChange={set("guardian_name")} placeholder="e.g. Ama Asante" className={inputCls} />
-                          </div>
-                          <div>
-                            <label className={labelCls}>Guardian&apos;s Phone</label>
-                            <input value={form.guardian_phone} onChange={set("guardian_phone")} type="tel" placeholder="024 XXXX XXX" className={inputCls} />
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
+                    <div className="space-y-5">
+                      <div>
+                        <label className={labelCls}>Why do you want to partner with us? *</label>
+                        <textarea
+                          value={form.reason}
+                          onChange={set("reason")}
+                          rows={4}
+                          placeholder="Tell us about your goals and how a partnership would help..."
+                          className={`${inputCls} resize-none`}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Additional Information (Optional)</label>
+                        <textarea
+                          value={form.essay}
+                          onChange={set("essay")}
+                          rows={3}
+                          placeholder="Share anything else you'd like us to know..."
+                          className={`${inputCls} resize-none`}
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-                    {/* ── Step 4: Story ── */}
-                    {step === 4 && (
-                      <motion.div
-                        key="step4"
-                        initial={{ opacity: 0, x: 40 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -40 }}
-                        transition={{ duration: 0.4, ease }}
-                        className="space-y-5"
-                      >
-                        <div className="mb-6">
-                          <h3 className="text-lg sm:text-xl font-black text-zinc-900 mb-1">Your Story</h3>
-                          <p className="text-zinc-400 text-sm">Tell us why you need support and how chess can change your life.</p>
-                        </div>
-
-                        <div>
-                          <label className={labelCls}>Why do you need support? *</label>
-                          <textarea
-                            value={form.reason}
-                            onChange={set("reason")}
-                            rows={4}
-                            placeholder="Tell us about your situation and how chess support would help..."
-                            className={`${inputCls} resize-none`}
-                            required
+                  {/* Submit */}
+                  <div className="pt-4 border-t border-zinc-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p className="text-zinc-400 text-xs">Fields marked with * are required</p>
+                    <motion.button
+                      type="submit"
+                      disabled={status === "loading" || !canSubmit}
+                      className="flex items-center gap-2 px-8 py-3.5 rounded-full bg-[#2e7d5b] text-white text-sm font-bold transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#3a9970] hover:scale-105 active:scale-95 shadow-lg shadow-[#2e7d5b]/20"
+                      whileHover={canSubmit ? { scale: 1.05 } : {}}
+                      whileTap={canSubmit ? { scale: 0.95 } : {}}
+                    >
+                      {status === "loading" ? (
+                        <>
+                          <motion.span
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
                           />
-                        </div>
-
-                        <div>
-                          <label className={labelCls}>Personal Essay (Optional)</label>
-                          <textarea
-                            value={form.essay}
-                            onChange={set("essay")}
-                            rows={4}
-                            placeholder="Share your chess journey, dreams, or how chess has impacted you..."
-                            className={`${inputCls} resize-none`}
-                          />
-                        </div>
-
-                        {/* Review summary */}
-                        <div className="rounded-2xl bg-zinc-50 border border-zinc-100 p-5 sm:p-6 mt-4">
-                          <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Application Summary</h4>
-                          <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
-                            {[
-                              ["Name", form.name],
-                              ["Email", form.email],
-                              ["Phone", form.phone],
-                              ["Age", form.age],
-                              ["Region", form.region],
-                              ["School", form.school],
-                              ["Level", form.chess_level],
-                              ["Guardian", form.guardian_name],
-                            ].map(([label, val]) => (
-                              <div key={label}>
-                                <span className="text-zinc-400 text-xs">{label}</span>
-                                <p className="font-semibold text-zinc-700 truncate">{val || "—"}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Navigation buttons */}
-                  <div className="flex items-center justify-between mt-8 sm:mt-10 pt-6 border-t border-zinc-100">
-                    {step > 1 ? (
-                      <motion.button
-                        type="button"
-                        onClick={() => setStep(step - 1)}
-                        className="flex items-center gap-2 px-5 py-3 rounded-full border-2 border-zinc-200 text-zinc-600 text-sm font-bold hover:border-[#2e7d5b] hover:text-[#2e7d5b] transition-all duration-300"
-                        whileHover={{ x: -2 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
-                        Back
-                      </motion.button>
-                    ) : (
-                      <div />
-                    )}
-
-                    {step < 4 ? (
-                      <motion.button
-                        type="button"
-                        onClick={() => canNext() && setStep(step + 1)}
-                        disabled={!canNext()}
-                        className="flex items-center gap-2 px-7 py-3 rounded-full bg-[#2e7d5b] text-white text-sm font-bold transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#3a9970] hover:scale-105 active:scale-95 shadow-lg shadow-[#2e7d5b]/20"
-                        whileHover={canNext() ? { x: 2 } : {}}
-                        whileTap={canNext() ? { scale: 0.95 } : {}}
-                      >
-                        Continue
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
-                      </motion.button>
-                    ) : (
-                      <motion.button
-                        type="button"
-                        onClick={handleSubmit}
-                        disabled={status === "loading" || !canNext()}
-                        className="flex items-center gap-2 px-8 py-3.5 rounded-full bg-[#2e7d5b] text-white text-sm font-bold transition-all duration-300 disabled:opacity-50 hover:bg-[#3a9970] hover:scale-105 active:scale-95 shadow-lg shadow-[#2e7d5b]/20"
-                        whileHover={canNext() ? { scale: 1.05 } : {}}
-                        whileTap={canNext() ? { scale: 0.95 } : {}}
-                      >
-                        {status === "loading" ? (
-                          <>
-                            <motion.span
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                              className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
-                            />
-                            Submitting...
-                          </>
-                        ) : (
-                          <>Submit Application 🌱</>
-                        )}
-                      </motion.button>
-                    )}
+                          Submitting...
+                        </>
+                      ) : (
+                        <>Submit Application 🌱</>
+                      )}
+                    </motion.button>
                   </div>
 
                   {status === "error" && (
@@ -646,7 +514,7 @@ export default function ApplyPage({ content }: { content: NGOApplyContent }) {
                       Something went wrong. Please try again.
                     </motion.p>
                   )}
-                </div>
+                </form>
               </motion.div>
             )}
           </AnimatePresence>
@@ -717,33 +585,28 @@ export default function ApplyPage({ content }: { content: NGOApplyContent }) {
               animate={{ y: [0, -8, 0], rotate: [0, 5, -5, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             >
-              ♟
+              {bottomCta.icon}
             </motion.div>
             <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 mb-3 tracking-tight">
-              Not ready to apply yet?
+              {bottomCta.heading}
             </h2>
             <p className="text-zinc-500 text-sm sm:text-base max-w-md mx-auto mb-8">
-              Explore our programs or get in touch — we&apos;re always here to help.
+              {bottomCta.description}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link
-                href="/ngo/programs"
-                className="px-6 py-3 rounded-full bg-[#2e7d5b] text-white font-bold text-sm hover:bg-[#3a9970] transition-all hover:scale-105 shadow-lg shadow-[#2e7d5b]/20"
-              >
-                View Programs
-              </Link>
-              <Link
-                href="/ngo"
-                className="px-6 py-3 rounded-full border-2 border-zinc-200 text-zinc-600 font-bold text-sm hover:border-[#2e7d5b] hover:text-[#2e7d5b] transition-all"
-              >
-                Back to Foundation
-              </Link>
-              <Link
-                href="/contact"
-                className="px-6 py-3 rounded-full border-2 border-zinc-200 text-zinc-600 font-bold text-sm hover:border-[#2e7d5b] hover:text-[#2e7d5b] transition-all"
-              >
-                Contact Us
-              </Link>
+              {bottomCta.links.map((link, i) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={
+                    i === 0
+                      ? "px-6 py-3 rounded-full bg-[#2e7d5b] text-white font-bold text-sm hover:bg-[#3a9970] transition-all hover:scale-105 shadow-lg shadow-[#2e7d5b]/20"
+                      : "px-6 py-3 rounded-full border-2 border-zinc-200 text-zinc-600 font-bold text-sm hover:border-[#2e7d5b] hover:text-[#2e7d5b] transition-all"
+                  }
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </AnimSection>
         </div>

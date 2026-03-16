@@ -1,6 +1,7 @@
 ﻿import ApplyPage from "@/components/ngo/NGOApplyPage";
 import { getSiteContent } from "@/lib/actions/admin";
 import { defaultNGOApply, type NGOApplyContent } from "@/lib/ngo-content";
+import prisma from "@/lib/prisma";
 
 export const metadata = {
   title: "Partner with Us | PiChess Foundation",
@@ -8,13 +9,23 @@ export const metadata = {
     "Apply for free chess equipment, coaching, scholarships, and mentorship through the PiChess Foundation.",
 };
 
-function parse<T>(raw: string | null, fallback: T): T {
+function parse<T extends Record<string, unknown>>(raw: string | null, fallback: T): T {
   if (!raw) return fallback;
-  try { return JSON.parse(raw) as T; } catch { return fallback; }
+  try {
+    const parsed = JSON.parse(raw) as Partial<T>;
+    return { ...fallback, ...parsed };
+  } catch { return fallback; }
 }
 
 export default async function ApplyPageWrapper() {
-  const raw = await getSiteContent("ngo_apply");
+  const [raw, partners] = await Promise.all([
+    getSiteContent("ngo_apply"),
+    prisma.partner.findMany({ orderBy: { order: "asc" } }).catch(() => []),
+  ]);
   const content = parse<NGOApplyContent>(raw, defaultNGOApply);
-  return <ApplyPage content={content} />;
+  const merged: NGOApplyContent = {
+    ...content,
+    bottomCta: { ...defaultNGOApply.bottomCta, ...content.bottomCta },
+  };
+  return <ApplyPage content={merged} partners={partners} />;
 }

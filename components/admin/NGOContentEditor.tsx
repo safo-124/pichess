@@ -98,9 +98,16 @@ export default function NGOContentEditor({ initialData }: Props) {
     return next;
   });
 
-  /* Parse helpers — return default if missing/invalid */
+  /* Parse helpers — return default if missing/invalid, merge to fill new fields */
   function parse<T>(key: string, fallback: T): T {
-    try { return initialData[key] ? JSON.parse(initialData[key]!) : fallback; } catch { return fallback; }
+    try {
+      if (!initialData[key]) return fallback;
+      const parsed = JSON.parse(initialData[key]!);
+      if (fallback && typeof fallback === "object" && !Array.isArray(fallback)) {
+        return { ...fallback, ...parsed };
+      }
+      return parsed as T;
+    } catch { return fallback; }
   }
 
   /* State for each section */
@@ -116,7 +123,8 @@ export default function NGOContentEditor({ initialData }: Props) {
   const [testimonials, setTestimonials] = useState<NGOTestimonial[]>(parse("ngo_testimonials", defaultNGOTestimonials));
   const [timeline, setTimeline] = useState<NGOTimelineItem[]>(parse("ngo_timeline", defaultNGOTimeline));
   const [programsStats, setProgramsStats] = useState<NGOProgramsImpactStat[]>(parse("ngo_programs_stats", defaultNGOProgramsStats));
-  const [applyContent, setApplyContent] = useState<NGOApplyContent>(parse("ngo_apply", defaultNGOApply));
+  const applyParsed = parse("ngo_apply", defaultNGOApply);
+  const [applyContent, setApplyContent] = useState<NGOApplyContent>({ ...applyParsed, bottomCta: { ...defaultNGOApply.bottomCta, ...(applyParsed.bottomCta ?? {}) } });
   const [volunteerContent, setVolunteerContent] = useState<NGOVolunteerContent>(parse("ngo_volunteer", defaultNGOVolunteer));
   const [donateContent, setDonateContent] = useState<NGODonateContent>(parse("ngo_donate", defaultNGODonate));
   const [storiesContent, setStoriesContent] = useState<NGOStoriesContent>(parse("ngo_stories_content", defaultNGOStoriesContent));
@@ -401,29 +409,89 @@ export default function NGOContentEditor({ initialData }: Props) {
 
       {/* ═══ Apply Page ═══ */}
       <Section id="apply" title="Partner with Us Page" icon="🤝" open={isOpen("apply")} onToggle={() => toggle("apply")}>
+        {/* Hero */}
+        <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Hero Section</p>
         <div className="grid sm:grid-cols-2 gap-4">
+          <div className="sm:col-span-2"><label className={labelCls}>Hero Image URL</label><input className={inputCls} value={applyContent.heroImage} onChange={e => setApplyContent({ ...applyContent, heroImage: e.target.value })} /></div>
+          <div><label className={labelCls}>Hero Badge</label><input className={inputCls} value={applyContent.heroBadge} onChange={e => setApplyContent({ ...applyContent, heroBadge: e.target.value })} /></div>
+          <div><label className={labelCls}>CTA Button Text</label><input className={inputCls} value={applyContent.ctaButtonText} onChange={e => setApplyContent({ ...applyContent, ctaButtonText: e.target.value })} /></div>
           <div className="sm:col-span-2"><label className={labelCls}>Heading</label><input className={inputCls} value={applyContent.heading} onChange={e => setApplyContent({ ...applyContent, heading: e.target.value })} /></div>
           <div className="sm:col-span-2"><label className={labelCls}>Subtitle</label><textarea className={`${inputCls} resize-none`} rows={2} value={applyContent.subtitle} onChange={e => setApplyContent({ ...applyContent, subtitle: e.target.value })} /></div>
         </div>
-        <div className="mt-4">
-          <label className={labelCls}>Benefits</label>
+
+        {/* Benefits */}
+        <div className="mt-6 pt-4 border-t border-zinc-100">
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Benefits Section</p>
+          <div className="grid sm:grid-cols-2 gap-4 mb-3">
+            <div><label className={labelCls}>Badge</label><input className={inputCls} value={applyContent.benefitsBadge} onChange={e => setApplyContent({ ...applyContent, benefitsBadge: e.target.value })} /></div>
+            <div><label className={labelCls}>Heading</label><input className={inputCls} value={applyContent.benefitsHeading} onChange={e => setApplyContent({ ...applyContent, benefitsHeading: e.target.value })} /></div>
+          </div>
+          <label className={labelCls}>Benefit Cards</label>
           {applyContent.benefits.map((b, i) => (
-            <div key={i} className="grid grid-cols-4 gap-2 mb-2">
-              <input className={inputCls} placeholder="Icon" value={b.icon} onChange={e => { const nb = [...applyContent.benefits]; nb[i] = { ...nb[i], icon: e.target.value }; setApplyContent({ ...applyContent, benefits: nb }); }} />
-              <input className={inputCls} placeholder="Title" value={b.title} onChange={e => { const nb = [...applyContent.benefits]; nb[i] = { ...nb[i], title: e.target.value }; setApplyContent({ ...applyContent, benefits: nb }); }} />
-              <input className={`${inputCls} col-span-2`} placeholder="Description" value={b.desc} onChange={e => { const nb = [...applyContent.benefits]; nb[i] = { ...nb[i], desc: e.target.value }; setApplyContent({ ...applyContent, benefits: nb }); }} />
+            <div key={i} className="flex gap-2 items-start mb-2">
+              <div className="grid grid-cols-4 gap-2 flex-1">
+                <input className={inputCls} placeholder="Icon" value={b.icon} onChange={e => { const nb = [...applyContent.benefits]; nb[i] = { ...nb[i], icon: e.target.value }; setApplyContent({ ...applyContent, benefits: nb }); }} />
+                <input className={inputCls} placeholder="Title" value={b.title} onChange={e => { const nb = [...applyContent.benefits]; nb[i] = { ...nb[i], title: e.target.value }; setApplyContent({ ...applyContent, benefits: nb }); }} />
+                <input className={`${inputCls} col-span-2`} placeholder="Description" value={b.desc} onChange={e => { const nb = [...applyContent.benefits]; nb[i] = { ...nb[i], desc: e.target.value }; setApplyContent({ ...applyContent, benefits: nb }); }} />
+              </div>
+              <button onClick={() => setApplyContent({ ...applyContent, benefits: applyContent.benefits.filter((_, j) => j !== i) })} className="text-red-400 hover:text-red-600 text-xs font-bold px-2 mt-2" title="Remove">✕</button>
             </div>
           ))}
+          <button onClick={() => setApplyContent({ ...applyContent, benefits: [...applyContent.benefits, { icon: "", title: "", desc: "" }] })} className="text-xs text-[#2e7d5b] font-bold">+ Add Benefit</button>
         </div>
-        <div className="mt-4">
-          <label className={labelCls}>FAQs</label>
+
+        {/* Form */}
+        <div className="mt-6 pt-4 border-t border-zinc-100">
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Form Section</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div><label className={labelCls}>Badge Prefix (e.g. &quot;Step&quot;)</label><input className={inputCls} value={applyContent.formBadgePrefix} onChange={e => setApplyContent({ ...applyContent, formBadgePrefix: e.target.value })} /></div>
+            <div><label className={labelCls}>Form Heading</label><input className={inputCls} value={applyContent.formHeading} onChange={e => setApplyContent({ ...applyContent, formHeading: e.target.value })} /></div>
+          </div>
+        </div>
+
+        {/* Success */}
+        <div className="mt-6 pt-4 border-t border-zinc-100">
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Success State</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div><label className={labelCls}>Success Heading</label><input className={inputCls} value={applyContent.successHeading} onChange={e => setApplyContent({ ...applyContent, successHeading: e.target.value })} /></div>
+            <div className="sm:col-span-2"><label className={labelCls}>Success Message</label><textarea className={`${inputCls} resize-none`} rows={2} value={applyContent.successMessage} onChange={e => setApplyContent({ ...applyContent, successMessage: e.target.value })} /></div>
+          </div>
+        </div>
+
+        {/* FAQs */}
+        <div className="mt-6 pt-4 border-t border-zinc-100">
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">FAQs</p>
           {applyContent.faqs.map((f, i) => (
-            <div key={i} className="grid sm:grid-cols-2 gap-2 mb-3 p-3 border border-zinc-100 rounded-xl">
-              <div><label className={labelCls}>Question</label><input className={inputCls} value={f.q} onChange={e => { const nf = [...applyContent.faqs]; nf[i] = { ...nf[i], q: e.target.value }; setApplyContent({ ...applyContent, faqs: nf }); }} /></div>
-              <div><label className={labelCls}>Answer</label><textarea className={`${inputCls} resize-none`} rows={2} value={f.a} onChange={e => { const nf = [...applyContent.faqs]; nf[i] = { ...nf[i], a: e.target.value }; setApplyContent({ ...applyContent, faqs: nf }); }} /></div>
+            <div key={i} className="flex gap-2 items-start mb-3 p-3 border border-zinc-100 rounded-xl">
+              <div className="grid sm:grid-cols-2 gap-2 flex-1">
+                <div><label className={labelCls}>Question</label><input className={inputCls} value={f.q} onChange={e => { const nf = [...applyContent.faqs]; nf[i] = { ...nf[i], q: e.target.value }; setApplyContent({ ...applyContent, faqs: nf }); }} /></div>
+                <div><label className={labelCls}>Answer</label><textarea className={`${inputCls} resize-none`} rows={2} value={f.a} onChange={e => { const nf = [...applyContent.faqs]; nf[i] = { ...nf[i], a: e.target.value }; setApplyContent({ ...applyContent, faqs: nf }); }} /></div>
+              </div>
+              <button onClick={() => setApplyContent({ ...applyContent, faqs: applyContent.faqs.filter((_, j) => j !== i) })} className="text-red-400 hover:text-red-600 text-xs font-bold px-2 mt-6" title="Remove">✕</button>
             </div>
           ))}
           <button onClick={() => setApplyContent({ ...applyContent, faqs: [...applyContent.faqs, { q: "", a: "" }] })} className="text-xs text-[#2e7d5b] font-bold">+ Add FAQ</button>
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="mt-6 pt-4 border-t border-zinc-100">
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Bottom CTA</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div><label className={labelCls}>Icon (emoji)</label><input className={inputCls} value={applyContent.bottomCta.icon} onChange={e => setApplyContent({ ...applyContent, bottomCta: { ...applyContent.bottomCta, icon: e.target.value } })} /></div>
+            <div><label className={labelCls}>Heading</label><input className={inputCls} value={applyContent.bottomCta.heading} onChange={e => setApplyContent({ ...applyContent, bottomCta: { ...applyContent.bottomCta, heading: e.target.value } })} /></div>
+            <div className="sm:col-span-2"><label className={labelCls}>Description</label><textarea className={`${inputCls} resize-none`} rows={2} value={applyContent.bottomCta.description} onChange={e => setApplyContent({ ...applyContent, bottomCta: { ...applyContent.bottomCta, description: e.target.value } })} /></div>
+          </div>
+          <div className="mt-3">
+            <label className={labelCls}>Links</label>
+            {applyContent.bottomCta.links.map((link, i) => (
+              <div key={i} className="flex gap-2 items-center mb-2">
+                <input className={`${inputCls} flex-1`} placeholder="Label" value={link.label} onChange={e => { const nl = [...applyContent.bottomCta.links]; nl[i] = { ...nl[i], label: e.target.value }; setApplyContent({ ...applyContent, bottomCta: { ...applyContent.bottomCta, links: nl } }); }} />
+                <input className={`${inputCls} flex-1`} placeholder="Href (e.g. /ngo/programs)" value={link.href} onChange={e => { const nl = [...applyContent.bottomCta.links]; nl[i] = { ...nl[i], href: e.target.value }; setApplyContent({ ...applyContent, bottomCta: { ...applyContent.bottomCta, links: nl } }); }} />
+                <button onClick={() => setApplyContent({ ...applyContent, bottomCta: { ...applyContent.bottomCta, links: applyContent.bottomCta.links.filter((_, j) => j !== i) } })} className="text-red-400 hover:text-red-600 text-xs font-bold px-2" title="Remove">✕</button>
+              </div>
+            ))}
+            <button onClick={() => setApplyContent({ ...applyContent, bottomCta: { ...applyContent.bottomCta, links: [...applyContent.bottomCta.links, { label: "", href: "" }] } })} className="text-xs text-[#2e7d5b] font-bold">+ Add Link</button>
+          </div>
         </div>
       </Section>
 
