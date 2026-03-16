@@ -9,7 +9,7 @@ export const metadata = {
     "Apply for free chess equipment, coaching, scholarships, and mentorship through the PiChess Foundation.",
 };
 
-function parse<T extends Record<string, unknown>>(raw: string | null, fallback: T): T {
+function parse<T>(raw: string | null, fallback: T): T {
   if (!raw) return fallback;
   try {
     const parsed = JSON.parse(raw) as Partial<T>;
