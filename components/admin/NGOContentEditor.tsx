@@ -568,10 +568,12 @@ export default function NGOContentEditor({ initialData }: Props) {
         <div className="mt-4">
           <label className={labelCls}>Gallery Images</label>
           {storiesContent.galleryImages.map((g, i) => (
-            <div key={i} className="flex gap-2 mb-2 items-center">
-              <input className={`${inputCls} flex-1`} placeholder="Image URL" value={g.src} onChange={e => { const ng = [...storiesContent.galleryImages]; ng[i] = { ...ng[i], src: e.target.value }; setStoriesContent({ ...storiesContent, galleryImages: ng }); }} />
-              <input className={`${inputCls} w-36`} placeholder="Alt" value={g.alt} onChange={e => { const ng = [...storiesContent.galleryImages]; ng[i] = { ...ng[i], alt: e.target.value }; setStoriesContent({ ...storiesContent, galleryImages: ng }); }} />
-              <button onClick={() => setStoriesContent({ ...storiesContent, galleryImages: storiesContent.galleryImages.filter((_, j) => j !== i) })} className="text-red-400 text-xs font-bold px-2">✕</button>
+            <div key={i} className="flex gap-2 mb-3 items-start p-3 border border-zinc-100 rounded-xl">
+              <div className="flex-1 space-y-2">
+                <ImageField label={`Image ${i + 1}`} value={g.src} onChange={v => { const ng = [...storiesContent.galleryImages]; ng[i] = { ...ng[i], src: v }; setStoriesContent({ ...storiesContent, galleryImages: ng }); }} />
+                <div><label className={labelCls}>Caption / Alt</label><input className={inputCls} placeholder="e.g. Children learning chess" value={g.alt} onChange={e => { const ng = [...storiesContent.galleryImages]; ng[i] = { ...ng[i], alt: e.target.value }; setStoriesContent({ ...storiesContent, galleryImages: ng }); }} /></div>
+              </div>
+              <button onClick={() => setStoriesContent({ ...storiesContent, galleryImages: storiesContent.galleryImages.filter((_, j) => j !== i) })} className="text-red-400 hover:text-red-600 text-xs font-bold px-2 mt-6">✕</button>
             </div>
           ))}
           <button onClick={() => setStoriesContent({ ...storiesContent, galleryImages: [...storiesContent.galleryImages, { src: "", alt: "" }] })} className="text-xs text-[#2e7d5b] font-bold">+ Add Image</button>

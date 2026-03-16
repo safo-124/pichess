@@ -8,6 +8,7 @@ import {
 } from "@/lib/actions/admin";
 import AdminTabs from "@/components/admin/AdminTabs";
 import NGOContentEditor from "@/components/admin/NGOContentEditor";
+import ImageUploadInput from "@/components/admin/ImageUploadInput";
 
 export const metadata = { title: "NGO Management | Admin" };
 
@@ -268,7 +269,7 @@ export default async function AdminNGOPage() {
             <form action={createNGOStory} className="grid sm:grid-cols-2 gap-4">
               <input name="title" required placeholder="Story title *" className={`col-span-full ${inputCls}`} />
               <textarea name="content" rows={4} required placeholder="Story content *" className={`col-span-full ${inputCls} resize-none`} />
-              <input name="image" placeholder="Image URL" className={inputCls} />
+              <ImageUploadInput name="image" placeholder="Story image" />
               <div className="flex items-center gap-4">
                 <label className="flex items-center gap-2 text-sm text-zinc-600 cursor-pointer">
                   <input type="checkbox" name="published" value="true" className="rounded border-zinc-300" /> Publish
@@ -310,7 +311,7 @@ export default async function AdminNGOPage() {
                         <input type="hidden" name="id" value={s.id} />
                         <input name="title" defaultValue={s.title} required placeholder="Title" className={`col-span-full ${inputCls}`} />
                         <textarea name="content" rows={3} defaultValue={s.content} required placeholder="Content" className={`col-span-full ${inputCls} resize-none`} />
-                        <input name="image" defaultValue={s.image ?? ""} placeholder="Image URL" className={inputCls} />
+                        <ImageUploadInput name="image" defaultValue={s.image ?? ""} placeholder="Story image" />
                         <div className="flex items-center gap-4">
                           <label className="flex items-center gap-2 text-sm text-zinc-600 cursor-pointer">
                             <input type="checkbox" name="published" value="true" defaultChecked={s.published} className="rounded border-zinc-300" /> Published
