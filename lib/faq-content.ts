@@ -87,9 +87,9 @@ export const defaultFAQContent: FAQPageContent = {
       items: [
         {
           id: "n1",
-          question: "How can I apply for support from the Foundation?",
+          question: "How can I partner with the Foundation?",
           answer:
-            "Visit our Foundation page, go to 'Apply for Support', and fill out the application form. We review applications on a rolling basis and respond within 2–3 weeks.",
+            "Visit our Foundation page, go to 'Partner with Us', and fill out the application form. We review applications on a rolling basis and respond within 2\u20133 weeks.",
         },
         {
           id: "n2",
