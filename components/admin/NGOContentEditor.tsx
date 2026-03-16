@@ -291,6 +291,14 @@ export default function NGOContentEditor({ initialData }: Props) {
           <div><label className={labelCls}>Secondary CTA Text</label><input className={inputCls} value={programsHero.secondaryCtaText} onChange={e => setProgramsHero({ ...programsHero, secondaryCtaText: e.target.value })} /></div>
           <div><label className={labelCls}>Secondary CTA Link</label><input className={inputCls} value={programsHero.secondaryCtaLink} onChange={e => setProgramsHero({ ...programsHero, secondaryCtaLink: e.target.value })} /></div>
         </div>
+        <div className="border-t border-zinc-100 mt-5 pt-5">
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">Programs Section Heading</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div><label className={labelCls}>Badge</label><input className={inputCls} value={programsHero.sectionBadge ?? "What We Do"} onChange={e => setProgramsHero({ ...programsHero, sectionBadge: e.target.value })} /></div>
+            <div><label className={labelCls}>Heading</label><input className={inputCls} value={programsHero.sectionHeading ?? "Our Six Programs"} onChange={e => setProgramsHero({ ...programsHero, sectionHeading: e.target.value })} /></div>
+            <div className="sm:col-span-2"><label className={labelCls}>Description</label><textarea className={`${inputCls} resize-none`} rows={2} value={programsHero.sectionDescription ?? ""} onChange={e => setProgramsHero({ ...programsHero, sectionDescription: e.target.value })} /></div>
+          </div>
+        </div>
       </Section>
 
       {/* ═══ Programs ═══ */}

@@ -427,6 +427,9 @@ export interface NGOProgramsHero {
   ctaLink: string;
   secondaryCtaText: string;
   secondaryCtaLink: string;
+  sectionBadge: string;
+  sectionHeading: string;
+  sectionDescription: string;
 }
 
 export const defaultNGOProgramsHero: NGOProgramsHero = {
@@ -440,6 +443,9 @@ export const defaultNGOProgramsHero: NGOProgramsHero = {
   ctaLink: "#programs",
   secondaryCtaText: "Apply for Support",
   secondaryCtaLink: "/ngo/apply",
+  sectionBadge: "What We Do",
+  sectionHeading: "Our Six Programs",
+  sectionDescription: "Each program tackles a specific barrier that prevents children from accessing chess education. Together, they form a complete support system.",
 };
 
 // ── Mission page hero ──

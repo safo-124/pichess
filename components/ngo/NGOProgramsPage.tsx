@@ -398,13 +398,13 @@ export default function NGOProgramsPage({
         <div className="max-w-7xl mx-auto px-4">
           <AnimSection className="text-center mb-16">
             <span className="inline-block px-4 py-1.5 rounded-full bg-[#2e7d5b]/10 text-[#2e7d5b] text-xs font-bold uppercase tracking-widest mb-4">
-              What We Do
+              {programsHero.sectionBadge || "What We Do"}
             </span>
             <h2 className="text-3xl sm:text-5xl font-black text-zinc-900 tracking-tight mb-4">
-              Our Six Programs
+              {programsHero.sectionHeading || "Our Six Programs"}
             </h2>
             <p className="max-w-2xl mx-auto text-zinc-500 text-lg">
-              Each program tackles a specific barrier that prevents children from accessing chess education. Together, they form a complete support system.
+              {programsHero.sectionDescription || "Each program tackles a specific barrier that prevents children from accessing chess education. Together, they form a complete support system."}
             </p>
           </AnimSection>
 
