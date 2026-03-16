@@ -11,6 +11,9 @@ import type {
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
+const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve"];
+function numberWord(n: number) { return NUMBER_WORDS[n] ?? String(n); }
+
 /* ═══════════════════════════════════════════════════════════
    COMPONENTS
    ═══════════════════════════════════════════════════════════ */
@@ -401,7 +404,7 @@ export default function NGOProgramsPage({
               {programsHero.sectionBadge || "What We Do"}
             </span>
             <h2 className="text-3xl sm:text-5xl font-black text-zinc-900 tracking-tight mb-4">
-              {programsHero.sectionHeading || "Our Six Programs"}
+              Our {numberWord(programs.length)} Program{programs.length !== 1 ? "s" : ""}
             </h2>
             <p className="max-w-2xl mx-auto text-zinc-500 text-lg">
               {programsHero.sectionDescription || "Each program tackles a specific barrier that prevents children from accessing chess education. Together, they form a complete support system."}
