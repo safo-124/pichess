@@ -449,6 +449,12 @@ export async function saveSiteContent(key: string, value: string) {
     revalidatePath("/ngo");
     revalidatePath("/admin/footer");
     revalidatePath("/admin/settings");
+  } else if (zone === "contact") {
+    revalidatePath("/contact");
+    revalidatePath("/admin/contact");
+  } else if (zone === "faq") {
+    revalidatePath("/faq");
+    revalidatePath("/admin/faq");
   } else {
     revalidatePath("/", "layout");
   }
