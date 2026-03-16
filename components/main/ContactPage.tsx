@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { subscribeToNewsletter, submitContactMessage } from "@/lib/actions/contact";
 import type { ContactPageContent } from "@/lib/contact-content";
-import type { JSX } from "react";
+import type { JSX } from "react";  
 
 /* ── Animations ─────────────────────────────────────────── */
 const fadeUp = {
