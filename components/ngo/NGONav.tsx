@@ -9,7 +9,7 @@ const links = [
   { label: "Home", href: "/ngo" },
   { label: "Our Mission", href: "/ngo/mission" },
   { label: "Programs", href: "/ngo/programs" },
-  { label: "Apply for Support", href: "/ngo/apply" },
+  { label: "Partner with Us", href: "/ngo/apply" },
   { label: "Volunteer", href: "/ngo/volunteer" },
   { label: "Stories", href: "/ngo/stories" },
 ];

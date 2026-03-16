@@ -454,7 +454,7 @@ export default async function HomePage() {
                   href="/ngo/apply"
                   className="px-8 py-3.5 rounded-full border border-gray-300 text-gray-500 hover:bg-gray-50 font-semibold text-sm transition-all text-center"
                 >
-                  Apply for Support
+                  Partner with Us
                 </Link>
               </div>
             </AnimatedSection>
@@ -841,7 +841,7 @@ export default async function HomePage() {
                   href="/ngo/apply"
                   className="w-full sm:w-auto px-10 py-4 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-semibold text-base transition-all inline-block"
                 >
-                  Apply for Support
+                  Partner with Us
                 </Link>
               </MagneticButton>
             </div>

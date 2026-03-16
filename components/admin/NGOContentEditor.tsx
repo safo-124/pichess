@@ -400,7 +400,7 @@ export default function NGOContentEditor({ initialData }: Props) {
       </Section>
 
       {/* ═══ Apply Page ═══ */}
-      <Section id="apply" title="Apply Page Content" icon="📋" open={isOpen("apply")} onToggle={() => toggle("apply")}>
+      <Section id="apply" title="Partner with Us Page" icon="🤝" open={isOpen("apply")} onToggle={() => toggle("apply")}>
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="sm:col-span-2"><label className={labelCls}>Heading</label><input className={inputCls} value={applyContent.heading} onChange={e => setApplyContent({ ...applyContent, heading: e.target.value })} /></div>
           <div className="sm:col-span-2"><label className={labelCls}>Subtitle</label><textarea className={`${inputCls} resize-none`} rows={2} value={applyContent.subtitle} onChange={e => setApplyContent({ ...applyContent, subtitle: e.target.value })} /></div>

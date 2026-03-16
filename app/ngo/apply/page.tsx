@@ -3,7 +3,7 @@ import { getSiteContent } from "@/lib/actions/admin";
 import { defaultNGOApply, type NGOApplyContent } from "@/lib/ngo-content";
 
 export const metadata = {
-  title: "Apply for Support | PiChess Foundation",
+  title: "Partner with Us | PiChess Foundation",
   description:
     "Apply for free chess equipment, coaching, scholarships, and mentorship through the PiChess Foundation.",
 };

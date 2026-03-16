@@ -27,7 +27,7 @@ export const defaultNGOHero: NGOHeroData = {
     "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=1600&q=80",
   cta1Text: "Donate Now ❤️",
   cta1Link: "/ngo/donate",
-  cta2Text: "Apply for Support",
+  cta2Text: "Partner with Us",
   cta2Link: "/ngo/apply",
   floatingImages: [
     { src: "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=400&q=80", alt: "Children playing chess outdoors" },
@@ -297,7 +297,7 @@ export interface NGOApplyContent {
 }
 
 export const defaultNGOApply: NGOApplyContent = {
-  heading: "Apply for Chess Support",
+  heading: "Partner with Us",
   subtitle:
     "Every child deserves the chance to learn chess. Fill out our application and we'll match you with the right program — completely free.",
   benefits: [
@@ -411,7 +411,7 @@ export const defaultNGOCTA: NGOCTA = {
   cta1Link: "/ngo/donate",
   cta2Text: "Volunteer With Us",
   cta2Link: "/ngo/volunteer",
-  cta3Text: "Apply for Support",
+  cta3Text: "Partner with Us",
   cta3Link: "/ngo/apply",
 };
 
@@ -441,7 +441,7 @@ export const defaultNGOProgramsHero: NGOProgramsHero = {
   backgroundImage: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=80",
   ctaText: "Explore Programs ↓",
   ctaLink: "#programs",
-  secondaryCtaText: "Apply for Support",
+  secondaryCtaText: "Partner with Us",
   secondaryCtaLink: "/ngo/apply",
   sectionBadge: "What We Do",
   sectionHeading: "Our Six Programs",

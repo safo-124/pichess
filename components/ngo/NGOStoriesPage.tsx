@@ -564,7 +564,7 @@ export default function NGOStoriesPage({ stories, content }: { stories: Story[];
                 href="/ngo/apply"
                 className="px-8 py-4 rounded-full border-2 border-zinc-200 text-zinc-700 font-bold text-base hover:border-[#2e7d5b] hover:text-[#2e7d5b] transition-all duration-300 hover:scale-105"
               >
-                🙏 Apply for Support
+                🤝 Partner with Us
               </Link>
             </div>
           </AnimSection>
