@@ -436,6 +436,13 @@ export async function saveSiteContent(key: string, value: string) {
     revalidatePath("/academy/enquire");
   } else if (zone === "ngo") {
     revalidatePath("/ngo");
+    revalidatePath("/ngo/mission");
+    revalidatePath("/ngo/programs");
+    revalidatePath("/ngo/stories");
+    revalidatePath("/ngo/donate");
+    revalidatePath("/ngo/apply");
+    revalidatePath("/ngo/volunteer");
+    revalidatePath("/admin/ngo");
   } else if (zone === "about") {
     revalidatePath("/about");
     revalidatePath("/admin/about");
