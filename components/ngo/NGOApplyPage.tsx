@@ -56,7 +56,7 @@ const labelCls = "block text-xs font-bold text-zinc-500 uppercase tracking-wides
    ═══════════════════════════════════════════════════════════ */
 
 export default function ApplyPage({ content, partners = [] }: { content: NGOApplyContent; partners?: PartnerData[] }) {
-  const { benefits, faqs, bottomCta } = content;
+  const { benefits, faqs, bottomCta, impactGallery } = content;
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -243,6 +243,65 @@ export default function ApplyPage({ content, partners = [] }: { content: NGOAppl
           </div>
         </div>
       </section>
+
+      {/* ──── SEE WHAT YOUR MONEY IS DOING ──── */}
+      {impactGallery && impactGallery.images?.length > 0 && (
+        <section className="py-16 sm:py-24 bg-white relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#2e7d5b]/20 to-transparent" />
+
+          <div className="max-w-7xl mx-auto px-4">
+            <AnimSection className="text-center mb-10 sm:mb-14">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2e7d5b]/10 text-[#2e7d5b] text-xs font-bold uppercase tracking-widest mb-3">
+                <span className="w-2 h-2 rounded-full bg-[#2e7d5b] animate-pulse" />
+                {impactGallery.badge}
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-black text-zinc-900 tracking-tight mb-3">
+                {impactGallery.heading}
+              </h2>
+              <p className="text-zinc-500 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+                {impactGallery.description}
+              </p>
+            </AnimSection>
+
+            {/* Masonry-style grid — mobile: 2 cols, tablet: 3 cols, desktop: 4 cols */}
+            <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 sm:gap-4 space-y-3 sm:space-y-4">
+              {impactGallery.images.map((img, i) => (
+                <AnimSection key={`${img.src}-${i}`} delay={i * 0.06}>
+                  <motion.div
+                    className="break-inside-avoid rounded-2xl sm:rounded-3xl overflow-hidden relative group cursor-pointer"
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.4, ease }}
+                  >
+                    <div className={`relative ${i % 3 === 0 ? "aspect-[3/4]" : i % 3 === 1 ? "aspect-square" : "aspect-[4/5]"}`}>
+                      <Image
+                        src={img.src}
+                        alt={img.alt}
+                        fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      {/* Overlay on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                        <p className="text-white text-xs sm:text-sm font-semibold leading-snug drop-shadow-lg line-clamp-2">{img.alt}</p>
+                      </div>
+                    </div>
+                    {/* Subtle green border glow */}
+                    <div className="absolute inset-0 rounded-2xl sm:rounded-3xl ring-1 ring-inset ring-black/5 group-hover:ring-[#2e7d5b]/30 transition-all duration-500" />
+                  </motion.div>
+                </AnimSection>
+              ))}
+            </div>
+
+            {/* Bottom accent */}
+            <AnimSection delay={0.3} className="text-center mt-10 sm:mt-14">
+              <p className="text-zinc-400 text-xs sm:text-sm font-medium">
+                📸 Every picture tells a story of transformation
+              </p>
+            </AnimSection>
+          </div>
+        </section>
+      )}
 
       {/* ──── APPLICATION FORM (single page) ──── */}
       <section id="apply-form" className="py-16 sm:py-24 bg-white relative">

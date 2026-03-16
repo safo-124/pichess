@@ -26,6 +26,7 @@ export default async function ApplyPageWrapper() {
   const merged: NGOApplyContent = {
     ...content,
     bottomCta: { ...defaultNGOApply.bottomCta, ...content.bottomCta },
+    impactGallery: { ...defaultNGOApply.impactGallery, ...(content.impactGallery ?? {}), images: content.impactGallery?.images ?? defaultNGOApply.impactGallery.images },
   };
   return <ApplyPage content={merged} partners={partners} />;
 }

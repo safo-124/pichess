@@ -124,7 +124,7 @@ export default function NGOContentEditor({ initialData }: Props) {
   const [timeline, setTimeline] = useState<NGOTimelineItem[]>(parse("ngo_timeline", defaultNGOTimeline));
   const [programsStats, setProgramsStats] = useState<NGOProgramsImpactStat[]>(parse("ngo_programs_stats", defaultNGOProgramsStats));
   const applyParsed = parse("ngo_apply", defaultNGOApply);
-  const [applyContent, setApplyContent] = useState<NGOApplyContent>({ ...applyParsed, bottomCta: { ...defaultNGOApply.bottomCta, ...(applyParsed.bottomCta ?? {}) } });
+  const [applyContent, setApplyContent] = useState<NGOApplyContent>({ ...applyParsed, bottomCta: { ...defaultNGOApply.bottomCta, ...(applyParsed.bottomCta ?? {}) }, impactGallery: { ...defaultNGOApply.impactGallery, ...(applyParsed.impactGallery ?? {}), images: applyParsed.impactGallery?.images ?? defaultNGOApply.impactGallery.images } });
   const [volunteerContent, setVolunteerContent] = useState<NGOVolunteerContent>(parse("ngo_volunteer", defaultNGOVolunteer));
   const [donateContent, setDonateContent] = useState<NGODonateContent>(parse("ngo_donate", defaultNGODonate));
   const [storiesContent, setStoriesContent] = useState<NGOStoriesContent>(parse("ngo_stories_content", defaultNGOStoriesContent));
@@ -438,6 +438,29 @@ export default function NGOContentEditor({ initialData }: Props) {
             </div>
           ))}
           <button onClick={() => setApplyContent({ ...applyContent, benefits: [...applyContent.benefits, { icon: "", title: "", desc: "" }] })} className="text-xs text-[#2e7d5b] font-bold">+ Add Benefit</button>
+        </div>
+
+        {/* Impact Gallery */}
+        <div className="mt-6 pt-4 border-t border-zinc-100">
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Impact Gallery — &quot;See What Your Money Is Doing&quot;</p>
+          <div className="grid sm:grid-cols-2 gap-4 mb-3">
+            <div><label className={labelCls}>Badge Text</label><input className={inputCls} value={applyContent.impactGallery.badge} onChange={e => setApplyContent({ ...applyContent, impactGallery: { ...applyContent.impactGallery, badge: e.target.value } })} /></div>
+            <div><label className={labelCls}>Heading</label><input className={inputCls} value={applyContent.impactGallery.heading} onChange={e => setApplyContent({ ...applyContent, impactGallery: { ...applyContent.impactGallery, heading: e.target.value } })} /></div>
+            <div className="sm:col-span-2"><label className={labelCls}>Description</label><textarea className={`${inputCls} resize-none`} rows={2} value={applyContent.impactGallery.description} onChange={e => setApplyContent({ ...applyContent, impactGallery: { ...applyContent.impactGallery, description: e.target.value } })} /></div>
+          </div>
+          <label className={labelCls}>Gallery Images</label>
+          <div className="space-y-2">
+            {applyContent.impactGallery.images.map((img, i) => (
+              <div key={i} className="flex gap-2 items-start p-3 border border-zinc-100 rounded-xl">
+                <div className="flex-1 space-y-2">
+                  <ImageField label={`Image ${i + 1}`} value={img.src} onChange={v => { const ni = [...applyContent.impactGallery.images]; ni[i] = { ...ni[i], src: v }; setApplyContent({ ...applyContent, impactGallery: { ...applyContent.impactGallery, images: ni } }); }} />
+                  <div><label className={labelCls}>Caption / Alt Text</label><input className={inputCls} placeholder="e.g. Children learning chess" value={img.alt} onChange={e => { const ni = [...applyContent.impactGallery.images]; ni[i] = { ...ni[i], alt: e.target.value }; setApplyContent({ ...applyContent, impactGallery: { ...applyContent.impactGallery, images: ni } }); }} /></div>
+                </div>
+                <button onClick={() => setApplyContent({ ...applyContent, impactGallery: { ...applyContent.impactGallery, images: applyContent.impactGallery.images.filter((_, j) => j !== i) } })} className="text-red-400 hover:text-red-600 text-xs font-bold px-2 mt-6" title="Remove">✕</button>
+              </div>
+            ))}
+          </div>
+          <button onClick={() => setApplyContent({ ...applyContent, impactGallery: { ...applyContent.impactGallery, images: [...applyContent.impactGallery.images, { src: "", alt: "" }] } })} className="text-xs text-[#2e7d5b] font-bold mt-2">+ Add Image</button>
         </div>
 
         {/* Form */}

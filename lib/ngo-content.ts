@@ -298,6 +298,12 @@ export interface NGOApplyContent {
   benefitsBadge: string;
   benefitsHeading: string;
   benefits: { icon: string; title: string; desc: string }[];
+  impactGallery: {
+    badge: string;
+    heading: string;
+    description: string;
+    images: { src: string; alt: string }[];
+  };
   formBadgePrefix: string;
   formHeading: string;
   successHeading: string;
@@ -326,6 +332,21 @@ export const defaultNGOApply: NGOApplyContent = {
     { icon: "🎓", title: "Scholarships", desc: "Funded spots at PiChess Academy" },
     { icon: "🤝", title: "Mentorship", desc: "Paired with experienced players" },
   ],
+  impactGallery: {
+    badge: "See What Your Money Is Doing",
+    heading: "Real Impact, Real Children",
+    description: "Every donation, every partnership, every volunteer hour — this is where it goes. These are the faces behind the numbers.",
+    images: [
+      { src: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80", alt: "Children at a community chess session" },
+      { src: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&q=80", alt: "Kids learning chess together" },
+      { src: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=600&q=80", alt: "Young player in concentration" },
+      { src: "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=600&q=80", alt: "School chess program in action" },
+      { src: "https://images.unsplash.com/photo-1604948501466-4e9c339b9c24?w=600&q=80", alt: "Chess brings smiles" },
+      { src: "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=600&q=80", alt: "Community tournament day" },
+      { src: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&q=80", alt: "Young players competing" },
+      { src: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=600&q=80", alt: "Volunteers with children" },
+    ],
+  },
   formBadgePrefix: "Step",
   formHeading: "Application Form",
   successHeading: "Application Received!",
