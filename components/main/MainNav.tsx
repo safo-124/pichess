@@ -15,6 +15,7 @@ import {
   Phone,
   Home,
   ArrowRight,
+  Lightbulb,
 } from "lucide-react";
 
 const leftLinks = [
@@ -25,6 +26,7 @@ const leftLinks = [
 ];
 
 const rightLinks = [
+  { label: "Learn", href: "/learning-tools", icon: Lightbulb, accent: "#8b5cf6" },
   { label: "Shop", href: "/shop", icon: ShoppingBag, accent: "#d97706" },
   { label: "News", href: "/news", icon: Newspaper },
   { label: "About", href: "/about", icon: Users },

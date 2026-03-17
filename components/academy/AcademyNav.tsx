@@ -8,7 +8,6 @@ import { Menu, X, ArrowLeft, Crown } from "lucide-react";
 const links = [
   { label: "Home", href: "/academy" },
   { label: "Lessons", href: "/academy/lessons" },
-  { label: "Tournaments", href: "/tournaments" },
   { label: "Our Team", href: "/academy/team" },
   { label: "Testimonials", href: "/academy#testimonials" },
 ];
