@@ -3,7 +3,8 @@ import NGOMissionPage from "@/components/ngo/NGOMissionPage";
 import { getSiteContent } from "@/lib/actions/admin";
 import {
   defaultNGOMissionHero, defaultNGOStorySection, defaultNGOPillars,
-  defaultNGOValues, defaultNGOCTA,
+  defaultNGOValues, defaultNGOCTA, defaultNGOStats,
+  type NGOStat,
 } from "@/lib/ngo-content";
 
 export const metadata: Metadata = {
@@ -17,21 +18,16 @@ function parse<T>(raw: string | null, fallback: T): T {
 }
 
 export default async function MissionPage() {
-  const [heroRaw, storyRaw, pillarsRaw, valuesRaw, ctaRaw] = await Promise.all([
+  const [heroRaw, storyRaw, pillarsRaw, valuesRaw, ctaRaw, statsRaw] = await Promise.all([
     getSiteContent("ngo_mission_hero"),
     getSiteContent("ngo_story_section"),
     getSiteContent("ngo_pillars"),
     getSiteContent("ngo_values"),
     getSiteContent("ngo_cta"),
+    getSiteContent("ngo_stats"),
   ]);
 
-  // Build stats from the story section accent data + pillars
-  const stats = [
-    { value: "200+", label: "Beneficiaries" },
-    { value: "10", label: "Communities" },
-    { value: "50+", label: "Donors" },
-    { value: "5", label: "Years of Impact" },
-  ];
+  const stats = parse<NGOStat[]>(statsRaw, defaultNGOStats);
 
   return (
     <NGOMissionPage

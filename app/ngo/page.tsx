@@ -11,6 +11,7 @@ import {
 } from "@/lib/ngo-content";
 
 export const metadata = { title: "PiChess Foundation" };
+export const dynamic = "force-dynamic";
 
 function parse<T>(raw: string | null, fallback: T): T {
   try { return raw ? JSON.parse(raw) : fallback; } catch { return fallback; }

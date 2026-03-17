@@ -5,8 +5,9 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type {
-  NGOMissionHero, NGOStorySection, NGOPillar, NGOValue, NGOCTA,
+  NGOMissionHero, NGOStorySection, NGOPillar, NGOValue, NGOCTA, NGOStat,
 } from "@/lib/ngo-content";
+import StatsCounter from "@/components/shared/StatsCounter";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -33,7 +34,7 @@ interface MissionPageProps {
   storySection: NGOStorySection;
   pillars: NGOPillar[];
   values: NGOValue[];
-  stats: { value: string; label: string }[];
+  stats: NGOStat[];
   cta: NGOCTA;
 }
 
@@ -158,12 +159,9 @@ export default function NGOMissionPage({ missionHero, storySection, pillars, val
           backgroundSize: "40px 40px",
         }} />
         <div className="relative max-w-5xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((s, i) => (
-              <AnimSection key={s.label} delay={i * 0.1}>
-                <p className="text-4xl sm:text-5xl font-black text-white mb-1">{s.value}</p>
-                <p className="text-white/60 text-sm font-medium">{s.label}</p>
-              </AnimSection>
+              <StatsCounter key={i} end={s.value} label={s.label} suffix={s.suffix} color="white" />
             ))}
           </div>
         </div>
