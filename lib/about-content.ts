@@ -78,9 +78,9 @@ export const defaultPillars: AboutPillar[] = [
 
 export const defaultStats: AboutStat[] = [
   { value: 500, suffix: "+", label: "Students", color: "gold" },
-  { value: 8, suffix: "", label: "Years Active", color: "white" },
-  { value: 50, suffix: "+", label: "Tournaments", color: "white" },
-  { value: 200, suffix: "+", label: "Beneficiaries", color: "green" },
+  { value: 8, suffix: "", label: "Years Active", color: "gold" },
+  { value: 50, suffix: "+", label: "Tournaments", color: "gold" },
+  { value: 200, suffix: "+", label: "Beneficiaries", color: "gold" },
 ];
 
 export const defaultMission: AboutMission = {

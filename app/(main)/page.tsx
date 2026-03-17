@@ -314,9 +314,9 @@ export default async function HomePage() {
           </AnimatedSection>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
             <StatsCounter end={500} label="Students Trained" suffix="+" color="gold" />
-            <StatsCounter end={50} label="Tournaments Hosted" suffix="+" color="dark" />
-            <StatsCounter end={200} label="Lives Impacted" suffix="+" color="green" />
-            <StatsCounter end={15} label="Expert Coaches" color="dark" />
+            <StatsCounter end={50} label="Tournaments Hosted" suffix="+" color="gold" />
+            <StatsCounter end={200} label="Lives Impacted" suffix="+" color="gold" />
+            <StatsCounter end={15} label="Expert Coaches" color="gold" />
           </div>
         </div>
       </section>

@@ -73,9 +73,9 @@ export const defaultHero: AcademyHero = {
 
 export const defaultStats: AcademyStat[] = [
   { end: 500, label: "Students Trained", suffix: "+", color: "gold" },
-  { end: 15, label: "Expert Coaches", suffix: "", color: "white" },
+  { end: 15, label: "Expert Coaches", suffix: "", color: "gold" },
   { end: 30, label: "Tournaments Won", suffix: "+", color: "gold" },
-  { end: 9, label: "Lesson Packages", suffix: "", color: "white" },
+  { end: 9, label: "Lesson Packages", suffix: "", color: "gold" },
 ];
 
 export const defaultLessons: AcademyLesson[] = [
