@@ -306,6 +306,28 @@ export interface NGOApplyContent {
   };
   formBadgePrefix: string;
   formHeading: string;
+  formSections: {
+    icon: string;
+    title: string;
+    description: string;
+  }[];
+  formLabels: {
+    name: string;
+    email: string;
+    phone: string;
+    age: string;
+    region: string;
+    location: string;
+    school: string;
+    chessLevel: string;
+    guardianName: string;
+    guardianPhone: string;
+    reason: string;
+    essay: string;
+  };
+  chessLevels: { value: string; label: string; desc: string }[];
+  submitButtonText: string;
+  requiredNote: string;
   successHeading: string;
   successMessage: string;
   faqs: { q: string; a: string }[];
@@ -349,6 +371,33 @@ export const defaultNGOApply: NGOApplyContent = {
   },
   formBadgePrefix: "Step",
   formHeading: "Application Form",
+  formSections: [
+    { icon: "👤", title: "Personal Information", description: "Tell us about the applicant." },
+    { icon: "♟", title: "Chess Background", description: "Help us understand your chess experience." },
+    { icon: "👨‍👩‍👦", title: "Guardian Details", description: "Optional — recommended for applicants under 18." },
+    { icon: "📝", title: "Your Story", description: "Tell us why you need support and how chess can change your life." },
+  ],
+  formLabels: {
+    name: "Full Name *",
+    email: "Email Address *",
+    phone: "Phone Number *",
+    age: "Age",
+    region: "Region",
+    location: "Location / Community",
+    school: "School / Institution",
+    chessLevel: "Chess Level",
+    guardianName: "Guardian's Name",
+    guardianPhone: "Guardian's Phone",
+    reason: "Why do you want to partner with us? *",
+    essay: "Additional Information (Optional)",
+  },
+  chessLevels: [
+    { value: "beginner", label: "Beginner", desc: "I'm new to chess" },
+    { value: "intermediate", label: "Intermediate", desc: "I know the rules and basic strategy" },
+    { value: "advanced", label: "Advanced", desc: "I play competitively / rated" },
+  ],
+  submitButtonText: "Submit Application 🌱",
+  requiredNote: "Fields marked with * are required",
   successHeading: "Application Received!",
   successMessage: "We'll review your application and get back to you within 7 working days. Thank you for reaching out to PiChess Foundation!",
   faqs: [

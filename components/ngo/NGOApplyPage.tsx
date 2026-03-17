@@ -19,11 +19,7 @@ const regions = [
   "Oti", "Savannah", "Bono East", "Ahafo", "Western North", "North East",
 ];
 
-const chessLevels = [
-  { value: "beginner", label: "Beginner", desc: "I'm new to chess" },
-  { value: "intermediate", label: "Intermediate", desc: "I know the rules and basic strategy" },
-  { value: "advanced", label: "Advanced", desc: "I play competitively / rated" },
-];
+// Chess levels now come from content props
 
 /* ═══════════════════════════════════════════════════════════
    HELPERS
@@ -56,7 +52,12 @@ const labelCls = "block text-xs font-bold text-zinc-500 uppercase tracking-wides
    ═══════════════════════════════════════════════════════════ */
 
 export default function ApplyPage({ content, partners = [] }: { content: NGOApplyContent; partners?: PartnerData[] }) {
-  const { benefits, faqs, bottomCta, impactGallery } = content;
+  const { benefits, faqs, bottomCta, impactGallery, formSections, formLabels, submitButtonText, requiredNote } = content;
+  const chessLevels = content.chessLevels ?? [
+    { value: "beginner", label: "Beginner", desc: "I'm new to chess" },
+    { value: "intermediate", label: "Intermediate", desc: "I know the rules and basic strategy" },
+    { value: "advanced", label: "Advanced", desc: "I play competitively / rated" },
+  ];
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -387,34 +388,34 @@ export default function ApplyPage({ content, partners = [] }: { content: NGOAppl
                   <div>
                     <div className="mb-5">
                       <h3 className="text-base sm:text-lg font-black text-zinc-900 flex items-center gap-2">
-                        <span className="w-8 h-8 rounded-xl bg-[#2e7d5b] text-white flex items-center justify-center text-sm">👤</span>
-                        Personal Information
+                        <span className="w-8 h-8 rounded-xl bg-[#2e7d5b] text-white flex items-center justify-center text-sm">{formSections?.[0]?.icon ?? "👤"}</span>
+                        {formSections?.[0]?.title ?? "Personal Information"}
                       </h3>
-                      <p className="text-zinc-400 text-sm mt-1 ml-10">Tell us about the applicant.</p>
+                      <p className="text-zinc-400 text-sm mt-1 ml-10">{formSections?.[0]?.description ?? "Tell us about the applicant."}</p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
-                        <label className={labelCls}>Full Name *</label>
+                        <label className={labelCls}>{formLabels?.name ?? "Full Name *"}</label>
                         <input value={form.name} onChange={set("name")} placeholder="e.g. Kwame Asante" className={inputCls} required />
                       </div>
                       <div>
-                        <label className={labelCls}>Email Address *</label>
+                        <label className={labelCls}>{formLabels?.email ?? "Email Address *"}</label>
                         <input value={form.email} onChange={set("email")} type="email" placeholder="kwame@example.com" className={inputCls} required />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-5">
                       <div>
-                        <label className={labelCls}>Phone Number *</label>
+                        <label className={labelCls}>{formLabels?.phone ?? "Phone Number *"}</label>
                         <input value={form.phone} onChange={set("phone")} type="tel" placeholder="024 XXXX XXX" className={inputCls} required />
                       </div>
                       <div>
-                        <label className={labelCls}>Age</label>
+                        <label className={labelCls}>{formLabels?.age ?? "Age"}</label>
                         <input value={form.age} onChange={set("age")} type="number" min="3" max="99" placeholder="e.g. 12" className={inputCls} />
                       </div>
                       <div>
-                        <label className={labelCls}>Region</label>
+                        <label className={labelCls}>{formLabels?.region ?? "Region"}</label>
                         <select value={form.region} onChange={set("region")} className={inputCls}>
                           <option value="">Select region</option>
                           {regions.map((r) => <option key={r} value={r}>{r}</option>)}
@@ -424,11 +425,11 @@ export default function ApplyPage({ content, partners = [] }: { content: NGOAppl
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
                       <div>
-                        <label className={labelCls}>Location / Community</label>
+                        <label className={labelCls}>{formLabels?.location ?? "Location / Community"}</label>
                         <input value={form.location} onChange={set("location")} placeholder="e.g. Nima, Accra" className={inputCls} />
                       </div>
                       <div>
-                        <label className={labelCls}>School / Institution</label>
+                        <label className={labelCls}>{formLabels?.school ?? "School / Institution"}</label>
                         <input value={form.school} onChange={set("school")} placeholder="e.g. Accra Academy" className={inputCls} />
                       </div>
                     </div>
@@ -440,13 +441,13 @@ export default function ApplyPage({ content, partners = [] }: { content: NGOAppl
                   <div>
                     <div className="mb-5">
                       <h3 className="text-base sm:text-lg font-black text-zinc-900 flex items-center gap-2">
-                        <span className="w-8 h-8 rounded-xl bg-[#2e7d5b] text-white flex items-center justify-center text-sm">♟</span>
-                        Chess Background
+                        <span className="w-8 h-8 rounded-xl bg-[#2e7d5b] text-white flex items-center justify-center text-sm">{formSections?.[1]?.icon ?? "♟"}</span>
+                        {formSections?.[1]?.title ?? "Chess Background"}
                       </h3>
-                      <p className="text-zinc-400 text-sm mt-1 ml-10">Help us understand your chess experience.</p>
+                      <p className="text-zinc-400 text-sm mt-1 ml-10">{formSections?.[1]?.description ?? "Help us understand your chess experience."}</p>
                     </div>
 
-                    <label className={labelCls}>Chess Level</label>
+                    <label className={labelCls}>{formLabels?.chessLevel ?? "Chess Level"}</label>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {chessLevels.map((level) => (
                         <motion.button
@@ -484,19 +485,19 @@ export default function ApplyPage({ content, partners = [] }: { content: NGOAppl
                   <div>
                     <div className="mb-5">
                       <h3 className="text-base sm:text-lg font-black text-zinc-900 flex items-center gap-2">
-                        <span className="w-8 h-8 rounded-xl bg-[#2e7d5b] text-white flex items-center justify-center text-sm">👨‍👩‍👦</span>
-                        Guardian Details
+                        <span className="w-8 h-8 rounded-xl bg-[#2e7d5b] text-white flex items-center justify-center text-sm">{formSections?.[2]?.icon ?? "👨‍👩‍👦"}</span>
+                        {formSections?.[2]?.title ?? "Guardian Details"}
                       </h3>
-                      <p className="text-zinc-400 text-sm mt-1 ml-10">Optional — recommended for applicants under 18.</p>
+                      <p className="text-zinc-400 text-sm mt-1 ml-10">{formSections?.[2]?.description ?? "Optional — recommended for applicants under 18."}</p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
-                        <label className={labelCls}>Guardian&apos;s Name</label>
+                        <label className={labelCls}>{formLabels?.guardianName ?? "Guardian's Name"}</label>
                         <input value={form.guardian_name} onChange={set("guardian_name")} placeholder="e.g. Ama Asante" className={inputCls} />
                       </div>
                       <div>
-                        <label className={labelCls}>Guardian&apos;s Phone</label>
+                        <label className={labelCls}>{formLabels?.guardianPhone ?? "Guardian's Phone"}</label>
                         <input value={form.guardian_phone} onChange={set("guardian_phone")} type="tel" placeholder="024 XXXX XXX" className={inputCls} />
                       </div>
                     </div>
@@ -508,15 +509,15 @@ export default function ApplyPage({ content, partners = [] }: { content: NGOAppl
                   <div>
                     <div className="mb-5">
                       <h3 className="text-base sm:text-lg font-black text-zinc-900 flex items-center gap-2">
-                        <span className="w-8 h-8 rounded-xl bg-[#2e7d5b] text-white flex items-center justify-center text-sm">📝</span>
-                        Your Story
+                        <span className="w-8 h-8 rounded-xl bg-[#2e7d5b] text-white flex items-center justify-center text-sm">{formSections?.[3]?.icon ?? "📝"}</span>
+                        {formSections?.[3]?.title ?? "Your Story"}
                       </h3>
-                      <p className="text-zinc-400 text-sm mt-1 ml-10">Tell us why you need support and how chess can change your life.</p>
+                      <p className="text-zinc-400 text-sm mt-1 ml-10">{formSections?.[3]?.description ?? "Tell us why you need support and how chess can change your life."}</p>
                     </div>
 
                     <div className="space-y-5">
                       <div>
-                        <label className={labelCls}>Why do you want to partner with us? *</label>
+                        <label className={labelCls}>{formLabels?.reason ?? "Why do you want to partner with us? *"}</label>
                         <textarea
                           value={form.reason}
                           onChange={set("reason")}
@@ -527,7 +528,7 @@ export default function ApplyPage({ content, partners = [] }: { content: NGOAppl
                         />
                       </div>
                       <div>
-                        <label className={labelCls}>Additional Information (Optional)</label>
+                        <label className={labelCls}>{formLabels?.essay ?? "Additional Information (Optional)"}</label>
                         <textarea
                           value={form.essay}
                           onChange={set("essay")}
@@ -541,7 +542,7 @@ export default function ApplyPage({ content, partners = [] }: { content: NGOAppl
 
                   {/* Submit */}
                   <div className="pt-4 border-t border-zinc-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p className="text-zinc-400 text-xs">Fields marked with * are required</p>
+                    <p className="text-zinc-400 text-xs">{requiredNote ?? "Fields marked with * are required"}</p>
                     <motion.button
                       type="submit"
                       disabled={status === "loading" || !canSubmit}
@@ -559,7 +560,7 @@ export default function ApplyPage({ content, partners = [] }: { content: NGOAppl
                           Submitting...
                         </>
                       ) : (
-                        <>Submit Application 🌱</>
+                        <>{submitButtonText ?? "Submit Application 🌱"}</>
                       )}
                     </motion.button>
                   </div>

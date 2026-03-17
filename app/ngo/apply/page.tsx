@@ -27,6 +27,9 @@ export default async function ApplyPageWrapper() {
     ...content,
     bottomCta: { ...defaultNGOApply.bottomCta, ...content.bottomCta },
     impactGallery: { ...defaultNGOApply.impactGallery, ...(content.impactGallery ?? {}), images: content.impactGallery?.images ?? defaultNGOApply.impactGallery.images },
+    formSections: content.formSections ?? defaultNGOApply.formSections,
+    formLabels: { ...defaultNGOApply.formLabels, ...(content.formLabels ?? {}) },
+    chessLevels: content.chessLevels ?? defaultNGOApply.chessLevels,
   };
   return <ApplyPage content={merged} partners={partners} />;
 }

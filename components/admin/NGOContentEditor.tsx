@@ -124,7 +124,7 @@ export default function NGOContentEditor({ initialData }: Props) {
   const [timeline, setTimeline] = useState<NGOTimelineItem[]>(parse("ngo_timeline", defaultNGOTimeline));
   const [programsStats, setProgramsStats] = useState<NGOProgramsImpactStat[]>(parse("ngo_programs_stats", defaultNGOProgramsStats));
   const applyParsed = parse("ngo_apply", defaultNGOApply);
-  const [applyContent, setApplyContent] = useState<NGOApplyContent>({ ...applyParsed, bottomCta: { ...defaultNGOApply.bottomCta, ...(applyParsed.bottomCta ?? {}) }, impactGallery: { ...defaultNGOApply.impactGallery, ...(applyParsed.impactGallery ?? {}), images: applyParsed.impactGallery?.images ?? defaultNGOApply.impactGallery.images } });
+  const [applyContent, setApplyContent] = useState<NGOApplyContent>({ ...defaultNGOApply, ...applyParsed, bottomCta: { ...defaultNGOApply.bottomCta, ...(applyParsed.bottomCta ?? {}) }, impactGallery: { ...defaultNGOApply.impactGallery, ...(applyParsed.impactGallery ?? {}), images: applyParsed.impactGallery?.images ?? defaultNGOApply.impactGallery.images }, formSections: applyParsed.formSections ?? defaultNGOApply.formSections, formLabels: { ...defaultNGOApply.formLabels, ...(applyParsed.formLabels ?? {}) }, chessLevels: applyParsed.chessLevels ?? defaultNGOApply.chessLevels });
   const [volunteerContent, setVolunteerContent] = useState<NGOVolunteerContent>(parse("ngo_volunteer", defaultNGOVolunteer));
   const [donateContent, setDonateContent] = useState<NGODonateContent>(parse("ngo_donate", defaultNGODonate));
   const [storiesContent, setStoriesContent] = useState<NGOStoriesContent>(parse("ngo_stories_content", defaultNGOStoriesContent));
@@ -469,7 +469,97 @@ export default function NGOContentEditor({ initialData }: Props) {
           <div className="grid sm:grid-cols-2 gap-4">
             <div><label className={labelCls}>Badge Prefix (e.g. &quot;Step&quot;)</label><input className={inputCls} value={applyContent.formBadgePrefix} onChange={e => setApplyContent({ ...applyContent, formBadgePrefix: e.target.value })} /></div>
             <div><label className={labelCls}>Form Heading</label><input className={inputCls} value={applyContent.formHeading} onChange={e => setApplyContent({ ...applyContent, formHeading: e.target.value })} /></div>
+            <div><label className={labelCls}>Submit Button Text</label><input className={inputCls} value={applyContent.submitButtonText ?? "Submit Application 🌱"} onChange={e => setApplyContent({ ...applyContent, submitButtonText: e.target.value })} /></div>
+            <div><label className={labelCls}>Required Note</label><input className={inputCls} value={applyContent.requiredNote ?? "Fields marked with * are required"} onChange={e => setApplyContent({ ...applyContent, requiredNote: e.target.value })} /></div>
           </div>
+        </div>
+
+        {/* Form Sections (Titles & Descriptions) */}
+        <div className="mt-6 pt-4 border-t border-zinc-100">
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Form Section Headers</p>
+          <p className="text-[11px] text-zinc-400 mb-3">Edit the icon, title, and description for each of the 4 form sections.</p>
+          {(applyContent.formSections ?? [
+            { icon: "👤", title: "Personal Information", description: "Tell us about the applicant." },
+            { icon: "♟", title: "Chess Background", description: "Help us understand your chess experience." },
+            { icon: "👨‍👩‍👦", title: "Guardian Details", description: "Optional — recommended for applicants under 18." },
+            { icon: "📝", title: "Your Story", description: "Tell us why you need support and how chess can change your life." },
+          ]).map((sec, i) => (
+            <div key={i} className="mb-3 p-3 border border-zinc-100 rounded-xl">
+              <p className="text-[11px] font-bold text-zinc-500 mb-2">Section {i + 1}</p>
+              <div className="grid grid-cols-6 gap-2">
+                <div><label className={labelCls}>Icon</label><input className={inputCls} value={sec.icon} onChange={e => { const ns = [...(applyContent.formSections ?? [])]; ns[i] = { ...ns[i], icon: e.target.value }; setApplyContent({ ...applyContent, formSections: ns }); }} /></div>
+                <div className="col-span-2"><label className={labelCls}>Title</label><input className={inputCls} value={sec.title} onChange={e => { const ns = [...(applyContent.formSections ?? [])]; ns[i] = { ...ns[i], title: e.target.value }; setApplyContent({ ...applyContent, formSections: ns }); }} /></div>
+                <div className="col-span-3"><label className={labelCls}>Description</label><input className={inputCls} value={sec.description} onChange={e => { const ns = [...(applyContent.formSections ?? [])]; ns[i] = { ...ns[i], description: e.target.value }; setApplyContent({ ...applyContent, formSections: ns }); }} /></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Form Field Labels */}
+        <div className="mt-6 pt-4 border-t border-zinc-100">
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Form Field Labels</p>
+          <p className="text-[11px] text-zinc-400 mb-3">Labels shown above each field in the application form.</p>
+          {(() => {
+            const labels = applyContent.formLabels ?? {
+              name: "Full Name *", email: "Email Address *", phone: "Phone Number *",
+              age: "Age", region: "Region", location: "Location / Community",
+              school: "School / Institution", chessLevel: "Chess Level",
+              guardianName: "Guardian's Name", guardianPhone: "Guardian's Phone",
+              reason: "Why do you want to partner with us? *", essay: "Additional Information (Optional)",
+            };
+            const setLabel = (key: string, val: string) => setApplyContent({ ...applyContent, formLabels: { ...labels, [key]: val } });
+            return (
+              <>
+                <p className="text-[11px] font-bold text-zinc-500 mb-1">👤 Personal Information</p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+                  <div><label className={labelCls}>Name</label><input className={inputCls} value={labels.name} onChange={e => setLabel("name", e.target.value)} /></div>
+                  <div><label className={labelCls}>Email</label><input className={inputCls} value={labels.email} onChange={e => setLabel("email", e.target.value)} /></div>
+                  <div><label className={labelCls}>Phone</label><input className={inputCls} value={labels.phone} onChange={e => setLabel("phone", e.target.value)} /></div>
+                  <div><label className={labelCls}>Age</label><input className={inputCls} value={labels.age} onChange={e => setLabel("age", e.target.value)} /></div>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
+                  <div><label className={labelCls}>Region</label><input className={inputCls} value={labels.region} onChange={e => setLabel("region", e.target.value)} /></div>
+                  <div><label className={labelCls}>Location</label><input className={inputCls} value={labels.location} onChange={e => setLabel("location", e.target.value)} /></div>
+                  <div><label className={labelCls}>School</label><input className={inputCls} value={labels.school} onChange={e => setLabel("school", e.target.value)} /></div>
+                </div>
+                <p className="text-[11px] font-bold text-zinc-500 mb-1 mt-2">♟ Chess Background</p>
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  <div><label className={labelCls}>Chess Level</label><input className={inputCls} value={labels.chessLevel} onChange={e => setLabel("chessLevel", e.target.value)} /></div>
+                </div>
+                <p className="text-[11px] font-bold text-zinc-500 mb-1 mt-2">👨‍👩‍👦 Guardian Details</p>
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  <div><label className={labelCls}>Guardian Name</label><input className={inputCls} value={labels.guardianName} onChange={e => setLabel("guardianName", e.target.value)} /></div>
+                  <div><label className={labelCls}>Guardian Phone</label><input className={inputCls} value={labels.guardianPhone} onChange={e => setLabel("guardianPhone", e.target.value)} /></div>
+                </div>
+                <p className="text-[11px] font-bold text-zinc-500 mb-1 mt-2">📝 Your Story</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div><label className={labelCls}>Reason</label><input className={inputCls} value={labels.reason} onChange={e => setLabel("reason", e.target.value)} /></div>
+                  <div><label className={labelCls}>Essay</label><input className={inputCls} value={labels.essay} onChange={e => setLabel("essay", e.target.value)} /></div>
+                </div>
+              </>
+            );
+          })()}
+        </div>
+
+        {/* Chess Level Options */}
+        <div className="mt-6 pt-4 border-t border-zinc-100">
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Chess Level Options</p>
+          <p className="text-[11px] text-zinc-400 mb-3">The selectable skill levels shown as cards in the form.</p>
+          {(applyContent.chessLevels ?? [
+            { value: "beginner", label: "Beginner", desc: "I'm new to chess" },
+            { value: "intermediate", label: "Intermediate", desc: "I know the rules and basic strategy" },
+            { value: "advanced", label: "Advanced", desc: "I play competitively / rated" },
+          ]).map((lvl, i) => (
+            <div key={i} className="flex gap-2 items-start mb-2">
+              <div className="grid grid-cols-3 gap-2 flex-1">
+                <input className={inputCls} placeholder="Value (e.g. beginner)" value={lvl.value} onChange={e => { const nl = [...(applyContent.chessLevels ?? [])]; nl[i] = { ...nl[i], value: e.target.value }; setApplyContent({ ...applyContent, chessLevels: nl }); }} />
+                <input className={inputCls} placeholder="Label" value={lvl.label} onChange={e => { const nl = [...(applyContent.chessLevels ?? [])]; nl[i] = { ...nl[i], label: e.target.value }; setApplyContent({ ...applyContent, chessLevels: nl }); }} />
+                <input className={inputCls} placeholder="Description" value={lvl.desc} onChange={e => { const nl = [...(applyContent.chessLevels ?? [])]; nl[i] = { ...nl[i], desc: e.target.value }; setApplyContent({ ...applyContent, chessLevels: nl }); }} />
+              </div>
+              <button onClick={() => { const nl = (applyContent.chessLevels ?? []).filter((_, j) => j !== i); setApplyContent({ ...applyContent, chessLevels: nl }); }} className="text-red-400 hover:text-red-600 text-xs font-bold px-2 mt-2" title="Remove">✕</button>
+            </div>
+          ))}
+          <button onClick={() => setApplyContent({ ...applyContent, chessLevels: [...(applyContent.chessLevels ?? []), { value: "", label: "", desc: "" }] })} className="text-xs text-[#2e7d5b] font-bold">+ Add Level</button>
         </div>
 
         {/* Success */}
