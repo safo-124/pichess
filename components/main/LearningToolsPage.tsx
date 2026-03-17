@@ -9,10 +9,10 @@ import {
   Lightbulb, Flame, Sparkles,
 } from "lucide-react";
 import type {
-  LearningToolsHero, LearningTool, LearningTip, LearningToolsCTA,
+  LearningToolsHero, LearningTool, LearningTip, LearningToolsCTA, LearningToolsShowcase,
 } from "@/lib/learning-tools-content";
 import {
-  defaultHero, defaultTools, defaultTips, defaultCTA,
+  defaultHero, defaultTools, defaultTips, defaultCTA, defaultShowcase,
 } from "@/lib/learning-tools-content";
 
 /* ═══ Types ═══ */
@@ -32,6 +32,7 @@ interface LearningToolsPageProps {
   tools?: LearningTool[];
   tips?: LearningTip[];
   cta?: LearningToolsCTA;
+  showcase?: LearningToolsShowcase;
 }
 
 /* ═══ Icon map (string key → Lucide component) ═══ */
@@ -112,11 +113,13 @@ export default function LearningToolsPage({
   tools: toolsData,
   tips: tipsData,
   cta: ctaData,
+  showcase: showcaseData,
 }: LearningToolsPageProps) {
   const hero = heroData ?? defaultHero;
   const toolsList = toolsData ?? defaultTools;
   const tipsList = tipsData ?? defaultTips;
   const cta = ctaData ?? defaultCTA;
+  const showcase = showcaseData ?? defaultShowcase;
 
   const [activeCategory, setActiveCategory] = useState("all");
   const [showSolution, setShowSolution] = useState(false);
@@ -135,31 +138,6 @@ export default function LearningToolsPage({
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-b from-violet-100/60 via-transparent to-transparent rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-0 w-[600px] h-[400px] bg-gradient-to-tl from-[#c9a84c]/8 to-transparent blur-3xl" />
 
-          {/* Floating chess pieces */}
-          {["♔", "♟", "♞", "♗", "♖", "♕"].map((piece, i) => (
-            <motion.div
-              key={i}
-              className="absolute text-gray-900/[0.04] select-none"
-              style={{
-                fontSize: `${40 + i * 15}px`,
-                top: `${10 + (i * 17) % 80}%`,
-                left: `${5 + (i * 19) % 90}%`,
-              }}
-              animate={{
-                y: [0, -20 + i * 5, 0],
-                rotate: [0, i % 2 === 0 ? 8 : -8, 0],
-              }}
-              transition={{
-                duration: 5 + i,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: i * 0.5,
-              }}
-            >
-              {piece}
-            </motion.div>
-          ))}
-
           {/* Grid pattern */}
           <div
             className="absolute inset-0 opacity-[0.04]"
@@ -171,49 +149,76 @@ export default function LearningToolsPage({
           />
         </div>
 
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-5 leading-[1.05]"
-          >
-            {hero.title}{" "}
-            <span className="bg-gradient-to-r from-violet-600 via-[#c9a84c] to-amber-500 bg-clip-text text-transparent">
-              {hero.highlight}
-            </span>
-          </motion.h1>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            {/* Text side */}
+            <div className="text-center lg:text-left">
+              <motion.h1
+                initial={{ opacity: 0, y: 25 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1 }}
+                className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-5 leading-[1.05]"
+              >
+                {hero.title}{" "}
+                <span className="bg-gradient-to-r from-violet-600 via-[#c9a84c] to-amber-500 bg-clip-text text-transparent">
+                  {hero.highlight}
+                </span>
+              </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-gray-500 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed mb-10"
-          >
-            {hero.subtitle}
-          </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-gray-500 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8"
+              >
+                {hero.subtitle}
+              </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.35 }}
-            className="flex flex-wrap items-center justify-center gap-4"
-          >
-            <a
-              href="#daily-puzzle"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-bold text-sm transition-all hover:scale-105 shadow-lg shadow-violet-600/25"
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.35 }}
+                className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
+              >
+                <a
+                  href="#daily-puzzle"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-bold text-sm transition-all hover:scale-105 shadow-lg shadow-violet-600/25"
+                >
+                  <Puzzle size={16} />
+                  Today&apos;s Puzzle
+                </a>
+                <a
+                  href="#tools"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gray-100 hover:bg-gray-200 border border-gray-200 text-gray-700 font-semibold text-sm transition-all hover:scale-105"
+                >
+                  Explore Tools
+                  <ArrowRight size={16} />
+                </a>
+              </motion.div>
+            </div>
+
+            {/* Image side */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative"
             >
-              <Puzzle size={16} />
-              Today&apos;s Puzzle
-            </a>
-            <a
-              href="#tools"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gray-100 hover:bg-gray-200 border border-gray-200 text-gray-700 font-semibold text-sm transition-all hover:scale-105"
-            >
-              Explore Tools
-              <ArrowRight size={16} />
-            </a>
-          </motion.div>
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-black/10 border border-gray-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={hero.image}
+                  alt="Chess learning"
+                  className="w-full h-64 sm:h-80 lg:h-[420px] object-cover"
+                />
+                {/* Overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+              </div>
+              {/* Floating accent */}
+              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl opacity-20 blur-2xl" />
+              <div className="absolute -top-4 -left-4 w-20 h-20 bg-gradient-to-br from-[#c9a84c] to-amber-500 rounded-2xl opacity-15 blur-2xl" />
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -438,6 +443,41 @@ export default function LearningToolsPage({
                 );
               })}
             </AnimatePresence>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══ SHOWCASE ═══ */}
+      <section className="py-16 sm:py-24 px-4 sm:px-6 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={fadeUp}
+            custom={0}
+            className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center"
+          >
+            {/* Image */}
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-black/10 border border-gray-100">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={showcase.image}
+                alt={showcase.title}
+                className="w-full h-64 sm:h-80 lg:h-96 object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-transparent" />
+            </div>
+
+            {/* Text */}
+            <div>
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight mb-4 leading-tight">
+                {showcase.title}
+              </h2>
+              <p className="text-gray-500 text-base sm:text-lg leading-relaxed">
+                {showcase.subtitle}
+              </p>
+            </div>
           </motion.div>
         </div>
       </section>

@@ -12,7 +12,7 @@ const btnCls =
 const btnPrimary =
   `${btnCls} bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:shadow-lg hover:shadow-amber-500/20`;
 
-const ICON_TYPES: ContactItem["iconType"][] = ["location", "email", "phone", "academy", "foundation"];
+const ICON_TYPES: ContactItem["iconType"][] = ["location", "email", "phone", "whatsapp", "academy", "foundation"];
 
 export default function AdminContactEditor({ initialData }: { initialData: ContactPageContent }) {
   const [data, setData] = useState<ContactPageContent>(initialData);

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef, useCallback } from "react";
 import { saveSiteContent } from "@/lib/actions/admin";
 import {
-  type LearningToolsHero, type LearningTool, type LearningTip, type LearningToolsCTA,
-  defaultHero, defaultTools, defaultTips, defaultCTA,
+  type LearningToolsHero, type LearningTool, type LearningTip, type LearningToolsCTA, type LearningToolsShowcase,
+  defaultHero, defaultTools, defaultTips, defaultCTA, defaultShowcase,
 } from "@/lib/learning-tools-content";
-import { ChevronDown, ChevronUp, Plus, Trash2, Save, Loader2, CheckCircle } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Trash2, Save, Loader2, CheckCircle, Upload } from "lucide-react";
 
 /* ─── Styling ─────────────────────────────────────────── */
 const inputCls = "w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#c9a84c]/40 focus:border-[#c9a84c]/40 outline-none transition-all placeholder:text-zinc-300";
@@ -16,6 +16,67 @@ const cardCls = "rounded-2xl bg-white border border-zinc-200/80 p-5";
 const btnSave = "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#c9a84c] to-[#dbb95d] text-black text-sm font-semibold hover:shadow-lg hover:shadow-[#c9a84c]/20 transition-all disabled:opacity-50";
 const btnDanger = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 transition-all";
 const btnAdd = "inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-dashed border-zinc-300 text-zinc-400 text-xs font-semibold hover:border-[#c9a84c] hover:text-[#c9a84c] transition-all";
+
+/* ─── Image upload field ─────────────────────────────── */
+function ImageField({ label, value, onChange }: { label: string; value: string; onChange: (url: string) => void }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+
+  const upload = useCallback(async (file: File) => {
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (data.url) onChange(data.url);
+      else alert(data.error || "Upload failed");
+    } catch { alert("Upload failed"); }
+    finally { setUploading(false); }
+  }, [onChange]);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith("image/")) upload(file);
+  }, [upload]);
+
+  return (
+    <div>
+      <label className={labelCls}>{label}</label>
+      <div className="flex gap-2 mb-2">
+        <input value={value} onChange={(e) => onChange(e.target.value)} className={inputCls} placeholder="https://... or upload below" />
+      </div>
+      <div
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={handleDrop}
+        onClick={() => fileRef.current?.click()}
+        className={`relative rounded-xl border-2 border-dashed p-4 text-center cursor-pointer transition-all ${dragOver ? "border-[#c9a84c] bg-[#c9a84c]/5" : "border-zinc-200 hover:border-zinc-300"}`}
+      >
+        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); }} />
+        {uploading ? (
+          <Loader2 className="w-5 h-5 mx-auto text-[#c9a84c] animate-spin" />
+        ) : value ? (
+          <div className="flex items-center gap-3">
+            <div className="w-16 h-10 rounded-lg overflow-hidden bg-zinc-100 shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={value} alt="" className="w-full h-full object-cover" />
+            </div>
+            <span className="text-xs text-zinc-400 truncate flex-1">{value}</span>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-1.5 py-2">
+            <Upload className="w-5 h-5 text-zinc-300" />
+            <span className="text-xs text-zinc-400">Click or drag to upload</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 /* ─── Collapsible Section ────────────────────────────── */
 function Section({ title, icon, children, defaultOpen = false }: { title: string; icon: string; children: React.ReactNode; defaultOpen?: boolean }) {
@@ -53,10 +114,11 @@ interface Props {
   initialTools?: LearningTool[];
   initialTips?: LearningTip[];
   initialCTA?: LearningToolsCTA;
+  initialShowcase?: LearningToolsShowcase;
 }
 
 export default function LearningToolsContentEditor({
-  initialHero, initialTools, initialTips, initialCTA,
+  initialHero, initialTools, initialTips, initialCTA, initialShowcase,
 }: Props) {
   const [isPending, startTransition] = useTransition();
   const [saved, setSaved] = useState<string | null>(null);
@@ -65,6 +127,7 @@ export default function LearningToolsContentEditor({
   const [tools, setTools] = useState<LearningTool[]>(initialTools ?? defaultTools);
   const [tips, setTips] = useState<LearningTip[]>(initialTips ?? defaultTips);
   const [cta, setCTA] = useState<LearningToolsCTA>(initialCTA ?? defaultCTA);
+  const [showcase, setShowcase] = useState<LearningToolsShowcase>(initialShowcase ?? defaultShowcase);
 
   const save = (key: string, val: any) => {
     startTransition(async () => {
@@ -126,6 +189,7 @@ export default function LearningToolsContentEditor({
           <label className={labelCls}>Subtitle</label>
           <textarea value={hero.subtitle} onChange={(e) => setHero({ ...hero, subtitle: e.target.value })} rows={2} className={inputCls} />
         </div>
+        <ImageField label="Hero Image" value={hero.image} onChange={(url) => setHero({ ...hero, image: url })} />
         {saveBtn("learning_hero", hero)}
       </Section>
 
@@ -192,6 +256,22 @@ export default function LearningToolsContentEditor({
           <button onClick={addTool} className={btnAdd}><Plus size={14} /> Add Tool</button>
           {saveBtn("learning_tools", tools)}
         </div>
+      </Section>
+
+      {/* ─── Showcase ─────────────────────────────────── */}
+      <Section title="Showcase Image" icon="🖼️">
+        <ImageField label="Showcase Image" value={showcase.image} onChange={(url) => setShowcase({ ...showcase, image: url })} />
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label className={labelCls}>Title</label>
+            <input value={showcase.title} onChange={(e) => setShowcase({ ...showcase, title: e.target.value })} className={inputCls} />
+          </div>
+          <div>
+            <label className={labelCls}>Subtitle</label>
+            <textarea value={showcase.subtitle} onChange={(e) => setShowcase({ ...showcase, subtitle: e.target.value })} rows={2} className={inputCls} />
+          </div>
+        </div>
+        {saveBtn("learning_showcase", showcase)}
       </Section>
 
       {/* ─── Chess Tips ───────────────────────────────── */}

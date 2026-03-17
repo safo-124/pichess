@@ -2,7 +2,7 @@ import LearningToolsPage from "@/components/main/LearningToolsPage";
 import prisma from "@/lib/prisma";
 import { getSiteContent } from "@/lib/actions/admin";
 import type {
-  LearningToolsHero, LearningTool, LearningTip, LearningToolsCTA,
+  LearningToolsHero, LearningTool, LearningTip, LearningToolsCTA, LearningToolsShowcase,
 } from "@/lib/learning-tools-content";
 
 export const metadata = { title: "Learning Tools | PiChess" };
@@ -38,6 +38,7 @@ export default async function Page() {
     getSiteContent("learning_tools"),
     getSiteContent("learning_tips"),
     getSiteContent("learning_cta"),
+    getSiteContent("learning_showcase"),
   ]);
 
   return (
@@ -47,6 +48,7 @@ export default async function Page() {
       tools={parse<LearningTool[]>(cms[1])}
       tips={parse<LearningTip[]>(cms[2])}
       cta={parse<LearningToolsCTA>(cms[3])}
+      showcase={parse<LearningToolsShowcase>(cms[4])}
     />
   );
 }

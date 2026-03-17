@@ -4,6 +4,7 @@ export interface LearningToolsHero {
   title: string;
   highlight: string;
   subtitle: string;
+  image: string;
 }
 
 export interface LearningTool {
@@ -32,14 +33,19 @@ export interface LearningToolsCTA {
   secondaryHref: string;
 }
 
+export interface LearningToolsShowcase {
+  image: string;
+  title: string;
+  subtitle: string;
+}
+
 // ─── Defaults ─────────────────────────────────────────────
 
 export const defaultHero: LearningToolsHero = {
   title: "Level Up Your",
   highlight: "Chess Game",
   subtitle:
-    "Interactive puzzles, engine analysis, opening theory, and more — everything you need to go from beginner to master.",
-};
+    "Interactive puzzles, engine analysis, opening theory, and more — everything you need to go from beginner to master.",  image: "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=800&q=80",};
 
 export const defaultTools: LearningTool[] = [
   {
@@ -143,4 +149,11 @@ export const defaultCTA: LearningToolsCTA = {
   primaryHref: "/academy",
   secondaryLabel: "Get in Touch",
   secondaryHref: "/contact",
+};
+
+export const defaultShowcase: LearningToolsShowcase = {
+  image: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=1200&q=80",
+  title: "Train Smarter, Not Harder",
+  subtitle:
+    "Our curated tools and resources help you focus on what matters most \u2014 improving your game one move at a time.",
 };

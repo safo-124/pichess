@@ -12,7 +12,7 @@ export interface ContactItem {
   value: string;
   desc: string;
   href: string;
-  iconType: "location" | "email" | "phone" | "academy" | "foundation";
+  iconType: "location" | "email" | "phone" | "whatsapp" | "academy" | "foundation";
   colorClass: string;
 }
 
@@ -80,7 +80,7 @@ export const defaultContactContent: ContactPageContent = {
       value: "+233 XX XXX XXXX",
       desc: "Quick responses on WhatsApp",
       href: "https://wa.me/233XXXXXXXX",
-      iconType: "phone",
+      iconType: "whatsapp",
       colorClass: "bg-green-50 text-green-600",
     },
     {
@@ -98,6 +98,14 @@ export const defaultContactContent: ContactPageContent = {
       href: "mailto:ngo@pichess.com",
       iconType: "foundation",
       colorClass: "bg-rose-50 text-rose-600",
+    },
+    {
+      label: "WhatsApp Channel",
+      value: "PiChess Channel",
+      desc: "Follow us for updates",
+      href: "https://whatsapp.com/channel/YOUR_CHANNEL_ID",
+      iconType: "whatsapp",
+      colorClass: "bg-green-50 text-green-600",
     },
   ],
   quickLinks: [

@@ -1,13 +1,13 @@
 import { getSiteContent } from "@/lib/actions/admin";
 import LearningToolsContentEditor from "@/components/admin/LearningToolsContentEditor";
 import type {
-  LearningToolsHero, LearningTool, LearningTip, LearningToolsCTA,
+  LearningToolsHero, LearningTool, LearningTip, LearningToolsCTA, LearningToolsShowcase,
 } from "@/lib/learning-tools-content";
 
 export const metadata = { title: "Learning Tools | Admin" };
 
 export default async function AdminLearningToolsPage() {
-  const keys = ["learning_hero", "learning_tools", "learning_tips", "learning_cta"];
+  const keys = ["learning_hero", "learning_tools", "learning_tips", "learning_cta", "learning_showcase"];
   const results = await Promise.all(keys.map((k) => getSiteContent(k)));
 
   const parse = <T,>(raw: string | null): T | undefined => {
@@ -29,6 +29,7 @@ export default async function AdminLearningToolsPage() {
         initialTools={parse<LearningTool[]>(results[1])}
         initialTips={parse<LearningTip[]>(results[2])}
         initialCTA={parse<LearningToolsCTA>(results[3])}
+        initialShowcase={parse<LearningToolsShowcase>(results[4])}
       />
     </div>
   );
