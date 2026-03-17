@@ -462,6 +462,9 @@ export async function saveSiteContent(key: string, value: string) {
   } else if (zone === "faq") {
     revalidatePath("/faq");
     revalidatePath("/admin/faq");
+  } else if (zone === "learning") {
+    revalidatePath("/learning-tools");
+    revalidatePath("/admin/learning-tools");
   } else {
     revalidatePath("/", "layout");
   }

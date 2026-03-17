@@ -7,7 +7,7 @@ import {
   LayoutDashboard, GraduationCap, Heart, ShoppingBag,
   FileText, Trophy, Settings, LogOut, Crown,
   PanelLeftClose, PanelLeft, Globe, Puzzle, Users, Home, Footprints,
-  HelpCircle, Mail,
+  HelpCircle, Mail, Lightbulb,
 } from "lucide-react";
 
 const mainNav = [
@@ -28,6 +28,7 @@ const contentSections = [
   { label: "Partners & Extras", href: "/admin/extras", icon: Puzzle, color: "#06b6d4", desc: "Partners, puzzles" },
   { label: "FAQ", href: "/admin/faq", icon: HelpCircle, color: "#f59e0b", desc: "Frequently asked questions" },
   { label: "Contact Page", href: "/admin/contact", icon: Mail, color: "#3b82f6", desc: "Hero, cards, FAQs, CTA" },
+  { label: "Learning Tools", href: "/admin/learning-tools", icon: Lightbulb, color: "#8b5cf6", desc: "Tools, tips, hero" },
   { label: "Footer", href: "/admin/footer", icon: Footprints, color: "#64748b", desc: "Contact, social, CTA" },
   { label: "Settings", href: "/admin/settings", icon: Settings, color: "#10b981", desc: "Site Logo & Config" },
 ];

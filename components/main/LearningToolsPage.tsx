@@ -8,6 +8,12 @@ import {
   ChevronRight, Star, Zap, ArrowRight, ExternalLink,
   Lightbulb, Flame, Sparkles,
 } from "lucide-react";
+import type {
+  LearningToolsHero, LearningTool, LearningTip, LearningToolsCTA,
+} from "@/lib/learning-tools-content";
+import {
+  defaultHero, defaultTools, defaultTips, defaultCTA,
+} from "@/lib/learning-tools-content";
 
 /* ═══ Types ═══ */
 interface DailyPuzzle {
@@ -22,7 +28,16 @@ interface DailyPuzzle {
 
 interface LearningToolsPageProps {
   puzzle: DailyPuzzle | null;
+  hero?: LearningToolsHero;
+  tools?: LearningTool[];
+  tips?: LearningTip[];
+  cta?: LearningToolsCTA;
 }
+
+/* ═══ Icon map (string key → Lucide component) ═══ */
+const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  Target, BookOpen, Swords, Brain, GraduationCap, Zap, Lightbulb, Star, Puzzle, Play, Flame,
+};
 
 /* ═══ Animation variants ═══ */
 const fadeUp = {
@@ -90,118 +105,26 @@ const categories = [
   { id: "play", label: "Play", icon: Play },
 ];
 
-const tools = [
-  {
-    id: "tactics",
-    title: "Tactics Trainer",
-    desc: "Sharpen your tactical vision with thousands of puzzles sorted by theme and difficulty. Pattern recognition is the key to chess mastery.",
-    icon: Target,
-    category: "practice",
-    href: "https://lichess.org/training",
-    color: "from-orange-500 to-amber-500",
-    bgAccent: "bg-orange-500/10",
-    stats: "10,000+ puzzles",
-    badge: "Most Popular",
-  },
-  {
-    id: "openings",
-    title: "Opening Explorer",
-    desc: "Study millions of master games to find the best openings. Explore variations, learn theory, and build your repertoire.",
-    icon: BookOpen,
-    category: "study",
-    href: "https://lichess.org/opening",
-    color: "from-blue-500 to-cyan-500",
-    bgAccent: "bg-blue-500/10",
-    stats: "All major openings",
-  },
-  {
-    id: "engine",
-    title: "Play vs Engine",
-    desc: "Challenge Stockfish at any level from beginner to grandmaster. Perfect for testing new ideas and practicing endgames.",
-    icon: Swords,
-    category: "play",
-    href: "https://lichess.org/ai",
-    color: "from-red-500 to-rose-500",
-    bgAccent: "bg-red-500/10",
-    stats: "Adjustable difficulty",
-  },
-  {
-    id: "analysis",
-    title: "Game Analysis",
-    desc: "Upload or paste your games for deep engine analysis. Identify mistakes, blunders, and missed brilliancies.",
-    icon: Brain,
-    category: "study",
-    href: "https://lichess.org/analysis",
-    color: "from-violet-500 to-purple-500",
-    bgAccent: "bg-violet-500/10",
-    stats: "Stockfish 16+",
-  },
-  {
-    id: "endgame",
-    title: "Endgame Practice",
-    desc: "Master essential endgame positions. From basic king & pawn to complex rook endgames — build a solid foundation.",
-    icon: GraduationCap,
-    category: "practice",
-    href: "https://lichess.org/practice",
-    color: "from-emerald-500 to-green-500",
-    bgAccent: "bg-emerald-500/10",
-    stats: "Guided lessons",
-  },
-  {
-    id: "puzzleStorm",
-    title: "Puzzle Storm",
-    desc: "Solve as many puzzles as possible in 3 minutes! Compete against yourself and climb the leaderboard.",
-    icon: Zap,
-    category: "practice",
-    href: "https://lichess.org/storm",
-    color: "from-yellow-500 to-orange-400",
-    bgAccent: "bg-yellow-500/10",
-    stats: "3-minute sprint",
-    badge: "Fun",
-  },
-  {
-    id: "coordinates",
-    title: "Board Vision",
-    desc: "Train your board vision by identifying coordinates quickly. Essential for reading notation and improving speed.",
-    icon: Lightbulb,
-    category: "practice",
-    href: "https://lichess.org/training/coordinate",
-    color: "from-pink-500 to-rose-400",
-    bgAccent: "bg-pink-500/10",
-    stats: "Speed drill",
-  },
-  {
-    id: "studies",
-    title: "Interactive Studies",
-    desc: "Browse community-created studies on every topic imaginable. Learn from annotated games and interactive lessons.",
-    icon: Star,
-    category: "study",
-    href: "https://lichess.org/study",
-    color: "from-teal-500 to-cyan-400",
-    bgAccent: "bg-teal-500/10",
-    stats: "Community driven",
-  },
-];
-
-/* ═══ Tips for the tip carousel ═══ */
-const chessTips = [
-  { icon: "♔", tip: "Always check for checks, captures, and threats before making your move." },
-  { icon: "♞", tip: "Knights are strongest in closed positions. Place them on outposts in the center." },
-  { icon: "♖", tip: "Rooks belong on open files. Connect your rooks and place them on the 7th rank." },
-  { icon: "♗", tip: "The bishop pair is a powerful advantage in open positions." },
-  { icon: "♟", tip: "Passed pawns must be pushed! They become more dangerous as they advance." },
-  { icon: "♕", tip: "Don't bring your queen out too early — develop minor pieces first." },
-];
-
 /* ═══ Main Component ═══ */
-export default function LearningToolsPage({ puzzle }: LearningToolsPageProps) {
+export default function LearningToolsPage({
+  puzzle,
+  hero: heroData,
+  tools: toolsData,
+  tips: tipsData,
+  cta: ctaData,
+}: LearningToolsPageProps) {
+  const hero = heroData ?? defaultHero;
+  const toolsList = toolsData ?? defaultTools;
+  const tipsList = tipsData ?? defaultTips;
+  const cta = ctaData ?? defaultCTA;
+
   const [activeCategory, setActiveCategory] = useState("all");
   const [showSolution, setShowSolution] = useState(false);
   const [tipIndex, setTipIndex] = useState(0);
 
   const filteredTools = activeCategory === "all"
-    ? tools
-    : tools.filter((t) => t.category === activeCategory);
+    ? toolsList
+    : toolsList.filter((t) => t.category === activeCategory);
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
@@ -249,25 +172,15 @@ export default function LearningToolsPage({ puzzle }: LearningToolsPageProps) {
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-50 border border-violet-200 text-violet-600 text-xs font-semibold uppercase tracking-widest mb-6"
-          >
-            <Sparkles size={14} />
-            Train Your Mind
-          </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
             className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-5 leading-[1.05]"
           >
-            Level Up Your{" "}
+            {hero.title}{" "}
             <span className="bg-gradient-to-r from-violet-600 via-[#c9a84c] to-amber-500 bg-clip-text text-transparent">
-              Chess Game
+              {hero.highlight}
             </span>
           </motion.h1>
 
@@ -277,7 +190,7 @@ export default function LearningToolsPage({ puzzle }: LearningToolsPageProps) {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-gray-500 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed mb-10"
           >
-            Interactive puzzles, engine analysis, opening theory, and more — everything you need to go from beginner to master.
+            {hero.subtitle}
           </motion.p>
 
           <motion.div
@@ -475,7 +388,7 @@ export default function LearningToolsPage({ puzzle }: LearningToolsPageProps) {
           >
             <AnimatePresence mode="popLayout">
               {filteredTools.map((tool, i) => {
-                const Icon = tool.icon;
+                const Icon = ICON_MAP[tool.icon] ?? Puzzle;
                 return (
                   <motion.a
                     key={tool.id}
@@ -564,17 +477,17 @@ export default function LearningToolsPage({ puzzle }: LearningToolsPageProps) {
                 transition={{ duration: 0.3 }}
               >
                 <div className="text-6xl sm:text-7xl mb-6 inline-block opacity-20">
-                  {chessTips[tipIndex].icon}
+                  {tipsList[tipIndex]?.icon}
                 </div>
                 <p className="text-lg sm:text-xl text-gray-600 font-medium leading-relaxed max-w-xl mx-auto">
-                  &ldquo;{chessTips[tipIndex].tip}&rdquo;
+                  &ldquo;{tipsList[tipIndex]?.tip}&rdquo;
                 </p>
               </motion.div>
             </AnimatePresence>
 
             {/* Dots nav */}
             <div className="flex items-center justify-center gap-2 mt-8">
-              {chessTips.map((_, i) => (
+              {tipsList.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setTipIndex(i)}
@@ -616,24 +529,24 @@ export default function LearningToolsPage({ puzzle }: LearningToolsPageProps) {
                 ♚
               </motion.div>
               <h2 className="text-2xl sm:text-4xl font-black text-white mb-4">
-                Ready to Train?
+                {cta.heading}
               </h2>
               <p className="text-white/50 max-w-lg mx-auto mb-8 text-sm sm:text-base">
-                Join PiChess Academy for structured coaching, weekly tournaments, and a community of passionate players.
+                {cta.subtitle}
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                 <Link
-                  href="/academy"
+                  href={cta.primaryHref}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#c9a84c] hover:bg-[#dbb95d] text-black font-bold text-sm transition-all hover:scale-105"
                 >
                   <GraduationCap size={16} />
-                  Join the Academy
+                  {cta.primaryLabel}
                 </Link>
                 <Link
-                  href="/contact"
+                  href={cta.secondaryHref}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl border border-white/20 hover:border-white/40 text-white font-bold text-sm transition-all hover:scale-105"
                 >
-                  Get in Touch
+                  {cta.secondaryLabel}
                   <ArrowRight size={16} />
                 </Link>
               </div>

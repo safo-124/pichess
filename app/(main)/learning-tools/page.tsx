@@ -1,7 +1,16 @@
 import LearningToolsPage from "@/components/main/LearningToolsPage";
 import prisma from "@/lib/prisma";
+import { getSiteContent } from "@/lib/actions/admin";
+import type {
+  LearningToolsHero, LearningTool, LearningTip, LearningToolsCTA,
+} from "@/lib/learning-tools-content";
 
 export const metadata = { title: "Learning Tools | PiChess" };
+
+function parse<T>(raw: string | null): T | undefined {
+  if (!raw) return undefined;
+  try { return JSON.parse(raw) as T; } catch { return undefined; }
+}
 
 async function getPuzzle() {
   try {
@@ -23,6 +32,21 @@ async function getPuzzle() {
 }
 
 export default async function Page() {
-  const puzzle = await getPuzzle();
-  return <LearningToolsPage puzzle={puzzle} />;
+  const [puzzle, ...cms] = await Promise.all([
+    getPuzzle(),
+    getSiteContent("learning_hero"),
+    getSiteContent("learning_tools"),
+    getSiteContent("learning_tips"),
+    getSiteContent("learning_cta"),
+  ]);
+
+  return (
+    <LearningToolsPage
+      puzzle={puzzle}
+      hero={parse<LearningToolsHero>(cms[0])}
+      tools={parse<LearningTool[]>(cms[1])}
+      tips={parse<LearningTip[]>(cms[2])}
+      cta={parse<LearningToolsCTA>(cms[3])}
+    />
+  );
 }
