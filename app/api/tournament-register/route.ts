@@ -24,10 +24,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Get tournament details + check spots
+    // Get tournament details
     const tournament = await (prisma as any).tournament.findUnique({
       where: { id: Number(tournamentId) },
-      include: { registrations: { where: { status: "CONFIRMED" } } },
     });
 
     if (!tournament) {
@@ -38,9 +37,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "This tournament/event has already ended" }, { status: 400 });
     }
 
-    // Check if already registered with this email
-    const existing = tournament.registrations.find(
-      (r: any) => r.email.toLowerCase() === email.toLowerCase()
+    // Check if already registered with this email (any non-cancelled status)
+    const allRegs = await (prisma as any).tournament_Registration.findMany({
+      where: { tournamentId: Number(tournamentId) },
+    });
+    const existing = allRegs.find(
+      (r: any) => r.email.toLowerCase() === email.toLowerCase() && r.status !== "CANCELLED"
     );
     if (existing) {
       return NextResponse.json(
@@ -49,10 +51,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check capacity
-    const confirmedCount = tournament.registrations.length;
+    // Check capacity — count confirmed registrations
+    const confirmedCount = allRegs.filter((r: any) => r.status === "CONFIRMED").length;
     const isFull = tournament.maxSpots && confirmedCount >= tournament.maxSpots;
-    const regStatus = isFull ? "WAITLISTED" : "CONFIRMED";
+
+    // New registrations start as PENDING (admin must confirm)
+    const regStatus = isFull ? "WAITLISTED" : "PENDING";
 
     // Create registration
     const registration = await (prisma as any).tournament_Registration.create({
@@ -70,7 +74,7 @@ export async function POST(req: NextRequest) {
     });
 
     const spotsLeft = tournament.maxSpots
-      ? Math.max(0, tournament.maxSpots - confirmedCount - (regStatus === "CONFIRMED" ? 1 : 0))
+      ? Math.max(0, tournament.maxSpots - confirmedCount)
       : null;
 
     const eventDate = new Date(tournament.date).toLocaleDateString("en-GB", {
@@ -81,13 +85,13 @@ export async function POST(req: NextRequest) {
 
     const typeLabel = tournament.type === "EVENT" ? "event" : "tournament";
 
-    // ─── Send confirmation e-mail to registrant ───────────
+    // ─── Send "pending review" e-mail to registrant ───────────
     if (resend) {
       try {
         await resend.emails.send({
           from: FROM_EMAIL,
           to: email,
-          subject: `✅ Registration ${regStatus === "WAITLISTED" ? "Waitlisted" : "Confirmed"} — ${tournament.title}`,
+          subject: `⏳ Registration Received — ${tournament.title}`,
           html: buildRegistrantEmail({
             name: fullName,
             tournament: tournament.title,
@@ -107,7 +111,7 @@ export async function POST(req: NextRequest) {
         await resend.emails.send({
           from: FROM_EMAIL,
           to: ADMIN_EMAIL,
-          subject: `🎯 New Registration: ${fullName} → ${tournament.title}`,
+          subject: `🎯 New Registration (Pending): ${fullName} → ${tournament.title}`,
           html: buildAdminEmail({
             name: fullName,
             email,
@@ -119,7 +123,7 @@ export async function POST(req: NextRequest) {
             tournament: tournament.title,
             date: eventDate,
             status: regStatus,
-            totalRegistered: confirmedCount + (regStatus === "CONFIRMED" ? 1 : 0),
+            totalRegistered: confirmedCount,
             maxSpots: tournament.maxSpots,
           }),
         });
@@ -128,39 +132,12 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Build WhatsApp confirmation links
-    const userWhatsAppNum = (whatsApp || phone).replace(/\D/g, "");
-    const userWhatsAppMsg = encodeURIComponent(
-      `✅ Hi ${fullName}! Your registration for *${tournament.title}* is ${regStatus === "WAITLISTED" ? "WAITLISTED" : "CONFIRMED"}.\n\n` +
-        `📅 ${eventDate}\n📍 ${tournament.location}${tournament.venue ? ` · ${tournament.venue}` : ""}\n\n` +
-        (spotsLeft !== null ? `🎯 ${spotsLeft} spot${spotsLeft !== 1 ? "s" : ""} remaining\n\n` : "") +
-        `Thank you for registering with PiChess! ♟️`
-    );
-
-    const adminWhatsAppMsg = encodeURIComponent(
-      `🎯 *New Registration Alert*\n\n` +
-        `📋 *${tournament.title}*\n` +
-        `👤 ${fullName}\n` +
-        `📧 ${email}\n` +
-        `📱 ${phone}\n` +
-        (age ? `🎂 Age: ${age}\n` : "") +
-        (rating ? `⭐ Rating: ${rating}\n` : "") +
-        `\n✅ Status: ${regStatus}\n` +
-        (tournament.maxSpots
-          ? `📊 ${confirmedCount + (regStatus === "CONFIRMED" ? 1 : 0)}/${tournament.maxSpots} spots filled`
-          : `📊 ${confirmedCount + (regStatus === "CONFIRMED" ? 1 : 0)} total registrations`)
-    );
-
     return NextResponse.json({
       success: true,
       registration: {
         id: registration.id,
         status: regStatus,
         spotsLeft,
-      },
-      whatsApp: {
-        userLink: `https://wa.me/${userWhatsAppNum}?text=${userWhatsAppMsg}`,
-        adminLink: `https://wa.me/${ADMIN_WHATSAPP}?text=${adminWhatsAppMsg}`,
       },
     });
   } catch (err) {
@@ -181,17 +158,20 @@ function buildRegistrantEmail(data: {
   spotsLeft: number | null;
 }) {
   const isWaitlisted = data.status === "WAITLISTED";
+  const isPending = data.status === "PENDING";
   return `
     <div style="max-width:600px;margin:0 auto;font-family:'Segoe UI',Arial,sans-serif;background:#0a0a0a;color:#fff;border-radius:16px;overflow:hidden;">
       <div style="background:linear-gradient(135deg,#c9a84c,#b8942f);padding:32px 24px;text-align:center;">
         <h1 style="margin:0;font-size:28px;color:#000;">♟️ PiChess</h1>
-        <p style="margin:8px 0 0;font-size:14px;color:#000;opacity:0.7;">Registration ${isWaitlisted ? "Waitlisted" : "Confirmed"}</p>
+        <p style="margin:8px 0 0;font-size:14px;color:#000;opacity:0.7;">Registration ${isWaitlisted ? "Waitlisted" : isPending ? "Pending Review" : "Confirmed"}</p>
       </div>
       <div style="padding:32px 24px;">
-        <h2 style="font-size:22px;margin:0 0 8px;">Hi ${data.name}! ${isWaitlisted ? "⏳" : "🎉"}</h2>
+        <h2 style="font-size:22px;margin:0 0 8px;">Hi ${data.name}! ${isWaitlisted ? "⏳" : isPending ? "📋" : "🎉"}</h2>
         <p style="color:#aaa;font-size:14px;line-height:1.7;margin:0 0 24px;">
           ${isWaitlisted
             ? `You have been <strong style="color:#f59e0b;">waitlisted</strong> for the following ${data.type}. We'll notify you if a spot opens up!`
+            : isPending
+            ? `Your registration for the following ${data.type} has been <strong style="color:#3b82f6;">received</strong> and is pending review by our team. You'll receive a WhatsApp confirmation once approved!`
             : `Your registration for the following ${data.type} has been <strong style="color:#22c55e;">confirmed</strong>!`
           }
         </p>
@@ -248,7 +228,7 @@ function buildAdminEmail(data: {
         <div style="background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;">
           <p style="margin:0 0 4px;font-size:14px;">
             <strong>Status:</strong>
-            <span style="color:${data.status === "WAITLISTED" ? "#f59e0b" : "#22c55e"};font-weight:600;">
+            <span style="color:${data.status === "WAITLISTED" ? "#f59e0b" : data.status === "PENDING" ? "#3b82f6" : "#22c55e"};font-weight:600;">
               ${data.status}
             </span>
           </p>

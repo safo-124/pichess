@@ -423,14 +423,44 @@ function RegistrationsPanel({
   onClose: () => void;
   isPending: boolean;
 }) {
-  const [statusFilter, setStatusFilter] = useState<"all" | "CONFIRMED" | "WAITLISTED" | "CANCELLED">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "PENDING" | "CONFIRMED" | "WAITLISTED" | "CANCELLED">("all");
+  const [confirmingId, setConfirmingId] = useState<number | null>(null);
+  const [whatsAppLink, setWhatsAppLink] = useState<string | null>(null);
   const regs = tournament.registrations ?? [];
   const filtered = statusFilter === "all" ? regs : regs.filter(r => r.status === statusFilter);
+  const pending = regs.filter(r => r.status === "PENDING").length;
   const confirmed = regs.filter(r => r.status === "CONFIRMED").length;
   const waitlisted = regs.filter(r => r.status === "WAITLISTED").length;
   const cancelled = regs.filter(r => r.status === "CANCELLED").length;
 
+  async function handleConfirmAndWhatsApp(regId: number) {
+    setConfirmingId(regId);
+    setWhatsAppLink(null);
+    try {
+      const res = await fetch("/api/tournament-register/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ registrationId: regId }),
+      });
+      const data = await res.json();
+      if (data.success && data.whatsAppLink) {
+        setWhatsAppLink(data.whatsAppLink);
+        window.open(data.whatsAppLink, "_blank");
+        // Also trigger a server action refresh
+        const fd = new FormData();
+        fd.set("id", String(regId));
+        fd.set("status", "CONFIRMED");
+        onUpdateStatus(fd);
+      }
+    } catch (err) {
+      console.error("Confirm failed:", err);
+    } finally {
+      setConfirmingId(null);
+    }
+  }
+
   const regStatusColors: Record<string, string> = {
+    PENDING: "bg-blue-50 text-blue-600",
     CONFIRMED: "bg-green-50 text-green-600",
     WAITLISTED: "bg-amber-50 text-amber-600",
     CANCELLED: "bg-red-50 text-red-600",
@@ -443,6 +473,7 @@ function RegistrationsPanel({
           <div>
             <h2 className="text-lg font-bold text-zinc-800">Registrations: {tournament.title}</h2>
             <p className="text-xs text-zinc-400 mt-0.5">
+              {pending > 0 ? `${pending} pending · ` : ""}
               {confirmed} confirmed{tournament.maxSpots ? ` / ${tournament.maxSpots} spots` : ""}
               {waitlisted > 0 ? ` · ${waitlisted} waitlisted` : ""}
               {cancelled > 0 ? ` · ${cancelled} cancelled` : ""}
@@ -475,6 +506,7 @@ function RegistrationsPanel({
           <div className="flex gap-2 flex-wrap">
             {([
               { id: "all" as const, label: "All", count: regs.length },
+              { id: "PENDING" as const, label: "📋 Pending", count: pending },
               { id: "CONFIRMED" as const, label: "✅ Confirmed", count: confirmed },
               { id: "WAITLISTED" as const, label: "⏳ Waitlisted", count: waitlisted },
               { id: "CANCELLED" as const, label: "❌ Cancelled", count: cancelled },
@@ -531,20 +563,25 @@ function RegistrationsPanel({
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex gap-1">
-                          {r.status !== "CONFIRMED" && (
+                        <div className="flex gap-1 flex-wrap">
+                          {(r.status === "PENDING" || r.status === "WAITLISTED") && (
                             <button
-                              disabled={isPending}
-                              onClick={() => {
-                                const fd = new FormData();
-                                fd.set("id", String(r.id));
-                                fd.set("status", "CONFIRMED");
-                                onUpdateStatus(fd);
-                              }}
-                              className="px-2 py-1 rounded-md bg-green-50 text-green-600 text-[10px] font-semibold hover:bg-green-100 transition-colors disabled:opacity-50"
+                              disabled={isPending || confirmingId === r.id}
+                              onClick={() => handleConfirmAndWhatsApp(r.id)}
+                              className="px-2 py-1 rounded-md bg-[#25D366]/10 text-[#25D366] text-[10px] font-semibold hover:bg-[#25D366]/20 transition-colors disabled:opacity-50"
                             >
-                              Confirm
+                              {confirmingId === r.id ? "Confirming…" : "✅ Confirm & WA"}
                             </button>
+                          )}
+                          {r.status === "CONFIRMED" && (
+                            <a
+                              href={`https://wa.me/${(r.whatsApp || r.phone).replace(/\D/g, "")}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-2 py-1 rounded-md bg-[#25D366]/10 text-[#25D366] text-[10px] font-semibold hover:bg-[#25D366]/20 transition-colors"
+                            >
+                              💬 WhatsApp
+                            </a>
                           )}
                           {r.status !== "CANCELLED" && (
                             <button
@@ -572,14 +609,6 @@ function RegistrationsPanel({
                           >
                             Delete
                           </button>
-                          <a
-                            href={`https://wa.me/${(r.whatsApp || r.phone).replace(/\\D/g, "")}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-2 py-1 rounded-md bg-[#25D366]/10 text-[#25D366] text-[10px] font-semibold hover:bg-[#25D366]/20 transition-colors"
-                          >
-                            WA
-                          </a>
                         </div>
                       </td>
                     </tr>
@@ -618,11 +647,16 @@ export default function AdminTournamentManager({
   const [editing, setEditing] = useState<Tournament | null>(null);
   const [photosFor, setPhotosFor] = useState<Tournament | null>(null);
   const [regsFor, setRegsFor] = useState<Tournament | null>(null);
+  const [qrFor, setQrFor] = useState<Tournament | null>(null);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [qrRegUrl, setQrRegUrl] = useState<string | null>(null);
+  const [qrLoading, setQrLoading] = useState(false);
   const [filter, setFilter] = useState<"all" | "TOURNAMENT" | "EVENT">("all");
 
   const upcoming = tournaments.filter((t) => t.status === "UPCOMING").length;
   const ongoing = tournaments.filter((t) => t.status === "ONGOING").length;
   const totalRegs = tournaments.reduce((s, t) => s + (t.registrations?.length ?? 0), 0);
+  const pendingRegs = tournaments.reduce((s, t) => s + (t.registrations?.filter(r => r.status === "PENDING")?.length ?? 0), 0);
   const eventCount = tournaments.filter((t) => t.type === "EVENT").length;
   const tournamentCount = tournaments.filter((t) => t.type === "TOURNAMENT").length;
 
@@ -676,6 +710,25 @@ export default function AdminTournamentManager({
     });
   }
 
+  async function handleShowQR(t: Tournament) {
+    setQrFor(t);
+    setQrLoading(true);
+    setQrDataUrl(null);
+    setQrRegUrl(null);
+    try {
+      const res = await fetch(`/api/tournament-qr?tournamentId=${t.id}`);
+      const data = await res.json();
+      if (data.dataUrl) {
+        setQrDataUrl(data.dataUrl);
+        setQrRegUrl(data.registrationUrl);
+      }
+    } catch {
+      console.error("Failed to generate QR code");
+    } finally {
+      setQrLoading(false);
+    }
+  }
+
   return (
     <div className="space-y-6 max-w-7xl">
       {/* Header */}
@@ -693,7 +746,7 @@ export default function AdminTournamentManager({
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-7 gap-3">
         {[
           { label: "Total", value: tournaments.length, color: "" },
           { label: "Upcoming", value: upcoming, color: "text-blue-600" },
@@ -701,6 +754,7 @@ export default function AdminTournamentManager({
           { label: "Tournaments", value: tournamentCount, color: "text-amber-600" },
           { label: "Events", value: eventCount, color: "text-purple-600" },
           { label: "Registrations", value: totalRegs, color: "text-cyan-600" },
+          { label: "Pending Review", value: pendingRegs, color: pendingRegs > 0 ? "text-orange-600" : "text-zinc-400" },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl bg-white border border-zinc-200/80 p-4">
             <p className={`text-2xl font-black ${s.color || "text-zinc-900"}`}>{s.value}</p>
@@ -820,6 +874,9 @@ export default function AdminTournamentManager({
                 <button onClick={() => setRegsFor(t)} className="px-3 py-1.5 rounded-lg bg-cyan-50 text-cyan-600 text-[11px] font-semibold hover:bg-cyan-100 transition-colors">
                   📋 {(t.registrations?.length ?? 0)} Regs
                 </button>
+                <button onClick={() => handleShowQR(t)} className="px-3 py-1.5 rounded-lg bg-violet-50 text-violet-600 text-[11px] font-semibold hover:bg-violet-100 transition-colors">
+                  QR Code
+                </button>
                 <button onClick={() => setPhotosFor(t)} className="px-3 py-1.5 rounded-lg bg-zinc-100 text-zinc-600 text-[11px] font-semibold hover:bg-zinc-200 transition-colors">
                   📷 Photos
                 </button>
@@ -850,6 +907,70 @@ export default function AdminTournamentManager({
           onClose={() => setRegsFor(null)}
           isPending={isPending}
         />
+      )}
+      {qrFor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => { setQrFor(null); setQrDataUrl(null); setQrRegUrl(null); }}>
+          <div className="relative w-full max-w-md rounded-2xl bg-white shadow-2xl border border-zinc-200/80 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-white border-b border-zinc-100 px-6 py-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-zinc-800">QR Code</h2>
+                <p className="text-xs text-zinc-400 mt-0.5">{qrFor.title}</p>
+              </div>
+              <button onClick={() => { setQrFor(null); setQrDataUrl(null); setQrRegUrl(null); }} className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 transition-colors text-sm">✕</button>
+            </div>
+            <div className="p-6 space-y-4">
+              {qrLoading ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="w-8 h-8 border-3 border-zinc-200 border-t-amber-500 rounded-full animate-spin mb-3" />
+                  <p className="text-sm text-zinc-400">Generating QR Code…</p>
+                </div>
+              ) : qrDataUrl ? (
+                <>
+                  <div className="flex justify-center">
+                    <div className="p-4 bg-white rounded-2xl border-2 border-zinc-100 shadow-sm">
+                      <img src={qrDataUrl} alt="QR Code" className="w-64 h-64" />
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-zinc-400 mb-2">People scan this QR code to register</p>
+                    <div className="rounded-xl bg-zinc-50 border border-zinc-200/80 p-3">
+                      <p className="text-xs text-zinc-500 font-mono break-all">{qrRegUrl}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <a
+                      href={qrDataUrl}
+                      download={`qr-${qrFor.title.replace(/\s+/g, "-").toLowerCase()}.png`}
+                      className="flex-1 py-2.5 rounded-xl bg-zinc-800 text-white text-sm font-semibold text-center hover:bg-zinc-700 transition-colors"
+                    >
+                      📥 Download PNG
+                    </a>
+                    <button
+                      onClick={() => {
+                        if (qrRegUrl) {
+                          navigator.clipboard.writeText(qrRegUrl);
+                          alert("Registration link copied!");
+                        }
+                      }}
+                      className="flex-1 py-2.5 rounded-xl bg-zinc-100 text-zinc-700 text-sm font-semibold hover:bg-zinc-200 transition-colors"
+                    >
+                      📋 Copy Link
+                    </button>
+                  </div>
+                  <div className="rounded-xl bg-amber-50 border border-amber-200/80 p-3">
+                    <p className="text-xs text-amber-700 font-medium">
+                      💡 Print this QR code and display at your venue, share on social media, or include in flyers. Registrations will appear in the &quot;Regs&quot; panel as pending for your review.
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-8 text-zinc-400">
+                  <p className="text-sm">Failed to generate QR code. Try again.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -91,6 +91,49 @@ export async function updateRegistrationStatus(fd: FormData) {
   tournamentPaths.forEach(p => revalidatePath(p));
 }
 
+/**
+ * Confirm a registration and return a WhatsApp link for the admin to send.
+ * This is called from the client component via fetch, not as a server action.
+ */
+export async function confirmRegistrationAndGetWhatsApp(registrationId: number) {
+  const reg = await (prisma as any).tournament_Registration.findUnique({
+    where: { id: registrationId },
+    include: { tournament: true },
+  });
+
+  if (!reg) throw new Error("Registration not found");
+
+  // Update status to CONFIRMED
+  await (prisma as any).tournament_Registration.update({
+    where: { id: registrationId },
+    data: { status: "CONFIRMED" },
+  });
+
+  tournamentPaths.forEach(p => revalidatePath(p));
+
+  // Build WhatsApp confirmation message
+  const eventDate = new Date(reg.tournament.date).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  const userWhatsAppNum = (reg.whatsApp || reg.phone).replace(/\D/g, "");
+  const msg = encodeURIComponent(
+    `✅ Hi ${reg.fullName}! Your registration for *${reg.tournament.title}* has been CONFIRMED!\n\n` +
+    `📅 ${eventDate}\n` +
+    `📍 ${reg.tournament.location}${reg.tournament.venue ? ` · ${reg.tournament.venue}` : ""}\n\n` +
+    `We look forward to seeing you there! ♟️\n\n` +
+    `— PiChess Team`
+  );
+
+  return {
+    whatsAppLink: `https://wa.me/${userWhatsAppNum}?text=${msg}`,
+    registrantName: reg.fullName,
+    registrantPhone: reg.whatsApp || reg.phone,
+  };
+}
+
 export async function deleteRegistration(fd: FormData) {
   const id = Number(fd.get("id"));
   await (prisma as any).tournament_Registration.delete({ where: { id } });

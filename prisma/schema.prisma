@@ -182,7 +182,7 @@ model Tournament_Registration {
   age          Int?
   rating       String?
   notes        String?
-  status       String     @default("CONFIRMED") // CONFIRMED | CANCELLED | WAITLISTED
+  status       String     @default("PENDING") // PENDING | CONFIRMED | CANCELLED | WAITLISTED
   createdAt    DateTime   @default(now())
 }
 
