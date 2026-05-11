@@ -18,7 +18,7 @@ export const metadata = {
     "From private coaching to group classes — find the perfect lesson format for every player.",
 };
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 async function getData(): Promise<{ lessons: AcademyLesson[]; lessonsHero: AcademyLessonsHero }> {
   try {
     const [lessonsRow, heroRow] = await Promise.all([

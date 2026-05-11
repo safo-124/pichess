@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { Resend } from "resend";
+import { getEffectiveTournamentStatus } from "@/lib/tournament-status";
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
@@ -10,7 +11,7 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "pichessacademy@gmail.com";
 const ADMIN_WHATSAPP = process.env.ADMIN_WHATSAPP || "233554534646";
 const FROM_EMAIL = process.env.FROM_EMAIL || "PiChess <onboarding@resend.dev>";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,7 +34,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Tournament not found" }, { status: 404 });
     }
 
-    if (tournament.status === "COMPLETED") {
+    const effectiveStatus = getEffectiveTournamentStatus({
+      status: tournament.status,
+      date: tournament.date,
+      endDate: tournament.endDate,
+    });
+
+    if (effectiveStatus === "COMPLETED") {
       return NextResponse.json({ error: "This tournament/event has already ended" }, { status: 400 });
     }
 

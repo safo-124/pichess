@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import BrandLogo from "@/components/shared/BrandLogo";
 import {
   Mail, Phone, MapPin, Clock, ChevronRight,
   Facebook, Instagram, Youtube,
@@ -119,13 +120,8 @@ export default function MainFooter({ footerData }: { footerData?: FooterData | n
 
           {/* Brand + Contact — spans 4 cols */}
           <div className="lg:col-span-4">
-            <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#c9a84c] to-[#a8893d] rounded-lg flex items-center justify-center font-black text-white text-lg shadow-lg shadow-[#c9a84c]/20">
-                ♟
-              </div>
-              <span className="font-black text-xl tracking-tight">
-                Pi<span className="text-[#c9a84c]">Chess</span>
-              </span>
+            <div className="mb-5">
+              <BrandLogo tone="dark" size="sm" />
             </div>
             <p className="text-white/40 text-sm leading-relaxed mb-6 max-w-xs">
               {data.description}

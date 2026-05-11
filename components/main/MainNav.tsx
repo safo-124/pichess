@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import BrandLogo from "@/components/shared/BrandLogo";
 import {
   Menu,
   X,
@@ -35,23 +36,10 @@ const rightLinks = [
 
 const allLinks = [...leftLinks, ...rightLinks];
 
-/* Mini 2x2 chess pattern used in the logo */
-function ChessPattern({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 16 16" className={className} fill="currentColor">
-      <rect x="0" y="0" width="8" height="8" opacity="0.9" />
-      <rect x="8" y="8" width="8" height="8" opacity="0.9" />
-      <rect x="8" y="0" width="8" height="8" opacity="0.15" />
-      <rect x="0" y="8" width="8" height="8" opacity="0.15" />
-    </svg>
-  );
-}
-
 export default function MainNav({ logoUrl }: { logoUrl?: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
-  const [logoError, setLogoError] = useState(false);
   const pathname = usePathname();
 
   const handleScroll = useCallback(() => {
@@ -76,7 +64,7 @@ export default function MainNav({ logoUrl }: { logoUrl?: string }) {
         href={l.href}
         onMouseEnter={() => setHovered(l.href)}
         onMouseLeave={() => setHovered(null)}
-        className="relative px-3 py-2 text-[13px] font-semibold tracking-wide uppercase group"
+        className="focus-ring relative px-3 py-2 text-[13px] font-semibold tracking-normal uppercase group"
       >
         <span
           className={`relative z-10 transition-colors duration-300 ${
@@ -120,22 +108,22 @@ export default function MainNav({ logoUrl }: { logoUrl?: string }) {
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 w-full"
+        className="fixed top-0 left-0 right-0 w-full px-3 pt-3"
         style={{ zIndex: 99999 }}
       >
         {/* Main nav bar */}
         <motion.div
           animate={{
-            backgroundColor: scrolled ? "rgba(255,255,255,0.97)" : "rgba(255,255,255,0.6)",
+            backgroundColor: scrolled ? "rgba(255,255,255,0.94)" : "rgba(255,255,255,0.76)",
           }}
           transition={{ duration: 0.4 }}
-          className={`transition-all duration-500 ${
+          className={`mx-auto max-w-7xl rounded-lg border transition-all duration-500 ${
             scrolled
-              ? "shadow-[0_4px_30px_rgba(0,0,0,0.06)] backdrop-blur-xl"
-              : "shadow-none backdrop-blur-md"
+              ? "border-black/10 shadow-[0_12px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl"
+              : "border-white/70 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-md"
           }`}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="px-3 sm:px-4 lg:px-5">
             <div className="flex items-center justify-between h-16 lg:justify-center relative">
               {/* Left nav (desktop) */}
               <nav className="hidden lg:flex items-center gap-0.5 absolute left-0">
@@ -145,49 +133,8 @@ export default function MainNav({ logoUrl }: { logoUrl?: string }) {
               </nav>
 
               {/* Center Logo */}
-              <Link href="/" className="flex items-center gap-3 group relative">
-                {logoUrl && !logoError ? (
-                  <div className="h-11 flex items-center justify-center">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={logoUrl} alt="PiChess Logo" className="h-full w-auto object-contain" onError={() => setLogoError(true)} />
-                  </div>
-                ) : (
-                  <>
-                    <div className="relative">
-                      <div className={`w-11 h-11 rounded-lg overflow-hidden relative shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl ${
-                        scrolled ? "bg-black shadow-black/10 group-hover:shadow-black/20" : "bg-black shadow-black/10 group-hover:shadow-black/20"
-                      }`}>
-                        <ChessPattern className={`absolute inset-0 w-full h-full ${
-                          scrolled ? "text-[#c9a84c]" : "text-[#c9a84c]"
-                        }`} />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-white font-black text-lg drop-shadow-md">♚</span>
-                        </div>
-                      </div>
-                      {/* Gold corner dot */}
-                      <div className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#c9a84c] border-2 shadow-sm ${
-                        scrolled ? "border-white" : "border-white"
-                      }`} />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="font-black text-[24px] tracking-tight leading-none">
-                        <span className={`transition-colors duration-300 ${
-                          scrolled ? "text-gray-900" : "text-gray-900"
-                        }`}>Pi</span>
-                        <span className="text-[#c9a84c]">Chess</span>
-                      </span>
-                      <div className="flex items-center gap-1">
-                        <div className="w-3 h-[1px] bg-[#c9a84c]" />
-                        <span className={`text-[8px] font-bold tracking-[0.3em] uppercase transition-colors duration-300 ${
-                          scrolled ? "text-gray-400" : "text-gray-400"
-                        }`}>
-                          Ghana
-                        </span>
-                        <div className="w-3 h-[1px] bg-[#c9a84c]" />
-                      </div>
-                    </div>
-                  </>
-                )}
+              <Link href="/" className="focus-ring flex items-center gap-3 group relative rounded-lg">
+                <BrandLogo logoUrl={logoUrl} />
               </Link>
 
               {/* Right nav (desktop) */}
@@ -208,7 +155,7 @@ export default function MainNav({ logoUrl }: { logoUrl?: string }) {
                     >
                       <Link
                         href="/academy/enquire"
-                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-[#c9a84c] hover:text-black transition-all duration-300 whitespace-nowrap"
+                        className="focus-ring flex items-center gap-2 rounded-md bg-black px-4 py-2 text-xs font-bold uppercase tracking-normal text-white transition-all duration-300 hover:bg-[#c9a84c] hover:text-black whitespace-nowrap"
                       >
                         Join
                         <ArrowRight className="w-3 h-3" strokeWidth={2.5} />
@@ -221,7 +168,7 @@ export default function MainNav({ logoUrl }: { logoUrl?: string }) {
               {/* Mobile: Logo left, hamburger right */}
               <button
                 onClick={() => setOpen(!open)}
-                className={`lg:hidden absolute right-0 w-10 h-10 flex items-center justify-center rounded-lg transition-all ${
+                className={`focus-ring lg:hidden absolute right-0 w-10 h-10 flex items-center justify-center rounded-md transition-all ${
                   scrolled ? "text-gray-900 hover:bg-gray-50" : "text-gray-900 hover:bg-gray-100"
                 }`}
                 aria-label="Toggle menu"
@@ -256,7 +203,7 @@ export default function MainNav({ logoUrl }: { logoUrl?: string }) {
 
         {/* Gold line accent */}
         <div
-          className={`h-[1px] transition-opacity duration-500 bg-gradient-to-r from-transparent via-[#c9a84c]/50 to-transparent ${
+          className={`mx-auto max-w-7xl h-[1px] transition-opacity duration-500 bg-gradient-to-r from-transparent via-[#c9a84c]/50 to-transparent ${
             scrolled ? "opacity-100" : "opacity-0"
           }`}
         />
@@ -305,7 +252,7 @@ export default function MainNav({ logoUrl }: { logoUrl?: string }) {
                 transition={{ delay: 0.1, duration: 0.4 }}
                 className="mb-8"
               >
-                <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#c9a84c]">
+                <span className="text-[10px] font-bold tracking-normal uppercase text-[#c9a84c]">
                   Navigation
                 </span>
               </motion.div>
@@ -348,7 +295,7 @@ export default function MainNav({ logoUrl }: { logoUrl?: string }) {
                           />
                         </div>
                         <span
-                          className={`text-[22px] font-bold tracking-tight transition-colors ${
+                          className={`text-[22px] font-bold tracking-normal transition-colors ${
                             isActive ? "text-black" : "text-gray-300 hover:text-gray-600"
                           }`}
                         >

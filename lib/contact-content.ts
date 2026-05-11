@@ -79,7 +79,7 @@ export const defaultContactContent: ContactPageContent = {
       label: "WhatsApp",
       value: "+233 XX XXX XXXX",
       desc: "Quick responses on WhatsApp",
-      href: "https://wa.me/233XXXXXXXX",
+      href: "https://wa.me/233554534646",
       iconType: "whatsapp",
       colorClass: "bg-green-50 text-green-600",
     },

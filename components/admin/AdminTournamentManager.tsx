@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 /* ────────────────────────────────────────────────────────
    Types
@@ -49,7 +50,7 @@ interface Props {
   createAction: (fd: FormData) => Promise<void>;
   updateAction: (fd: FormData) => Promise<void>;
   deleteAction: (fd: FormData) => Promise<void>;
-  addPhotoAction: (fd: FormData) => Promise<void>;
+  addPhotoAction: (fd: FormData) => Promise<Photo | void>;
   deletePhotoAction: (fd: FormData) => Promise<void>;
   updateRegistrationStatusAction: (fd: FormData) => Promise<void>;
   deleteRegistrationAction: (fd: FormData) => Promise<void>;
@@ -433,6 +434,12 @@ function RegistrationsPanel({
   const waitlisted = regs.filter(r => r.status === "WAITLISTED").length;
   const cancelled = regs.filter(r => r.status === "CANCELLED").length;
 
+  function registrantWhatsAppLink(r: Registration, message?: string) {
+    const phone = (r.whatsApp || r.phone).replace(/\D/g, "");
+    const text = message ?? `Hi ${r.fullName}, this is PiChess about your registration for ${tournament.title}.`;
+    return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+  }
+
   async function handleConfirmAndWhatsApp(regId: number) {
     setConfirmingId(regId);
     setWhatsAppLink(null);
@@ -575,7 +582,10 @@ function RegistrationsPanel({
                           )}
                           {r.status === "CONFIRMED" && (
                             <a
-                              href={`https://wa.me/${(r.whatsApp || r.phone).replace(/\D/g, "")}`}
+                              href={registrantWhatsAppLink(
+                                r,
+                                `Hi ${r.fullName}, your registration for ${tournament.title} is confirmed. We look forward to seeing you!`
+                              )}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="px-2 py-1 rounded-md bg-[#25D366]/10 text-[#25D366] text-[10px] font-semibold hover:bg-[#25D366]/20 transition-colors"
@@ -642,6 +652,7 @@ export default function AdminTournamentManager({
   updateRegistrationStatusAction,
   deleteRegistrationAction,
 }: Props) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showCreate, setShowCreate] = useState(false);
   const [editing, setEditing] = useState<Tournament | null>(null);
@@ -651,16 +662,22 @@ export default function AdminTournamentManager({
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [qrRegUrl, setQrRegUrl] = useState<string | null>(null);
   const [qrLoading, setQrLoading] = useState(false);
-  const [filter, setFilter] = useState<"all" | "TOURNAMENT" | "EVENT">("all");
+  const [filter, setFilter] = useState<"all" | "TOURNAMENT" | "EVENT" | "PAST">("all");
 
   const upcoming = tournaments.filter((t) => t.status === "UPCOMING").length;
   const ongoing = tournaments.filter((t) => t.status === "ONGOING").length;
+  const past = tournaments.filter((t) => t.status === "COMPLETED").length;
   const totalRegs = tournaments.reduce((s, t) => s + (t.registrations?.length ?? 0), 0);
   const pendingRegs = tournaments.reduce((s, t) => s + (t.registrations?.filter(r => r.status === "PENDING")?.length ?? 0), 0);
   const eventCount = tournaments.filter((t) => t.type === "EVENT").length;
   const tournamentCount = tournaments.filter((t) => t.type === "TOURNAMENT").length;
 
-  const filtered = filter === "all" ? tournaments : tournaments.filter((t) => t.type === filter);
+  const filtered =
+    filter === "all"
+      ? tournaments
+      : filter === "PAST"
+      ? tournaments.filter((t) => t.status === "COMPLETED")
+      : tournaments.filter((t) => t.type === filter);
 
   function handleCreate(fd: FormData) {
     startTransition(async () => {
@@ -687,14 +704,22 @@ export default function AdminTournamentManager({
 
   function handleAddPhoto(fd: FormData) {
     startTransition(async () => {
-      await addPhotoAction(fd);
-      // Refresh photosFor with updated data would happen on revalidation
+      const created = await addPhotoAction(fd);
+      setPhotosFor((current) =>
+        current && created ? { ...current, photos: [...current.photos, created] } : current
+      );
+      router.refresh();
     });
   }
 
   function handleDeletePhoto(fd: FormData) {
     startTransition(async () => {
       await deletePhotoAction(fd);
+      const id = Number(fd.get("id"));
+      setPhotosFor((current) =>
+        current ? { ...current, photos: current.photos.filter((photo) => photo.id !== id) } : current
+      );
+      router.refresh();
     });
   }
 
@@ -746,11 +771,12 @@ export default function AdminTournamentManager({
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-7 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
         {[
           { label: "Total", value: tournaments.length, color: "" },
           { label: "Upcoming", value: upcoming, color: "text-blue-600" },
           { label: "Ongoing", value: ongoing, color: "text-green-600" },
+          { label: "Past Events", value: past, color: "text-zinc-500" },
           { label: "Tournaments", value: tournamentCount, color: "text-amber-600" },
           { label: "Events", value: eventCount, color: "text-purple-600" },
           { label: "Registrations", value: totalRegs, color: "text-cyan-600" },
@@ -769,6 +795,7 @@ export default function AdminTournamentManager({
           { id: "all" as const, label: "All", count: tournaments.length },
           { id: "TOURNAMENT" as const, label: "🏆 Tournaments", count: tournamentCount },
           { id: "EVENT" as const, label: "🎪 Events", count: eventCount },
+          { id: "PAST" as const, label: "📷 Past Events", count: past },
         ]).map((tab) => (
           <button
             key={tab.id}
@@ -798,8 +825,8 @@ export default function AdminTournamentManager({
           <div key={t.id} className="group rounded-2xl bg-white border border-zinc-200/80 overflow-hidden hover:shadow-lg hover:shadow-zinc-200/50 transition-all">
             {/* Flyer image / placeholder */}
             <div className="relative w-full aspect-[16/10] bg-zinc-100 overflow-hidden">
-              {t.flyer ? (
-                <img src={t.flyer} alt={t.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              {t.flyer || t.photos[0]?.url ? (
+                <img src={t.flyer || t.photos[0]?.url} alt={t.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-100 to-zinc-200">
                   <span className="text-5xl opacity-30">{t.type === "EVENT" ? "🎪" : "🏆"}</span>

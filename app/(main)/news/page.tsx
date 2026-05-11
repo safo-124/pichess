@@ -36,6 +36,7 @@ const HERO_IMAGE = "https://images.unsplash.com/photo-1504711434969-e33886168d9c
 
 /* ── page ──────────────────────────────────────────────────── */
 export default function NewsPage() {
+  const whatsApp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "233554534646";
   const [posts, setPosts] = useState<Post[]>([]);
   const [activeTab, setActiveTab] = useState("all");
   const [search, setSearch] = useState("");
@@ -280,7 +281,7 @@ export default function NewsPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
-              href="https://wa.me/233000000000?text=Hi%2C%20I%27d%20like%20to%20get%20PiChess%20updates"
+              href={`https://wa.me/${whatsApp}?text=${encodeURIComponent("Hi, I'd like to get PiChess updates.")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#25D366] text-white font-bold text-sm hover:bg-[#128C7E] transition-all"

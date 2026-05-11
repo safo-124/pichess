@@ -13,7 +13,7 @@ import {
 
 export const metadata = { title: "PiChess Academy" };
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 async function getData() {
   try {
     const [team, testimonials, heroRaw, statsRaw, lessonsRaw, featuresRaw, ctaRaw] = await Promise.all([

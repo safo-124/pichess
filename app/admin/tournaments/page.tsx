@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import prisma from "@/lib/prisma";
 import { createTournament, updateTournament, deleteTournament, addTournamentPhoto, deleteTournamentPhoto, updateRegistrationStatus, deleteRegistration } from "@/lib/actions/admin";
 import AdminTournamentManager from "@/components/admin/AdminTournamentManager";
+import { getEffectiveTournamentStatus } from "@/lib/tournament-status";
 
 export const metadata = { title: "Tournaments & Events | Admin" };
 
@@ -26,7 +27,7 @@ async function getTournaments() {
       registrationLink: t.registrationLink,
       type: t.type ?? "TOURNAMENT",
       tags: t.tags ?? [],
-      status: t.status,
+      status: getEffectiveTournamentStatus({ status: t.status, date: t.date, endDate: t.endDate }),
       featured: t.featured,
       maxSpots: t.maxSpots ?? null,
       photos: t.photos?.map((p: any) => ({ id: p.id, url: p.url, caption: p.caption })) ?? [],

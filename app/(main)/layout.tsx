@@ -2,6 +2,7 @@ import MainNav from "@/components/main/MainNav";
 import MainFooter from "@/components/main/MainFooter";
 import ScrollPawn from "@/components/shared/ScrollPawn";
 import FloatingPieces from "@/components/shared/FloatingPieces";
+import WhatsAppFloat from "@/components/shared/WhatsAppFloat";
 import { getSiteContent } from "@/lib/actions/admin";
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
@@ -19,7 +20,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   } catch {}
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="site-shell min-h-screen text-gray-900">
       {/* Navbar */}
       <MainNav logoUrl={logoUrl} />
 
@@ -30,6 +31,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
       <ScrollPawn />
 
       <main>{children}</main>
+      <WhatsAppFloat phone={process.env.ADMIN_WHATSAPP} />
       <MainFooter footerData={footerData} />
     </div>
   );

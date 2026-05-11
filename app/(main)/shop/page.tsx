@@ -86,7 +86,7 @@ export default function ShopPage() {
     }
   }, [products, activeCategory, search, sortBy]);
 
-  const WHATSAPP = "233000000000";
+  const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "233554534646";
 
   return (
     <div className="min-h-screen bg-white">

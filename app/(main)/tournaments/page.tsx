@@ -4,6 +4,7 @@ import MagneticButton from "@/components/shared/MagneticButton";
 import TournamentEventCards, { type TournamentItem } from "@/components/academy/TournamentEventCards";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import { getEffectiveTournamentStatus } from "@/lib/tournament-status";
 
 export const metadata = {
   title: "Tournaments & Events — PiChess",
@@ -11,7 +12,7 @@ export const metadata = {
     "Chess tournaments, events, and competitive experiences for players at every level across Ghana.",
 };
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 async function getData(): Promise<TournamentItem[]> {
   try {
     const rows = await (prisma as any).tournament.findMany({
@@ -33,7 +34,7 @@ async function getData(): Promise<TournamentItem[]> {
       registrationLink: t.registrationLink,
       type: t.type ?? "TOURNAMENT",
       tags: t.tags ?? [],
-      status: t.status,
+      status: getEffectiveTournamentStatus({ status: t.status, date: t.date, endDate: t.endDate }),
       featured: t.featured,
       maxSpots: t.maxSpots ?? null,
       registeredCount: t.registrations?.length ?? 0,

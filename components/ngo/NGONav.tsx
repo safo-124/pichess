@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowLeft, Heart } from "lucide-react";
+import { Menu, X, ArrowLeft } from "lucide-react";
+import BrandLogo from "@/components/shared/BrandLogo";
 
 const links = [
   { label: "Home", href: "/ngo" },
@@ -17,7 +18,6 @@ const links = [
 export default function NGONav({ logoUrl }: { logoUrl?: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [logoError, setLogoError] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -40,26 +40,7 @@ export default function NGONav({ logoUrl }: { logoUrl?: string }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/ngo" className="flex items-center gap-2 group">
-            {logoUrl && !logoError ? (
-              <div className="h-9 flex items-center justify-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={logoUrl} alt="PiChess Foundation Logo" className="h-full w-auto object-contain" onError={() => setLogoError(true)} />
-              </div>
-            ) : (
-              <>
-                <div className="w-9 h-9 rounded-full border-2 border-[#2e7d5b] flex items-center justify-center group-hover:bg-[#2e7d5b] transition-all">
-                  <Heart size={16} className="text-[#2e7d5b] group-hover:text-white transition-colors" />
-                </div>
-                <div className="leading-tight">
-                  <div className={`font-black text-base tracking-tight leading-none ${scrolled ? "text-zinc-900" : "text-zinc-800"}`}>
-                    PiChess
-                  </div>
-                  <div className="text-[10px] font-semibold text-[#2e7d5b] tracking-[0.2em] uppercase">
-                    Foundation
-                  </div>
-                </div>
-              </>
-            )}
+            <BrandLogo logoUrl={logoUrl} size="sm" sublabel="Foundation" />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">

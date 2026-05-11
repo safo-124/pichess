@@ -1,6 +1,7 @@
 import AcademyNav from "@/components/academy/AcademyNav";
 import ScrollPawn from "@/components/shared/ScrollPawn";
 import MainFooter from "@/components/main/MainFooter";
+import WhatsAppFloat from "@/components/shared/WhatsAppFloat";
 import { getSiteContent } from "@/lib/actions/admin";
 
 export const metadata = { title: "Academy | PiChess" };
@@ -24,6 +25,7 @@ export default async function AcademyLayout({ children }: { children: React.Reac
       <AcademyNav logoUrl={logoUrl} />
       <ScrollPawn color="#c9a84c" />
       <main className="flex-1">{children}</main>
+      <WhatsAppFloat phone={process.env.ADMIN_WHATSAPP} />
       <MainFooter footerData={footerData} />
     </div>
   );

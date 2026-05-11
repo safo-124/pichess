@@ -137,6 +137,7 @@ function SpotsIndicator({ maxSpots, registeredCount }: { maxSpots: number | null
 function DetailModal({ item, onClose }: { item: TournamentItem; onClose: () => void }) {
   const sc = statusConfig[item.status] ?? statusConfig.UPCOMING;
   const [showRegister, setShowRegister] = useState(false);
+  const heroImage = item.flyer || item.photos[0]?.url;
 
   return (
     <motion.div
@@ -163,10 +164,10 @@ function DetailModal({ item, onClose }: { item: TournamentItem; onClose: () => v
         </button>
 
         {/* Flyer hero */}
-        {item.flyer && (
+        {heroImage && (
           <div className="relative w-full aspect-[16/9] overflow-hidden rounded-t-3xl">
             <Image
-              src={item.flyer}
+              src={heroImage}
               alt={item.title}
               fill
               className="object-cover"
@@ -308,6 +309,7 @@ function TournamentCard({ item, index, onSelect }: { item: TournamentItem; index
   const sc = statusConfig[item.status] ?? statusConfig.UPCOMING;
   const isUpcoming = item.status === "UPCOMING";
   const isOngoing = item.status === "ONGOING";
+  const cardImage = item.flyer || item.photos[0]?.url;
 
   return (
     <motion.div
@@ -326,10 +328,10 @@ function TournamentCard({ item, index, onSelect }: { item: TournamentItem; index
     >
       {/* Flyer / Gradient placeholder */}
       <div className="relative w-full aspect-[4/3] overflow-hidden">
-        {item.flyer ? (
+        {cardImage ? (
           <>
             <Image
-              src={item.flyer}
+              src={cardImage}
               alt={item.title}
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-110"

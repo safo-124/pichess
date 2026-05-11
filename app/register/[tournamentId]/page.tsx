@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import InlineRegistrationForm from "@/components/shared/InlineRegistrationForm";
 import Link from "next/link";
+import { getEffectiveTournamentStatus } from "@/lib/tournament-status";
 
 interface Props {
   params: Promise<{ tournamentId: string }>;
@@ -37,7 +38,7 @@ async function getTournament(id: number) {
     venue: t.venue,
     flyer: t.flyer,
     type: t.type ?? "TOURNAMENT",
-    status: t.status,
+    status: getEffectiveTournamentStatus({ status: t.status, date: t.date, endDate: t.endDate }),
     maxSpots: t.maxSpots ?? null,
     registeredCount: t.registrations?.length ?? 0,
   };

@@ -7,11 +7,12 @@ import TextReveal from "@/components/shared/TextReveal";
 import MagneticButton from "@/components/shared/MagneticButton";
 import HeroSection from "@/components/main/HeroSection";
 import prisma from "@/lib/prisma";
+import { getEffectiveTournamentStatus } from "@/lib/tournament-status";
 
 /* ── data fetchers ─────────────────────────────────────────── */
 async function getTournaments() {
   try {
-    return await prisma.tournament.findMany({
+    const rows = await prisma.tournament.findMany({
       where: { featured: true, status: { in: ["UPCOMING", "ONGOING"] } },
       include: {
         photos: { take: 1 },
@@ -20,6 +21,7 @@ async function getTournaments() {
       orderBy: { date: "asc" },
       take: 4,
     });
+    return rows.filter((t) => getEffectiveTournamentStatus({ status: t.status, date: t.date, endDate: t.endDate }) !== "COMPLETED");
   } catch { return []; }
 }
 
@@ -69,6 +71,7 @@ async function getHeroData() {
 
 /* ── page ──────────────────────────────────────────────────── */
 export default async function HomePage() {
+  const whatsApp = (process.env.ADMIN_WHATSAPP || "233554534646").replace(/\D/g, "");
   const [tournaments, partners, products, testimonials, ngoStats, heroData] = await Promise.all([
     getTournaments(),
     getPartners(),
@@ -672,7 +675,7 @@ export default async function HomePage() {
                       <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                         <span className="text-lg sm:text-xl font-black text-amber-600">GH₵{p.price}</span>
                         <Link
-                          href={`https://wa.me/233000000000?text=I'm interested in: ${p.name} (GH₵ ${p.price})`}
+                          href={`https://wa.me/${whatsApp}?text=${encodeURIComponent(`Hi PiChess, I'm interested in: ${p.name} (GH₵ ${p.price})`)}`}
                           target="_blank"
                           className="px-3 py-1.5 rounded-full bg-gray-50 hover:bg-amber-400 hover:text-black text-gray-500 text-[11px] font-bold transition-all border border-gray-200 hover:border-amber-400"
                         >

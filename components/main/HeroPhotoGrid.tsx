@@ -51,7 +51,7 @@ export default function HeroPhotoGrid({ images }: { images: HeroImage[] }) {
         {/* Large image — spans left 7 cols, full height */}
         <motion.div
           variants={item}
-          className="col-span-7 row-span-6 relative rounded-3xl overflow-hidden group"
+          className="col-span-7 row-span-6 relative rounded-lg overflow-hidden group shadow-2xl shadow-slate-950/10 ring-1 ring-black/5"
         >
           <Image
             src={photos[0].src}
@@ -75,7 +75,7 @@ export default function HeroPhotoGrid({ images }: { images: HeroImage[] }) {
         {/* Top right image */}
         <motion.div
           variants={item}
-          className="col-span-5 row-span-3 relative rounded-3xl overflow-hidden group"
+          className="col-span-5 row-span-3 relative rounded-lg overflow-hidden group shadow-xl shadow-slate-950/10 ring-1 ring-black/5"
         >
           <Image
             src={photos[1].src}
@@ -85,13 +85,13 @@ export default function HeroPhotoGrid({ images }: { images: HeroImage[] }) {
             sizes="(max-width: 1024px) 42vw, 280px"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-          <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-[#c9a84c]/60 rounded-tr-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-[#c9a84c]/60 rounded-tr-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </motion.div>
 
         {/* Bottom right — two images side by side */}
         <motion.div
           variants={item}
-          className="col-span-3 row-span-3 relative rounded-3xl overflow-hidden group"
+          className="col-span-3 row-span-3 relative rounded-lg overflow-hidden group shadow-xl shadow-slate-950/10 ring-1 ring-black/5"
         >
           <Image
             src={photos[2].src}
@@ -101,12 +101,12 @@ export default function HeroPhotoGrid({ images }: { images: HeroImage[] }) {
             sizes="(max-width: 1024px) 25vw, 160px"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-          <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-[#c9a84c]/60 rounded-bl-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-[#c9a84c]/60 rounded-bl-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </motion.div>
 
         <motion.div
           variants={item}
-          className="col-span-2 row-span-3 relative rounded-3xl overflow-hidden group"
+          className="col-span-2 row-span-3 relative rounded-lg overflow-hidden group shadow-xl shadow-slate-950/10 ring-1 ring-black/5"
         >
           <Image
             src={photos[3].src}
@@ -121,7 +121,7 @@ export default function HeroPhotoGrid({ images }: { images: HeroImage[] }) {
 
       {/* ── Mobile: Stacked layout ── */}
       <div className="sm:hidden space-y-3">
-        <motion.div variants={item} className="relative w-full h-48 rounded-2xl overflow-hidden">
+        <motion.div variants={item} className="relative w-full h-48 rounded-lg overflow-hidden shadow-xl shadow-slate-950/10">
           <Image
             src={photos[0].src}
             alt={photos[0].alt}
@@ -136,7 +136,7 @@ export default function HeroPhotoGrid({ images }: { images: HeroImage[] }) {
         </motion.div>
         <div className="grid grid-cols-3 gap-3">
           {photos.slice(1, 4).map((p, i) => (
-            <motion.div key={i} variants={item} className="relative h-28 rounded-2xl overflow-hidden">
+            <motion.div key={i} variants={item} className="relative h-28 rounded-lg overflow-hidden shadow-lg shadow-slate-950/10">
               <Image src={p.src} alt={p.alt} fill className="object-cover" sizes="33vw" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
             </motion.div>
@@ -149,9 +149,9 @@ export default function HeroPhotoGrid({ images }: { images: HeroImage[] }) {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-        className="absolute -bottom-5 right-4 sm:-bottom-6 sm:right-0 lg:-right-4 bg-white rounded-2xl shadow-xl border border-gray-100 px-4 py-3 sm:px-5 sm:py-4 flex items-center gap-3 z-20"
+        className="absolute -bottom-5 right-4 sm:-bottom-6 sm:right-0 lg:-right-4 bg-white rounded-lg shadow-xl border border-gray-100 px-4 py-3 sm:px-5 sm:py-4 flex items-center gap-3 z-20"
       >
-        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#c9a84c]/10 flex items-center justify-center shrink-0">
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-md bg-[#c9a84c]/10 flex items-center justify-center shrink-0">
           <span className="text-base sm:text-lg">♟</span>
         </div>
         <div>

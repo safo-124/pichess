@@ -226,6 +226,11 @@ export default function NGOProgramsPage({
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(heroScroll, [0, 1], ["0%", "30%"]);
   const heroOpacity = useTransform(heroScroll, [0, 0.8], [1, 0]);
+  const secondaryCtaText =
+    programsHero.secondaryCtaText === "Apply for Support"
+      ? "Partner with Us"
+      : programsHero.secondaryCtaText || "Partner with Us";
+  const secondaryCtaLink = programsHero.secondaryCtaLink || "/ngo/apply";
 
   return (
     <div className="bg-white text-zinc-900 overflow-x-hidden">
@@ -324,10 +329,10 @@ export default function NGOProgramsPage({
               {programsHero.ctaText}
             </Link>
             <Link
-              href={programsHero.secondaryCtaLink}
+              href={secondaryCtaLink}
               className="px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-bold text-base transition-all duration-300 hover:scale-105"
             >
-              {programsHero.secondaryCtaText}
+              {secondaryCtaText}
             </Link>
           </motion.div>
         </motion.div>

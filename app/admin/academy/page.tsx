@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import prisma from "@/lib/prisma";
 import { updateLeadStatus, deleteLead, createTeamMember, updateTeamMember, deleteTeamMember, createTestimonial, deleteTestimonial } from "@/lib/actions/admin";
 import AdminTabs from "@/components/admin/AdminTabs";

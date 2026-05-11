@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getEffectiveTournamentStatus } from "@/lib/tournament-status";
 
 // ─── TOURNAMENTS & EVENTS ───────────────────────────────────────────────────
 
@@ -10,19 +11,26 @@ const tournamentPaths = ["/admin/tournaments", "/tournaments", "/"];
 export async function createTournament(fd: FormData) {
   const tags = (fd.get("tags") as string ?? "").split(",").map(t => t.trim()).filter(Boolean);
   const maxSpotsRaw = fd.get("maxSpots") as string;
+  const date = new Date(fd.get("date") as string);
+  const endDate = fd.get("endDate") ? new Date(fd.get("endDate") as string) : null;
+  const status = getEffectiveTournamentStatus({
+    status: (fd.get("status") as string) || "UPCOMING",
+    date,
+    endDate,
+  });
   await (prisma as any).tournament.create({
     data: {
       title: fd.get("title") as string,
       description: (fd.get("description") as string) || null,
-      date: new Date(fd.get("date") as string),
-      endDate: fd.get("endDate") ? new Date(fd.get("endDate") as string) : null,
+      date,
+      endDate,
       location: fd.get("location") as string,
       venue: (fd.get("venue") as string) || null,
       flyer: (fd.get("flyer") as string) || null,
       registrationLink: (fd.get("registrationLink") as string) || null,
       type: (fd.get("type") as string) || "TOURNAMENT",
       tags,
-      status: (fd.get("status") as string) || "UPCOMING",
+      status,
       featured: fd.get("featured") === "true",
       maxSpots: maxSpotsRaw ? Number(maxSpotsRaw) : null,
     },
@@ -34,20 +42,27 @@ export async function updateTournament(fd: FormData) {
   const id = Number(fd.get("id"));
   const tags = (fd.get("tags") as string ?? "").split(",").map(t => t.trim()).filter(Boolean);
   const maxSpotsRaw = fd.get("maxSpots") as string;
+  const date = new Date(fd.get("date") as string);
+  const endDate = fd.get("endDate") ? new Date(fd.get("endDate") as string) : null;
+  const status = getEffectiveTournamentStatus({
+    status: fd.get("status") as string,
+    date,
+    endDate,
+  });
   await (prisma as any).tournament.update({
     where: { id },
     data: {
       title: fd.get("title") as string,
       description: (fd.get("description") as string) || null,
-      date: new Date(fd.get("date") as string),
-      endDate: fd.get("endDate") ? new Date(fd.get("endDate") as string) : null,
+      date,
+      endDate,
       location: fd.get("location") as string,
       venue: (fd.get("venue") as string) || null,
       flyer: (fd.get("flyer") as string) || null,
       registrationLink: (fd.get("registrationLink") as string) || null,
       type: (fd.get("type") as string) || "TOURNAMENT",
       tags,
-      status: fd.get("status") as string,
+      status,
       featured: fd.get("featured") === "true",
       maxSpots: maxSpotsRaw ? Number(maxSpotsRaw) : null,
     },
@@ -63,7 +78,7 @@ export async function deleteTournament(fd: FormData) {
 
 export async function addTournamentPhoto(fd: FormData) {
   const tournamentId = Number(fd.get("tournamentId"));
-  await (prisma as any).tournament_Photo.create({
+  const photo = await (prisma as any).tournament_Photo.create({
     data: {
       url: fd.get("url") as string,
       caption: (fd.get("caption") as string) || null,
@@ -71,6 +86,7 @@ export async function addTournamentPhoto(fd: FormData) {
     },
   });
   tournamentPaths.forEach(p => revalidatePath(p));
+  return { id: photo.id, url: photo.url, caption: photo.caption };
 }
 
 export async function deleteTournamentPhoto(fd: FormData) {

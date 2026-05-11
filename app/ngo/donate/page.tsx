@@ -13,6 +13,7 @@ function parse<T>(raw: string | null, fallback: T): T {
 export default async function DonatePage() {
   const raw = await getSiteContent("ngo_donate");
   const content = parse<NGODonateContent>(raw, defaultNGODonate);
+  const whatsApp = (process.env.ADMIN_WHATSAPP || "233554534646").replace(/\D/g, "");
 
   return (
     <div className="min-h-screen bg-white pt-24 pb-20 px-4">
@@ -64,7 +65,7 @@ export default async function DonatePage() {
 
               {/* WhatsApp */}
               <Link
-                href="https://wa.me/233000000000?text=I'd like to make a donation to PiChess Foundation"
+                href={`https://wa.me/${whatsApp}?text=${encodeURIComponent("Hi PiChess Foundation, I'd like to make a donation.")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 rounded-xl border border-[#25D366]/30 bg-[#25D366]/8 p-5 hover:bg-[#25D366]/15 transition-colors"

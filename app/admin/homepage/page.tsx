@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import prisma from "@/lib/prisma";
 import AdminHeroManager from "@/components/admin/AdminHeroManager";
 

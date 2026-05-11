@@ -4,6 +4,7 @@ import MainNav from "@/components/main/MainNav";
 import MainFooter from "@/components/main/MainFooter";
 import ScrollPawn from "@/components/shared/ScrollPawn";
 import FloatingPieces from "@/components/shared/FloatingPieces";
+import WhatsAppFloat from "@/components/shared/WhatsAppFloat";
 import HomePage from "./(main)/page";
 import { getSiteContent } from "@/lib/actions/admin";
 
@@ -28,6 +29,7 @@ export default async function RootPage() {
       <main>
         <HomePage />
       </main>
+      <WhatsAppFloat phone={process.env.ADMIN_WHATSAPP} />
       <MainFooter footerData={footerData} />
     </div>
   );

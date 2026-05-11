@@ -136,10 +136,44 @@
   }
   body {
     @apply bg-background text-foreground;
+    text-rendering: geometricPrecision;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(248,250,252,1) 44%, rgba(255,255,255,1) 100%);
   }
   html {
     scroll-behavior: smooth;
   }
+}
+
+::selection {
+  background: rgba(201, 168, 76, 0.24);
+  color: #111827;
+}
+
+.site-shell {
+  background:
+    linear-gradient(90deg, rgba(201,168,76,0.06) 0 1px, transparent 1px 100%),
+    linear-gradient(180deg, rgba(201,168,76,0.05) 0 1px, transparent 1px 100%),
+    #ffffff;
+  background-size: 72px 72px;
+}
+
+.section-kicker {
+  letter-spacing: 0;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus-ring:focus-visible {
+  outline-color: rgba(201, 168, 76, 0.8);
+  box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.18);
 }
 
 /* ──────────────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 import { useState, useTransition, useRef } from "react";
 import Image from "next/image";
