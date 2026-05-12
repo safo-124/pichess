@@ -453,26 +453,83 @@ export async function deletePartner(fd: FormData) {
 
 // ─── DAILY PUZZLE ───────────────────────────────────────────────────────────
 
+function revalidateLearningPuzzlePaths() {
+  revalidatePath("/admin");
+  revalidatePath("/admin/extras");
+  revalidatePath("/admin/learning-tools");
+  revalidatePath("/learning-tools");
+}
+
+function looksLikeFen(fen: string) {
+  const placement = fen.trim().split(/\s+/)[0];
+  const rows = placement.split("/");
+  return rows.length === 8 && rows.every((row) => {
+    let count = 0;
+    for (const ch of row) {
+      if (/[1-8]/.test(ch)) count += Number(ch);
+      else if (/[prnbqkPRNBQK]/.test(ch)) count += 1;
+      else return false;
+    }
+    return count === 8;
+  });
+}
+
 export async function createPuzzle(fd: FormData) {
+  const fen = String(fd.get("fen") || "").trim();
+  const solution = String(fd.get("solution") || "").trim();
+  const published = fd.get("published") === "true";
+
+  if (!fen || !solution || !looksLikeFen(fen)) {
+    throw new Error("Please provide a valid FEN and solution.");
+  }
+
+  if (published) {
+    await (prisma as any).daily_Puzzle.updateMany({ data: { published: false } });
+  }
+
+  const dateValue = fd.get("date") as string | null;
+
   await (prisma as any).daily_Puzzle.create({
     data: {
       title: (fd.get("title") as string) || null,
-      fen: fd.get("fen") as string,
-      solution: fd.get("solution") as string,
+      fen,
+      solution,
       difficulty: (fd.get("difficulty") as string) || "MEDIUM",
       description: (fd.get("description") as string) || null,
-      published: fd.get("published") === "true",
+      date: dateValue ? new Date(dateValue) : new Date(),
+      published,
     },
   });
-  revalidatePath("/admin");
-  revalidatePath("/learning-tools");
+  revalidateLearningPuzzlePaths();
 }
 
 export async function deletePuzzle(fd: FormData) {
   const id = Number(fd.get("id"));
   await (prisma as any).daily_Puzzle.delete({ where: { id } });
-  revalidatePath("/admin");
-  revalidatePath("/learning-tools");
+  revalidateLearningPuzzlePaths();
+}
+
+export async function setDailyPuzzle(fd: FormData) {
+  const id = Number(fd.get("id"));
+  if (!id) return;
+
+  await (prisma as any).daily_Puzzle.updateMany({ data: { published: false } });
+  await (prisma as any).daily_Puzzle.update({
+    where: { id },
+    data: { published: true, date: new Date() },
+  });
+  revalidateLearningPuzzlePaths();
+}
+
+export async function unpublishPuzzle(fd: FormData) {
+  const id = Number(fd.get("id"));
+  if (!id) return;
+
+  await (prisma as any).daily_Puzzle.update({
+    where: { id },
+    data: { published: false },
+  });
+  revalidateLearningPuzzlePaths();
 }
 
 // ─── SITE CONTENT ───────────────────────────────────────────────────────────

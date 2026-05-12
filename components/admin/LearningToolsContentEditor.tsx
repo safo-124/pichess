@@ -2,9 +2,9 @@
 "use client";
 
 import { useState, useTransition, useRef, useCallback } from "react";
-import { saveSiteContent } from "@/lib/actions/admin";
+import { createPuzzle, deletePuzzle, saveSiteContent, setDailyPuzzle, unpublishPuzzle } from "@/lib/actions/admin";
 import {
-  type LearningToolsHero, type LearningTool, type LearningTip, type LearningToolsCTA, type LearningToolsShowcase,
+  type LearningPuzzle, type LearningToolsHero, type LearningTool, type LearningTip, type LearningToolsCTA, type LearningToolsShowcase,
   defaultHero, defaultTools, defaultTips, defaultCTA, defaultShowcase,
 } from "@/lib/learning-tools-content";
 import { ChevronDown, ChevronUp, Plus, Trash2, Save, Loader2, CheckCircle, Upload } from "lucide-react";
@@ -115,10 +115,11 @@ interface Props {
   initialTips?: LearningTip[];
   initialCTA?: LearningToolsCTA;
   initialShowcase?: LearningToolsShowcase;
+  initialPuzzles?: LearningPuzzle[];
 }
 
 export default function LearningToolsContentEditor({
-  initialHero, initialTools, initialTips, initialCTA, initialShowcase,
+  initialHero, initialTools, initialTips, initialCTA, initialShowcase, initialPuzzles = [],
 }: Props) {
   const [isPending, startTransition] = useTransition();
   const [saved, setSaved] = useState<string | null>(null);
@@ -193,9 +194,116 @@ export default function LearningToolsContentEditor({
         {saveBtn("learning_hero", hero)}
       </Section>
 
+      {/* ─── Daily Puzzle Backend ─────────────────────── */}
+      <Section title="Daily Board Puzzle" icon="♟" defaultOpen>
+        <p className="text-xs text-zinc-400 mb-3">
+          Add the puzzle shown on the Learning Tools board. Setting one as daily unpublishes the previous active puzzle.
+        </p>
+        <form action={createPuzzle} className="rounded-xl border border-zinc-200 p-4 space-y-3">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div>
+              <label className={labelCls}>Puzzle Title</label>
+              <input name="title" className={inputCls} placeholder="Board Vision Drill" />
+            </div>
+            <div>
+              <label className={labelCls}>Date</label>
+              <input name="date" type="date" className={inputCls} />
+            </div>
+          </div>
+          <div>
+            <label className={labelCls}>FEN Position</label>
+            <input name="fen" required className={`${inputCls} font-mono`} placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" />
+          </div>
+          <div>
+            <label className={labelCls}>Solution Moves</label>
+            <input name="solution" required className={inputCls} placeholder="Nd5 or Qh7+ Kf8 Qf7#" />
+          </div>
+          <div>
+            <label className={labelCls}>Hint / Description</label>
+            <textarea name="description" rows={2} className={inputCls} placeholder="Ask students what forcing move changes the position." />
+          </div>
+          <div className="grid sm:grid-cols-[1fr_auto_auto] gap-3 sm:items-end">
+            <div>
+              <label className={labelCls}>Difficulty</label>
+              <select name="difficulty" defaultValue="MEDIUM" className={inputCls}>
+                <option value="EASY">Easy</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HARD">Hard</option>
+              </select>
+            </div>
+            <label className="flex items-center gap-2 rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-semibold text-zinc-600">
+              <input type="checkbox" name="published" value="true" className="rounded border-zinc-300" />
+              Set as daily
+            </label>
+            <button type="submit" className={btnSave}>
+              <Plus className="w-3.5 h-3.5" />
+              Add Puzzle
+            </button>
+          </div>
+        </form>
+
+        <div className="overflow-hidden rounded-xl border border-zinc-200">
+          <div className="flex items-center justify-between border-b border-zinc-100 bg-zinc-50 px-4 py-3">
+            <h4 className="text-sm font-bold text-zinc-800">Puzzle Library</h4>
+            <span className="text-xs font-semibold text-zinc-400">{initialPuzzles.length} saved</span>
+          </div>
+          <div className="divide-y divide-zinc-100">
+            {initialPuzzles.length === 0 ? (
+              <p className="py-8 text-center text-sm text-zinc-400">No puzzles yet. Add the first board puzzle above.</p>
+            ) : initialPuzzles.map((puzzle) => (
+              <div key={puzzle.id} className="grid gap-3 px-4 py-3 lg:grid-cols-[1fr_auto] lg:items-center">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="font-bold text-zinc-800">{puzzle.title || "Untitled puzzle"}</p>
+                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                      puzzle.published ? "bg-emerald-50 text-emerald-600" : "bg-zinc-100 text-zinc-500"
+                    }`}>
+                      {puzzle.published ? "Active daily" : "Draft"}
+                    </span>
+                    <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-600">
+                      {puzzle.difficulty}
+                    </span>
+                  </div>
+                  <p className="mt-1 truncate font-mono text-[11px] text-zinc-400">{puzzle.fen}</p>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    Solution: <span className="font-semibold text-zinc-700">{puzzle.solution}</span>
+                    <span className="mx-2 text-zinc-300">•</span>
+                    {new Date(puzzle.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2 lg:justify-end">
+                  {puzzle.published ? (
+                    <form action={unpublishPuzzle}>
+                      <input type="hidden" name="id" value={puzzle.id} />
+                      <button className="rounded-lg bg-zinc-100 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:bg-zinc-200">
+                        Unpublish
+                      </button>
+                    </form>
+                  ) : (
+                    <form action={setDailyPuzzle}>
+                      <input type="hidden" name="id" value={puzzle.id} />
+                      <button className="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-600 hover:bg-blue-100">
+                        Make Daily
+                      </button>
+                    </form>
+                  )}
+                  <form action={deletePuzzle}>
+                    <input type="hidden" name="id" value={puzzle.id} />
+                    <button className={btnDanger}>
+                      <Trash2 size={12} />
+                      Delete
+                    </button>
+                  </form>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
       {/* ─── Tools ────────────────────────────────────── */}
-      <Section title="Learning Tools" icon="🛠️">
-        <p className="text-xs text-zinc-400 mb-3">Add, edit, or remove tools that appear on the Learning Tools page.</p>
+      <Section title="Board Panel Tools" icon="🛠️">
+        <p className="text-xs text-zinc-400 mb-3">These items appear in the right-side training panel on the public Learning Tools page.</p>
         <div className="space-y-4">
           {tools.map((tool, idx) => (
             <div key={tool.id} className="rounded-xl border border-zinc-200 p-4 space-y-3">

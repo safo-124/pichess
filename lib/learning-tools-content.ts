@@ -39,6 +39,17 @@ export interface LearningToolsShowcase {
   subtitle: string;
 }
 
+export interface LearningPuzzle {
+  id: number;
+  fen: string;
+  solution: string;
+  difficulty: string;
+  date: string;
+  title: string | null;
+  description: string | null;
+  published: boolean;
+}
+
 // ─── Defaults ─────────────────────────────────────────────
 
 export const defaultHero: LearningToolsHero = {
