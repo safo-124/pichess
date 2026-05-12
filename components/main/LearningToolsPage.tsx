@@ -69,18 +69,18 @@ const ICON_MAP: Record<string, ComponentType<{ size?: number; className?: string
 };
 
 const PIECE_CHARS: Record<string, string> = {
-  K: "♔",
-  Q: "♕",
-  R: "♖",
-  B: "♗",
-  N: "♘",
-  P: "♙",
-  k: "♚",
-  q: "♛",
-  r: "♜",
-  b: "♝",
-  n: "♞",
-  p: "♟",
+  K: "♚︎",
+  Q: "♛︎",
+  R: "♜︎",
+  B: "♝︎",
+  N: "♞︎",
+  P: "♟︎",
+  k: "♚︎",
+  q: "♛︎",
+  r: "♜︎",
+  b: "♝︎",
+  n: "♞︎",
+  p: "♟︎",
 };
 
 const categories = [
@@ -181,10 +181,11 @@ function Board({ fen }: { fen: string }) {
               )}
               {piece && (
                 <span
+                  style={{ fontFamily: '"Times New Roman", "DejaVu Serif", serif' }}
                   className={`relative z-10 select-none text-[clamp(2rem,7vw,4.6rem)] leading-none ${
                     piece === piece.toUpperCase()
-                      ? "text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)]"
-                      : "text-black drop-shadow-[0_1px_1px_rgba(255,255,255,0.45)]"
+                      ? "text-white [-webkit-text-stroke:1px_rgba(0,0,0,0.55)] drop-shadow-[0_2px_2px_rgba(0,0,0,0.55)]"
+                      : "text-black drop-shadow-[0_1px_1px_rgba(255,255,255,0.35)]"
                   }`}
                 >
                   {PIECE_CHARS[piece]}
