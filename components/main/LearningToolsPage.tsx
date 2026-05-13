@@ -3,6 +3,7 @@
 import { useMemo, useState, type ComponentType } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   BookOpen,
@@ -68,19 +69,19 @@ const ICON_MAP: Record<string, ComponentType<{ size?: number; className?: string
   Flame,
 };
 
-const PIECE_CHARS: Record<string, string> = {
-  K: "♚︎",
-  Q: "♛︎",
-  R: "♜︎",
-  B: "♝︎",
-  N: "♞︎",
-  P: "♟︎",
-  k: "♚︎",
-  q: "♛︎",
-  r: "♜︎",
-  b: "♝︎",
-  n: "♞︎",
-  p: "♟︎",
+const PIECE_ASSETS: Record<string, string> = {
+  K: "/pieces/lichess/wK.svg",
+  Q: "/pieces/lichess/wQ.svg",
+  R: "/pieces/lichess/wR.svg",
+  B: "/pieces/lichess/wB.svg",
+  N: "/pieces/lichess/wN.svg",
+  P: "/pieces/lichess/wP.svg",
+  k: "/pieces/lichess/bK.svg",
+  q: "/pieces/lichess/bQ.svg",
+  r: "/pieces/lichess/bR.svg",
+  b: "/pieces/lichess/bB.svg",
+  n: "/pieces/lichess/bN.svg",
+  p: "/pieces/lichess/bP.svg",
 };
 
 const categories = [
@@ -180,15 +181,15 @@ function Board({ fen }: { fen: string }) {
                 </span>
               )}
               {piece && (
-                <span
-                  style={{ fontFamily: '"Times New Roman", "DejaVu Serif", serif' }}
-                  className={`relative z-10 select-none text-[clamp(2rem,7vw,4.6rem)] leading-none ${
-                    piece === piece.toUpperCase()
-                      ? "text-white [-webkit-text-stroke:1px_rgba(0,0,0,0.55)] drop-shadow-[0_2px_2px_rgba(0,0,0,0.55)]"
-                      : "text-black drop-shadow-[0_1px_1px_rgba(255,255,255,0.35)]"
-                  }`}
-                >
-                  {PIECE_CHARS[piece]}
+                <span className="relative z-10 block h-[86%] w-[86%] select-none">
+                  <Image
+                    src={PIECE_ASSETS[piece]}
+                    alt={piece === piece.toUpperCase() ? `White ${piece}` : `Black ${piece.toUpperCase()}`}
+                    fill
+                    sizes="(max-width: 768px) 11vw, 72px"
+                    className="pointer-events-none object-contain"
+                    draggable={false}
+                  />
                 </span>
               )}
             </div>
