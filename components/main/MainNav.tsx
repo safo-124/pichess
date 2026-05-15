@@ -17,6 +17,8 @@ import {
   Home,
   ArrowRight,
   Lightbulb,
+  Compass,
+  MessageCircle,
 } from "lucide-react";
 
 const leftLinks = [
@@ -35,6 +37,18 @@ const rightLinks = [
 ];
 
 const allLinks = [...leftLinks, ...rightLinks];
+
+const mobileSubtitles: Record<string, string> = {
+  "/": "Start",
+  "/academy": "Training",
+  "/ngo": "Impact",
+  "/tournaments": "Events",
+  "/learning-tools": "Practice",
+  "/shop": "Gear",
+  "/news": "Stories",
+  "/about": "Team",
+  "/contact": "Connect",
+};
 
 export default function MainNav({ logoUrl }: { logoUrl?: string }) {
   const [open, setOpen] = useState(false);
@@ -56,8 +70,10 @@ export default function MainNav({ logoUrl }: { logoUrl?: string }) {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
+  const isActiveLink = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href));
+
   const NavLink = ({ l }: { l: typeof allLinks[number] }) => {
-    const isActive = pathname === l.href;
+    const isActive = isActiveLink(l.href);
     return (
       <Link
         key={l.href}
@@ -216,104 +232,153 @@ export default function MainNav({ logoUrl }: { logoUrl?: string }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.25 }}
             className="fixed inset-0 lg:hidden"
-            style={{ zIndex: 99998 }}
+            style={{ zIndex: 100000 }}
           >
             {/* Background */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-white"
+              className="absolute inset-0 bg-[#07111f]"
             />
 
-            {/* Decorative chess pattern */}
-            <div className="absolute top-20 right-0 w-48 h-48 opacity-[0.03]">
-              <svg viewBox="0 0 8 8" className="w-full h-full">
-                {Array.from({ length: 64 }).map((_, i) => (
-                  <rect
-                    key={i}
-                    x={i % 8}
-                    y={Math.floor(i / 8)}
-                    width="1"
-                    height="1"
-                    fill={(i + Math.floor(i / 8)) % 2 === 0 ? "black" : "transparent"}
-                  />
-                ))}
-              </svg>
-            </div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_12%,rgba(201,168,76,0.22),transparent_30%),radial-gradient(circle_at_88%_18%,rgba(46,125,91,0.18),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(139,92,246,0.14),transparent_34%)]" />
+            <div
+              className="absolute inset-0 opacity-[0.055]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(45deg, rgba(255,255,255,.55) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.55) 75%), linear-gradient(45deg, rgba(255,255,255,.55) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.55) 75%)",
+                backgroundPosition: "0 0, 18px 18px",
+                backgroundSize: "36px 36px",
+              }}
+            />
 
             {/* Content */}
-            <div className="relative pt-28 px-8 pb-8 h-full overflow-y-auto">
+            <div className="relative h-[100dvh] overflow-y-auto px-3 py-3">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: -18, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1, duration: 0.4 }}
-                className="mb-8"
+                exit={{ opacity: 0, y: -18, scale: 0.98 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="relative min-h-full overflow-hidden rounded-[2rem] border border-white/[0.12] bg-white/[0.08] shadow-2xl shadow-black/30 backdrop-blur-2xl"
               >
-                <span className="text-[10px] font-bold tracking-normal uppercase text-[#c9a84c]">
-                  Navigation
-                </span>
-              </motion.div>
+                <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/70 to-transparent" />
+                <div className="absolute -right-16 top-24 h-48 w-48 rounded-full border border-[#c9a84c]/15" />
+                <div className="absolute -right-8 top-32 h-24 w-24 rounded-full border border-white/10" />
 
-              <div className="space-y-1">
-                {allLinks.map((l, i) => {
-                  const Icon = l.icon;
-                  const isActive = pathname === l.href;
-                  return (
-                    <motion.div
-                      key={l.href}
-                      initial={{ opacity: 0, x: -30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.15 + i * 0.05, duration: 0.4, ease: "easeOut" }}
+                <div className="relative p-4 sm:p-5">
+                  <div className="flex items-center justify-between gap-3 rounded-[1.35rem] border border-white/10 bg-[#07111f]/70 p-3 shadow-lg shadow-black/10">
+                    <Link href="/" onClick={() => setOpen(false)} className="focus-ring rounded-lg">
+                      <BrandLogo logoUrl={logoUrl} tone="dark" />
+                    </Link>
+                    <button
+                      onClick={() => setOpen(false)}
+                      className="focus-ring flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.08] text-white transition-all hover:bg-white/[0.14]"
+                      aria-label="Close menu"
                     >
-                      <Link
-                        href={l.href}
-                        onClick={() => setOpen(false)}
-                        className={`flex items-center gap-4 py-3.5 border-b transition-all duration-200 ${
-                          isActive
-                            ? "border-black"
-                            : "border-gray-100 hover:border-gray-300"
-                        }`}
-                      >
-                        <div
-                          className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${
-                            isActive
-                              ? "bg-black text-white"
-                              : "bg-gray-50 text-gray-400"
-                          }`}
-                        >
-                          <Icon
-                            size={17}
-                            strokeWidth={1.8}
-                            style={
-                              !isActive && l.accent
-                                ? { color: l.accent }
-                                : undefined
-                            }
-                          />
-                        </div>
-                        <span
-                          className={`text-[22px] font-bold tracking-normal transition-colors ${
-                            isActive ? "text-black" : "text-gray-300 hover:text-gray-600"
-                          }`}
-                        >
-                          {l.label}
-                        </span>
-                        {isActive && (
-                          <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="ml-auto w-2 h-2 rounded-full bg-[#c9a84c]"
-                          />
-                        )}
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
+                      <X size={22} strokeWidth={2} />
+                    </button>
+                  </div>
 
+                  <div className="mt-5 overflow-hidden rounded-[1.5rem] border border-[#c9a84c]/20 bg-[#c9a84c]/10 p-4">
+                    <div>
+                      <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#d8bb62]">
+                        <Compass className="h-4 w-4" />
+                        Explore PiChess
+                      </div>
+                      <p className="mt-2 text-2xl font-black leading-tight text-white">
+                        Choose your next move.
+                      </p>
+                    </div>
+                  </div>
+
+                  <nav className="mt-4 grid grid-cols-2 gap-2.5">
+                    {allLinks.map((l, i) => {
+                      const Icon = l.icon;
+                      const isActive = isActiveLink(l.href);
+                      return (
+                        <motion.div
+                          key={l.href}
+                          initial={{ opacity: 0, y: 18, scale: 0.96 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ delay: 0.08 + i * 0.035, duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                          <Link
+                            href={l.href}
+                            onClick={() => setOpen(false)}
+                            aria-current={isActive ? "page" : undefined}
+                            className={`group relative flex min-h-[104px] flex-col justify-between overflow-hidden rounded-[1.35rem] border p-3.5 transition-all active:scale-[0.98] ${
+                              isActive
+                                ? "border-[#d8bb62]/70 bg-[#d8bb62] text-gray-950 shadow-lg shadow-[#c9a84c]/20"
+                                : "border-white/10 bg-white/[0.055] text-white hover:border-white/20 hover:bg-white/[0.09]"
+                            }`}
+                          >
+                            <span
+                              className={`absolute -right-5 -top-5 h-16 w-16 rounded-full transition-all ${
+                                isActive ? "bg-white/25" : "bg-white/[0.035] group-hover:bg-white/[0.06]"
+                              }`}
+                            />
+                            <div className="relative flex items-center justify-between">
+                              <span
+                                className={`flex h-10 w-10 items-center justify-center rounded-2xl ${
+                                  isActive ? "bg-gray-950 text-white" : "bg-white/[0.08] text-white"
+                                }`}
+                              >
+                                <Icon
+                                  size={19}
+                                  strokeWidth={1.9}
+                                  style={!isActive && l.accent ? { color: l.accent } : undefined}
+                                />
+                              </span>
+                              <ArrowRight
+                                className={`h-4 w-4 transition-all ${
+                                  isActive ? "text-gray-950" : "text-white/25 group-hover:translate-x-0.5 group-hover:text-white/60"
+                                }`}
+                              />
+                            </div>
+                            <div className="relative">
+                              <span className={`block text-[11px] font-bold uppercase tracking-[0.18em] ${
+                                isActive ? "text-gray-950/60" : "text-white/35"
+                              }`}>
+                                {mobileSubtitles[l.href]}
+                              </span>
+                              <span className="mt-1 block text-lg font-black leading-none tracking-tight">
+                                {l.label}
+                              </span>
+                            </div>
+                          </Link>
+                        </motion.div>
+                      );
+                    })}
+                  </nav>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.45, duration: 0.35 }}
+                    className="mt-4 grid grid-cols-[1fr_auto] gap-2.5"
+                  >
+                    <Link
+                      href="/academy/enquire"
+                      onClick={() => setOpen(false)}
+                      className="focus-ring flex min-h-14 items-center justify-between rounded-[1.35rem] bg-white px-4 text-sm font-black text-gray-950 shadow-lg shadow-black/15"
+                    >
+                      Join Academy
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                    <Link
+                      href="/contact"
+                      onClick={() => setOpen(false)}
+                      className="focus-ring flex h-14 w-14 items-center justify-center rounded-[1.35rem] border border-white/10 bg-white/[0.06] text-[#d8bb62]"
+                      aria-label="Contact PiChess"
+                    >
+                      <MessageCircle className="h-5 w-5" />
+                    </Link>
+                  </motion.div>
+                </div>
+              </motion.div>
             </div>
           </motion.div>
         )}
