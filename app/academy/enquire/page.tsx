@@ -29,7 +29,8 @@ function EnquireForm() {
     setStatus("loading");
     const fd = new FormData(e.currentTarget);
     try {
-      await submitAcademyLead(fd);
+      const result = await submitAcademyLead(fd);
+      if (result?.error) throw new Error(result.error);
       setStatus("success");
       (e.target as HTMLFormElement).reset();
     } catch { setStatus("error"); }
@@ -47,6 +48,10 @@ function EnquireForm() {
     "Chess for Companies & Organizations",
     "Not Sure Yet",
   ];
+
+  const ageGroups = ["Child 5-12", "Teen 13-17", "Adult 18+", "School / Institution", "Company / Organization"];
+  const levels = ["New to chess", "Beginner", "Intermediate", "Competitive", "Not sure yet"];
+  const goals = ["Learn the basics", "Build confidence", "Improve quickly", "Prepare for tournaments", "Find a group class", "Set up school or team training"];
 
   const inputClass =
     "w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 placeholder-gray-300 text-sm focus:outline-none focus:border-[#c9a84c]/40 focus:ring-1 focus:ring-[#c9a84c]/20 transition-all";
@@ -107,8 +112,8 @@ function EnquireForm() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5">Phone Number</label>
-                  <input name="phone" type="tel" placeholder="+233 XX XXX XXXX" className={inputClass} />
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5">Phone Number *</label>
+                  <input name="phone" type="tel" required placeholder="+233 XX XXX XXXX" className={inputClass} />
                 </div>
 
                 <div>
@@ -124,6 +129,36 @@ function EnquireForm() {
                       <option key={p} value={p}>{p}</option>
                     ))}
                   </select>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5">Age Group</label>
+                    <select name="age_group" className={`${inputClass} appearance-none`} defaultValue="">
+                      <option value="">Select age group</option>
+                      {ageGroups.map((item) => (
+                        <option key={item} value={item}>{item}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5">Chess Level</label>
+                    <select name="level" className={`${inputClass} appearance-none`} defaultValue="">
+                      <option value="">Select level</option>
+                      {levels.map((item) => (
+                        <option key={item} value={item}>{item}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5">Goal</label>
+                    <select name="goal" className={`${inputClass} appearance-none`} defaultValue="">
+                      <option value="">Select goal</option>
+                      {goals.map((item) => (
+                        <option key={item} value={item}>{item}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>

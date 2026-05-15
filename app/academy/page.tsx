@@ -1,8 +1,11 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
-import StatsCounter from "@/components/shared/StatsCounter";
 import TextReveal from "@/components/shared/TextReveal";
 import MagneticButton from "@/components/shared/MagneticButton";
 import ParallaxSection from "@/components/shared/ParallaxSection";
+import AcademyAchievements from "@/components/academy/AcademyAchievements";
+import AcademyJourney from "@/components/academy/AcademyJourney";
+import AcademyProgramFinder from "@/components/academy/AcademyProgramFinder";
+import AcademyStatsBand from "@/components/academy/AcademyStatsBand";
 import prisma from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,13 +15,22 @@ import {
 } from "@/lib/academy-content";
 
 export const metadata = { title: "PiChess Academy" };
+export const dynamic = "force-dynamic";
 
  
 async function getData() {
   try {
-    const [team, testimonials, heroRaw, statsRaw, lessonsRaw, featuresRaw, ctaRaw] = await Promise.all([
+    const [team, testimonials, coachCount, testimonialCount, completedTournaments, heroRaw, statsRaw, lessonsRaw, featuresRaw, ctaRaw] = await Promise.all([
       prisma.academy_Team.findMany({ where: { published: true }, orderBy: { order: "asc" }, take: 4 }),
       prisma.academy_Testimonial.findMany({ where: { published: true }, take: 3 }),
+      prisma.academy_Team.count({ where: { published: true } }),
+      prisma.academy_Testimonial.count({ where: { published: true } }),
+      prisma.tournament.findMany({
+        where: { status: "COMPLETED" },
+        orderBy: { date: "desc" },
+        take: 3,
+        select: { id: true, title: true, date: true, location: true, venue: true },
+      }),
       (prisma as any).siteContent.findUnique({ where: { key: "academy_hero" } }),
       (prisma as any).siteContent.findUnique({ where: { key: "academy_stats" } }),
       (prisma as any).siteContent.findUnique({ where: { key: "academy_lessons" } }),
@@ -26,18 +38,18 @@ async function getData() {
       (prisma as any).siteContent.findUnique({ where: { key: "academy_cta" } }),
     ]);
     return {
-      team, testimonials,
+      team, testimonials, coachCount, testimonialCount, completedTournaments,
       hero: heroRaw ? JSON.parse(heroRaw.value) as AcademyHero : defaultHero,
       stats: statsRaw ? JSON.parse(statsRaw.value) as AcademyStat[] : defaultStats,
       lessons: lessonsRaw ? JSON.parse(lessonsRaw.value) as AcademyLesson[] : defaultLessons,
       features: featuresRaw ? JSON.parse(featuresRaw.value) as AcademyFeature[] : defaultFeatures,
       cta: ctaRaw ? JSON.parse(ctaRaw.value) as AcademyCTA : defaultCTA,
     };
-  } catch { return { team: [], testimonials: [], hero: defaultHero, stats: defaultStats, lessons: defaultLessons, features: defaultFeatures, cta: defaultCTA }; }
+  } catch { return { team: [], testimonials: [], coachCount: 0, testimonialCount: 0, completedTournaments: [], hero: defaultHero, stats: defaultStats, lessons: defaultLessons, features: defaultFeatures, cta: defaultCTA }; }
 }
 
 export default async function AcademyPage() {
-  const { team, testimonials, hero, stats, lessons, features, cta } = await getData();
+  const { team, testimonials, coachCount, testimonialCount, completedTournaments, hero, stats, lessons, features, cta } = await getData();
 
   return (
     <div className="overflow-x-hidden">
@@ -172,21 +184,11 @@ export default async function AcademyPage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          STATS — Bold numbers
-      ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 bg-gray-900 relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.08),transparent_70%)]" />
-        <div className="max-w-7xl mx-auto px-4 relative">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
-            {stats.map((s, i) => (
-              <AnimatedSection key={s.label} delay={i * 0.1}>
-                <div className="text-center"><StatsCounter end={s.end} label={s.label} suffix={s.suffix || undefined} color={s.color as "gold" | "white"} /></div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
+      <AcademyProgramFinder lessons={lessons} />
+
+      <AcademyStatsBand stats={stats} />
+
+      <AcademyJourney />
 
       {/* ═══════════════════════════════════════════════════════
           LESSON PACKAGES — Teaser linking to /academy/lessons
@@ -261,6 +263,12 @@ export default async function AcademyPage() {
           </AnimatedSection>
         </div>
       </section>
+
+      <AcademyAchievements
+        completedTournaments={completedTournaments}
+        testimonialCount={testimonialCount}
+        coachCount={coachCount}
+      />
 
       {/* ═══════════════════════════════════════════════════════
           TEAM PREVIEW — Coach cards with styled avatars

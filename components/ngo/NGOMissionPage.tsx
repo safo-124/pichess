@@ -7,7 +7,7 @@ import Link from "next/link";
 import type {
   NGOMissionHero, NGOStorySection, NGOPillar, NGOValue, NGOCTA, NGOStat,
 } from "@/lib/ngo-content";
-import StatsCounter from "@/components/shared/StatsCounter";
+import NGOStatsBand from "@/components/ngo/NGOStatsBand";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -153,19 +153,7 @@ export default function NGOMissionPage({ missionHero, storySection, pillars, val
       </section>
 
       {/* ── STATS ── */}
-      <section className="py-16 bg-[#2e7d5b] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='20' height='20' fill='%23fff'/%3E%3Crect x='20' y='20' width='20' height='20' fill='%23fff'/%3E%3C/svg%3E")`,
-          backgroundSize: "40px 40px",
-        }} />
-        <div className="relative max-w-5xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((s, i) => (
-              <StatsCounter key={i} end={s.value} label={s.label} suffix={s.suffix} color="white" />
-            ))}
-          </div>
-        </div>
-      </section>
+      <NGOStatsBand stats={stats} />
 
       {/* ── PILLARS ── */}
       <section className="py-20 lg:py-28 px-4">

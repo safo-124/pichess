@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { updateLeadStatus, deleteLead, createTeamMember, updateTeamMember, deleteTeamMember, createTestimonial, deleteTestimonial } from "@/lib/actions/admin";
 import AdminTabs from "@/components/admin/AdminTabs";
 import AcademyContentEditor from "@/components/admin/AcademyContentEditor";
+import AcademyLeadWorkflow from "@/components/admin/AcademyLeadWorkflow";
 import ImageUploadInput from "@/components/admin/ImageUploadInput";
 import {
   defaultHero, defaultStats, defaultLessons, defaultFeatures, defaultCTA, defaultLessonsHero,
@@ -49,7 +50,10 @@ const btnCls = "px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#c9a84c] to-[#b898
 export default async function AdminAcademyPage() {
   const { leads, team, testimonials, hero, stats, lessons, features, cta, lessonsHero } = await getData();
   const counts = { NEW: 0, CONTACTED: 0, ENROLLED: 0, CLOSED: 0 } as Record<string, number>;
-  leads.forEach((l: any) => { if (counts[l.status] !== undefined) counts[l.status]++; });
+  leads.forEach((l: any) => {
+    const status = String(l.status || "NEW").toUpperCase();
+    if (counts[status] !== undefined) counts[status]++;
+  });
 
   return (
     <div className="space-y-6 max-w-7xl">
@@ -91,6 +95,8 @@ export default async function AdminAcademyPage() {
 
         {/* ═══ TAB: Leads ═══════════════════════════════════════════════ */}
         <div className="space-y-6">
+          <AcademyLeadWorkflow leads={leads} />
+
           {/* Leads Table */}
           <div className="rounded-2xl bg-white border border-zinc-200/80 overflow-hidden">
             <div className="px-5 py-4 border-b border-zinc-100 flex items-center justify-between">
@@ -122,14 +128,14 @@ export default async function AdminAcademyPage() {
                       <td className="px-5 py-3 text-zinc-500 text-xs">{lead.program || "—"}</td>
                       <td className="px-5 py-3 text-zinc-500 text-xs">{lead.age_group || "—"}</td>
                       <td className="px-5 py-3">
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${statusColors[lead.status] ?? "bg-zinc-100 text-zinc-500"}`}>{lead.status}</span>
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${statusColors[String(lead.status).toUpperCase()] ?? "bg-zinc-100 text-zinc-500"}`}>{String(lead.status).toUpperCase()}</span>
                       </td>
                       <td className="px-5 py-3 text-zinc-400 text-[11px] whitespace-nowrap">{new Date(lead.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}</td>
                       <td className="px-5 py-3">
                         <div className="flex gap-1.5 items-center">
                           <form action={updateLeadStatus} className="flex gap-1 items-center">
                             <input type="hidden" name="id" value={lead.id} />
-                            <select name="status" defaultValue={lead.status} className="text-[11px] border border-zinc-200 rounded-lg px-2 py-1 bg-white text-zinc-600">
+                            <select name="status" defaultValue={String(lead.status).toUpperCase()} className="text-[11px] border border-zinc-200 rounded-lg px-2 py-1 bg-white text-zinc-600">
                               {["NEW", "CONTACTED", "ENROLLED", "CLOSED"].map(s => <option key={s} value={s}>{s}</option>)}
                             </select>
                             <button type="submit" className="text-[11px] bg-zinc-800 text-white px-2 py-1 rounded-lg hover:bg-zinc-700 font-medium">Save</button>

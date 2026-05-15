@@ -1,6 +1,6 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
-import StatsCounter from "@/components/shared/StatsCounter";
 import NGOHero from "@/components/ngo/NGOHero";
+import NGOStatsBand from "@/components/ngo/NGOStatsBand";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
@@ -47,16 +47,7 @@ export default async function NGOPage() {
       <NGOHero data={hero} />
 
       {/* Impact stats */}
-      <section className="py-20 bg-[#2e7d5b] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 chess-bg pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-            {stats.map((s, i) => (
-              <StatsCounter key={i} end={s.value} label={s.label} suffix={s.suffix} color="white" />
-            ))}
-          </div>
-        </div>
-      </section>
+      <NGOStatsBand stats={stats} />
 
       {/* Mission Teaser */}
       <section className="relative py-24 overflow-hidden">

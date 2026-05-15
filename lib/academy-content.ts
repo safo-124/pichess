@@ -31,6 +31,11 @@ export interface AcademyLesson {
   icon: string;
   image: string;
   category: "core" | "institutional";
+  ageRange?: string;
+  level?: string;
+  format?: string;
+  duration?: string;
+  bestFor?: string;
 }
 
 export interface AcademyFeature {
@@ -86,6 +91,11 @@ export const defaultLessons: AcademyLesson[] = [
     icon: "♛",
     image: "",
     category: "core",
+    ageRange: "Kids, teens & adults",
+    level: "Beginner to intermediate",
+    format: "Weekly coached sessions",
+    duration: "Ongoing term program",
+    bestFor: "Students who want structure, homework, and visible progress.",
   },
   {
     title: "Private Lessons",
@@ -94,6 +104,11 @@ export const defaultLessons: AcademyLesson[] = [
     icon: "🎯",
     image: "",
     category: "core",
+    ageRange: "All ages",
+    level: "All levels",
+    format: "1-on-1 coaching",
+    duration: "Flexible schedule",
+    bestFor: "Players who want personal attention or fast improvement.",
   },
   {
     title: "Group Lessons",
@@ -102,6 +117,11 @@ export const defaultLessons: AcademyLesson[] = [
     icon: "👥",
     image: "",
     category: "core",
+    ageRange: "Kids, teens & adults",
+    level: "Beginner to intermediate",
+    format: "Small group class",
+    duration: "Weekly sessions",
+    bestFor: "Learners who enjoy practice partners and social learning.",
   },
   {
     title: "Chess for Kids",
@@ -110,6 +130,11 @@ export const defaultLessons: AcademyLesson[] = [
     icon: "🧒",
     image: "",
     category: "core",
+    ageRange: "Ages 5-12",
+    level: "New to beginner",
+    format: "Playful guided class",
+    duration: "Weekly sessions",
+    bestFor: "Young learners building confidence and thinking skills.",
   },
   {
     title: "Adult Beginner Course",
@@ -118,6 +143,11 @@ export const defaultLessons: AcademyLesson[] = [
     icon: "📖",
     image: "",
     category: "core",
+    ageRange: "Adults",
+    level: "New to beginner",
+    format: "Beginner course",
+    duration: "Short course",
+    bestFor: "Adults starting chess or returning after a long break.",
   },
   {
     title: "Chess for Special Needs",
@@ -126,6 +156,11 @@ export const defaultLessons: AcademyLesson[] = [
     icon: "💜",
     image: "",
     category: "core",
+    ageRange: "Kids & teens",
+    level: "Adaptive",
+    format: "Small supportive class",
+    duration: "Personalized pace",
+    bestFor: "Students who need calmer pacing and individual support.",
   },
   {
     title: "Grandmaster / Elite Lessons",
@@ -134,6 +169,11 @@ export const defaultLessons: AcademyLesson[] = [
     icon: "🏆",
     image: "",
     category: "core",
+    ageRange: "Teens & adults",
+    level: "Advanced",
+    format: "Elite performance coaching",
+    duration: "Tournament cycles",
+    bestFor: "Competitive players preparing for serious events.",
   },
   {
     title: "Chess in Schools Program",
@@ -142,6 +182,11 @@ export const defaultLessons: AcademyLesson[] = [
     icon: "🏫",
     image: "",
     category: "institutional",
+    ageRange: "Schools",
+    level: "Beginner to club level",
+    format: "School partnership",
+    duration: "Term or year program",
+    bestFor: "Schools building clubs, curriculum, and competitions.",
   },
   {
     title: "Chess for Companies & Organizations",
@@ -150,6 +195,11 @@ export const defaultLessons: AcademyLesson[] = [
     icon: "🏢",
     image: "",
     category: "institutional",
+    ageRange: "Companies & teams",
+    level: "All levels",
+    format: "Workshop or team program",
+    duration: "Custom engagement",
+    bestFor: "Organizations using chess for strategy and team-building.",
   },
 ];
 

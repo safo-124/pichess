@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import type { AcademyLesson } from "@/lib/academy-content";
+import { getAcademyLessonDetails } from "@/lib/academy-program-details";
 
 /* ── gradient accents per-item ── */
 const gradients = [
@@ -55,6 +56,7 @@ function LessonDetail({
   onClose: () => void;
 }) {
   const grad = gradients[index % gradients.length];
+  const details = getAcademyLessonDetails(lesson);
 
   return (
     <motion.div
@@ -117,6 +119,25 @@ function LessonDetail({
           {lesson.desc}
         </p>
 
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          {[
+            ["Age", details.ageRange],
+            ["Level", details.level],
+            ["Format", details.format],
+            ["Duration", details.duration],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+              <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{label}</p>
+              <p className="mt-1 text-sm font-bold text-gray-900">{value}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="rounded-2xl border border-[#c9a84c]/20 bg-[#c9a84c]/10 p-4 mb-6">
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#b8963f]">Best for</p>
+          <p className="mt-1 text-sm font-semibold leading-6 text-gray-700">{details.bestFor}</p>
+        </div>
+
         {/* Divider */}
         <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-6" />
 
@@ -178,6 +199,7 @@ export default function LessonCards({ lessons }: { lessons: AcademyLesson[] }) {
           const globalIdx = lessons.indexOf(lesson);
           const grad = gradients[globalIdx % gradients.length];
           const bgGrad = bgGradients[globalIdx % bgGradients.length];
+          const details = getAcademyLessonDetails(lesson);
 
           return (
             <motion.div
@@ -230,6 +252,14 @@ export default function LessonCards({ lessons }: { lessons: AcademyLesson[] }) {
                   <p className="text-gray-400 text-sm leading-relaxed line-clamp-2">
                     {lesson.desc}
                   </p>
+                  <div className="mt-4 grid grid-cols-2 gap-2">
+                    <span className="rounded-xl bg-gray-50 px-3 py-2 text-[11px] font-bold text-gray-500">
+                      {details.level}
+                    </span>
+                    <span className="rounded-xl bg-gray-50 px-3 py-2 text-[11px] font-bold text-gray-500">
+                      {details.format}
+                    </span>
+                  </div>
                   {/* Read more hint */}
                   <div className="mt-4 flex items-center gap-1.5 text-[#c9a84c]/60 group-hover:text-[#c9a84c] transition-colors text-xs font-semibold">
                     <span>Learn more</span>
@@ -259,6 +289,7 @@ export default function LessonCards({ lessons }: { lessons: AcademyLesson[] }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {institutional.map((lesson, i) => {
               const globalIdx = lessons.indexOf(lesson);
+              const details = getAcademyLessonDetails(lesson);
               return (
                 <motion.div
                   key={lesson.title}
@@ -310,6 +341,14 @@ export default function LessonCards({ lessons }: { lessons: AcademyLesson[] }) {
                       <p className="text-gray-400 text-sm leading-relaxed line-clamp-2 mb-4">
                         {lesson.desc}
                       </p>
+                      <div className="mb-4 grid grid-cols-2 gap-2">
+                        <span className="rounded-xl bg-blue-50 px-3 py-2 text-[11px] font-bold text-blue-500">
+                          {details.format}
+                        </span>
+                        <span className="rounded-xl bg-blue-50 px-3 py-2 text-[11px] font-bold text-blue-500">
+                          {details.duration}
+                        </span>
+                      </div>
                       <div className="flex items-center gap-1.5 text-blue-400/60 group-hover:text-blue-400 transition-colors text-xs font-semibold">
                         <span>Learn more</span>
                         <span className="group-hover:translate-x-1 transition-transform">→</span>

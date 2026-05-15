@@ -10,6 +10,8 @@ export async function submitAcademyLead(formData: FormData) {
   const phone = formData.get("phone") as string;
   const program = formData.get("program") as string;
   const age_group = formData.get("age_group") as string;
+  const level = formData.get("level") as string;
+  const goal = formData.get("goal") as string;
   const message = formData.get("message") as string;
 
   if (!name || !email || !phone) {
@@ -24,8 +26,12 @@ export async function submitAcademyLead(formData: FormData) {
         phone,
         program: program || null,
         age_group: age_group || null,
-        message: message || null,
-        status: "new",
+        message: [
+          level ? `Level: ${level}` : "",
+          goal ? `Goal: ${goal}` : "",
+          message || "",
+        ].filter(Boolean).join("\n\n") || null,
+        status: "NEW",
       },
     });
 

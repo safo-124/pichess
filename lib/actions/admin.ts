@@ -279,9 +279,10 @@ export async function deleteSubscriber(fd: FormData) {
 
 export async function updateLeadStatus(fd: FormData) {
   const id = Number(fd.get("id"));
+  const status = String(fd.get("status") || "NEW").toUpperCase();
   await (prisma as any).academy_Lead.update({
     where: { id },
-    data: { status: fd.get("status") as string },
+    data: { status },
   });
   revalidatePath("/admin/academy");
 }

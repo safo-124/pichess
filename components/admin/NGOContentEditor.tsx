@@ -90,7 +90,7 @@ interface Props {
 export default function NGOContentEditor({ initialData }: Props) {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
-  const [openSections, setOpenSections] = useState<Set<string>>(new Set());
+  const [openSections, setOpenSections] = useState<Set<string>>(new Set(["stats"]));
 
   const toggle = (id: string) => setOpenSections(prev => {
     const next = new Set(prev);
@@ -154,6 +154,18 @@ export default function NGOContentEditor({ initialData }: Props) {
     });
   };
 
+  const saveStats = () => {
+    setMessage("");
+    startTransition(async () => {
+      try {
+        await saveSiteContent("ngo_stats", JSON.stringify(stats));
+        setMessage("NGO impact stats saved!");
+      } catch {
+        setMessage("Stats save failed.");
+      }
+    });
+  };
+
   const isOpen = (id: string) => openSections.has(id);
 
   return (
@@ -185,14 +197,91 @@ export default function NGOContentEditor({ initialData }: Props) {
       </Section>
 
       {/* ═══ Stats ═══ */}
-      <Section id="stats" title="Impact Stats (Homepage)" icon="📊" open={isOpen("stats")} onToggle={() => toggle("stats")}>
-        {stats.map((s, i) => (
-          <div key={i} className="grid grid-cols-3 gap-3">
-            <div><label className={labelCls}>Value</label><input type="number" className={inputCls} value={s.value} onChange={e => { const ns = [...stats]; ns[i] = { ...ns[i], value: Number(e.target.value) }; setStats(ns); }} /></div>
-            <div><label className={labelCls}>Label</label><input className={inputCls} value={s.label} onChange={e => { const ns = [...stats]; ns[i] = { ...ns[i], label: e.target.value }; setStats(ns); }} /></div>
-            <div><label className={labelCls}>Suffix</label><input className={inputCls} value={s.suffix} onChange={e => { const ns = [...stats]; ns[i] = { ...ns[i], suffix: e.target.value }; setStats(ns); }} /></div>
-          </div>
-        ))}
+      <Section id="stats" title="Shared NGO Impact Statistics" icon="📊" open={isOpen("stats")} onToggle={() => toggle("stats")}>
+        <div className="rounded-2xl border border-[#2e7d5b]/15 bg-[#2e7d5b]/5 p-4">
+          <p className="text-sm font-semibold text-zinc-800">These numbers power the green statistics strip on the Foundation Home and Mission pages.</p>
+          <p className="mt-1 text-xs text-zinc-500">Update them here, then save the stats section or use Save All NGO Content at the bottom.</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          {stats.map((s, i) => (
+            <div key={`${s.label}-${i}`} className="rounded-2xl bg-[#2e7d5b] p-4 text-center">
+              <p className="text-3xl font-black text-white">{s.value.toLocaleString()}{s.suffix}</p>
+              <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-white/65">{s.label || "Untitled"}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="space-y-3">
+          {stats.map((s, i) => (
+            <div key={i} className="grid gap-3 rounded-2xl border border-zinc-100 bg-zinc-50/60 p-3 sm:grid-cols-[1fr_1.4fr_0.8fr_auto]">
+              <div>
+                <label className={labelCls}>Value</label>
+                <input
+                  type="number"
+                  min={0}
+                  className={inputCls}
+                  value={s.value}
+                  onChange={e => {
+                    const ns = [...stats];
+                    ns[i] = { ...ns[i], value: Number(e.target.value) };
+                    setStats(ns);
+                  }}
+                />
+              </div>
+              <div>
+                <label className={labelCls}>Label</label>
+                <input
+                  className={inputCls}
+                  value={s.label}
+                  onChange={e => {
+                    const ns = [...stats];
+                    ns[i] = { ...ns[i], label: e.target.value };
+                    setStats(ns);
+                  }}
+                />
+              </div>
+              <div>
+                <label className={labelCls}>Suffix</label>
+                <input
+                  className={inputCls}
+                  placeholder="+"
+                  value={s.suffix}
+                  onChange={e => {
+                    const ns = [...stats];
+                    ns[i] = { ...ns[i], suffix: e.target.value };
+                    setStats(ns);
+                  }}
+                />
+              </div>
+              <button
+                onClick={() => setStats(stats.filter((_, j) => j !== i))}
+                className="self-end rounded-xl border border-red-100 px-3 py-2.5 text-xs font-bold text-red-500 transition-all hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
+                disabled={stats.length <= 1}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => setStats([...stats, { value: 0, label: "New Stat", suffix: "+" }])}
+            className="rounded-xl border border-zinc-200 px-4 py-2.5 text-xs font-bold text-zinc-600 transition-all hover:bg-zinc-50"
+          >
+            + Add Stat
+          </button>
+          <button
+            onClick={() => setStats(defaultNGOStats)}
+            className="rounded-xl border border-zinc-200 px-4 py-2.5 text-xs font-bold text-zinc-500 transition-all hover:bg-zinc-50"
+          >
+            Reset Defaults
+          </button>
+          <button onClick={saveStats} disabled={isPending} className={`${btnCls} ml-auto`}>
+            {isPending ? "Saving..." : "Save Impact Stats"}
+          </button>
+        </div>
       </Section>
 
       {/* ═══ Mission Teaser ═══ */}

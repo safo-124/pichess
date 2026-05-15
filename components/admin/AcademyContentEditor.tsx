@@ -345,7 +345,7 @@ export default function AcademyContentEditor({
       {openSection === "stats" && (
         <div className={cardCls}>
           <div className="flex items-center justify-between mb-5">
-            <h3 className={sectionTitle}>📊 Stats Section</h3>
+            <h3 className={sectionTitle}>📊 Academy Stats</h3>
             <div className="flex gap-2 items-center">
               <button
                 onClick={() => setStats([...stats, { end: 0, label: "", suffix: "", color: "gold" }])}
@@ -356,7 +356,17 @@ export default function AcademyContentEditor({
               <SaveBtn section="stats" />
             </div>
           </div>
-          <p className="text-[11px] text-zinc-400 mb-3">Drag ⠿ to reorder</p>
+          <p className="text-[11px] text-zinc-400 mb-3">
+            These numbers appear on the Academy home page. Drag ⠿ to reorder.
+          </p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+            {stats.map((stat, i) => (
+              <div key={`${stat.label}-${i}`} className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-center">
+                <p className="text-2xl font-black text-zinc-900">{Number(stat.end || 0).toLocaleString()}{stat.suffix}</p>
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400">{stat.label || "Stat label"}</p>
+              </div>
+            ))}
+          </div>
           <div className="space-y-4">
             {stats.map((stat, i) => (
               <div
@@ -477,7 +487,7 @@ export default function AcademyContentEditor({
             <h3 className={sectionTitle}>📚 Lesson Packages</h3>
             <div className="flex gap-2 items-center">
               <button
-                onClick={() => setLessons([...lessons, { title: "", desc: "", longDesc: "", icon: "♟", image: "", category: "core" }])}
+                onClick={() => setLessons([...lessons, { title: "", desc: "", longDesc: "", icon: "♟", image: "", category: "core", ageRange: "", level: "", format: "", duration: "", bestFor: "" }])}
                 className="px-3 py-1.5 rounded-lg bg-zinc-100 text-zinc-600 text-xs font-semibold hover:bg-zinc-200 transition-colors"
               >
                 + Add Lesson
@@ -555,6 +565,73 @@ export default function AcademyContentEditor({
                       <option value="institutional">Institutional</option>
                     </select>
                   </div>
+                </div>
+                <div className="grid sm:grid-cols-4 gap-3">
+                  <div>
+                    <label className={labelCls}>Age Range</label>
+                    <input
+                      value={lesson.ageRange || ""}
+                      onChange={(e) => {
+                        const next = [...lessons];
+                        next[i] = { ...next[i], ageRange: e.target.value };
+                        setLessons(next);
+                      }}
+                      className={inputCls}
+                      placeholder="Kids, teens & adults"
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Level</label>
+                    <input
+                      value={lesson.level || ""}
+                      onChange={(e) => {
+                        const next = [...lessons];
+                        next[i] = { ...next[i], level: e.target.value };
+                        setLessons(next);
+                      }}
+                      className={inputCls}
+                      placeholder="Beginner to intermediate"
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Format</label>
+                    <input
+                      value={lesson.format || ""}
+                      onChange={(e) => {
+                        const next = [...lessons];
+                        next[i] = { ...next[i], format: e.target.value };
+                        setLessons(next);
+                      }}
+                      className={inputCls}
+                      placeholder="Weekly coached sessions"
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Duration</label>
+                    <input
+                      value={lesson.duration || ""}
+                      onChange={(e) => {
+                        const next = [...lessons];
+                        next[i] = { ...next[i], duration: e.target.value };
+                        setLessons(next);
+                      }}
+                      className={inputCls}
+                      placeholder="Ongoing term program"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className={labelCls}>Best For</label>
+                  <input
+                    value={lesson.bestFor || ""}
+                    onChange={(e) => {
+                      const next = [...lessons];
+                      next[i] = { ...next[i], bestFor: e.target.value };
+                      setLessons(next);
+                    }}
+                    className={inputCls}
+                    placeholder="Students who want structure, homework, and visible progress."
+                  />
                 </div>
                 <div>
                   <label className={labelCls}>Description (Short)</label>
