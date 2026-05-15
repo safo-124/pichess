@@ -2,10 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import StatsCounter from "@/components/shared/StatsCounter";
-import ParallaxSection from "@/components/shared/ParallaxSection";
 import TextReveal from "@/components/shared/TextReveal";
 import MagneticButton from "@/components/shared/MagneticButton";
 import HeroSection from "@/components/main/HeroSection";
+import HomeShopSection from "@/components/main/HomeShopSection";
 import prisma from "@/lib/prisma";
 import { getEffectiveTournamentStatus } from "@/lib/tournament-status";
 
@@ -28,17 +28,6 @@ async function getTournaments() {
 async function getPartners() {
   try { return await prisma.partner.findMany({ orderBy: { order: "asc" } }); }
   catch { return []; }
-}
-
-async function getFeaturedProducts() {
-  try {
-    return await prisma.product.findMany({
-      where: { featured: true, inStock: true },
-      include: { category: { select: { name: true } } },
-      take: 4,
-      orderBy: { createdAt: "desc" },
-    });
-  } catch { return []; }
 }
 
 async function getTestimonials() {
@@ -72,10 +61,9 @@ async function getHeroData() {
 /* ── page ──────────────────────────────────────────────────── */
 export default async function HomePage() {
   const whatsApp = (process.env.ADMIN_WHATSAPP || "233554534646").replace(/\D/g, "");
-  const [tournaments, partners, products, testimonials, ngoStats, heroData] = await Promise.all([
+  const [tournaments, partners, testimonials, ngoStats, heroData] = await Promise.all([
     getTournaments(),
     getPartners(),
-    getFeaturedProducts(),
     getTestimonials(),
     getNGOStats(),
     getHeroData(),
@@ -624,90 +612,7 @@ export default async function HomePage() {
       )}
 
 
-      {/* ═══════════════════════════════════════════════════════
-          SHOP — Product showcase
-      ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-gray-50 relative overflow-hidden">
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimatedSection className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-14 gap-4">
-            <div>
-              <span className="text-xs font-bold text-amber-600 uppercase tracking-[0.25em]">PiChess Store</span>
-              <h2 className="text-3xl sm:text-5xl font-black text-gray-900 mt-2 tracking-tight">
-                Gear Up for <span className="text-amber-600">Victory.</span>
-              </h2>
-              <p className="text-gray-400 mt-3 max-w-lg text-base sm:text-lg">
-                Premium chess sets, clocks, books, and apparel — everything you need.
-              </p>
-            </div>
-            <Link href="/shop" className="text-amber-600 text-sm font-bold hover:underline whitespace-nowrap">
-              View all products →
-            </Link>
-          </AnimatedSection>
-
-          {products.length > 0 ? (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {products.map((p, i) => (
-                <AnimatedSection key={p.id} delay={i * 0.08}>
-                  <div className="group rounded-3xl border border-gray-200 bg-white overflow-hidden hover:border-amber-500/40 transition-all duration-500 hover-lift h-full flex flex-col hover:shadow-lg">
-                    {/* Image */}
-                    <div className="aspect-square bg-gray-100 relative overflow-hidden">
-                      {p.image ? (
-                        <img src={p.image} alt={p.name} className="absolute inset-0 w-full h-full object-cover img-zoom" />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                          <span className="text-6xl opacity-15 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500">♟</span>
-                        </div>
-                      )}
-                      {p.featured && (
-                        <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-amber-400/90 text-black text-[10px] font-bold uppercase tracking-wider">
-                          Featured
-                        </span>
-                      )}
-                    </div>
-                    <div className="p-4 sm:p-5 flex flex-col flex-1">
-                      <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest mb-1.5">
-                        {(p as any).category?.name ?? "Chess"}
-                      </span>
-                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-amber-600 transition-colors flex-1">{p.name}</h3>
-                      {p.description && (
-                        <p className="text-gray-400 text-xs leading-relaxed mb-3 line-clamp-2 hidden sm:block">{p.description}</p>
-                      )}
-                      <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                        <span className="text-lg sm:text-xl font-black text-amber-600">GH₵{p.price}</span>
-                        <Link
-                          href={`https://wa.me/${whatsApp}?text=${encodeURIComponent(`Hi PiChess, I'm interested in: ${p.name} (GH₵ ${p.price})`)}`}
-                          target="_blank"
-                          className="px-3 py-1.5 rounded-full bg-gray-50 hover:bg-amber-400 hover:text-black text-gray-500 text-[11px] font-bold transition-all border border-gray-200 hover:border-amber-400"
-                        >
-                          Order →
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </AnimatedSection>
-              ))}
-            </div>
-          ) : (
-            <AnimatedSection>
-              <div className="rounded-3xl border border-gray-200 bg-gray-50 p-12 sm:p-16 text-center">
-                <span className="text-6xl mb-4 block">🛍️</span>
-                <h3 className="text-xl font-black text-gray-900 mb-2">Shop Coming Soon</h3>
-                <p className="text-gray-400 text-sm">We&apos;re curating the finest chess equipment. Check back soon!</p>
-              </div>
-            </AnimatedSection>
-          )}
-
-          {/* Trust bar */}
-          <AnimatedSection delay={0.3} className="mt-12">
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-gray-400 text-[11px] font-bold uppercase tracking-wider">
-              <span className="flex items-center gap-1.5">🚚 Delivery across Ghana</span>
-              <span className="flex items-center gap-1.5">💬 WhatsApp ordering</span>
-              <span className="flex items-center gap-1.5">✓ Quality guaranteed</span>
-              <span className="flex items-center gap-1.5">🔄 Easy returns</span>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
+      <HomeShopSection whatsApp={whatsApp} />
 
 
       {/* ═══════════════════════════════════════════════════════
