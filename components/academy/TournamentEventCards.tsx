@@ -458,7 +458,7 @@ function TournamentCard({ item, index, onSelect }: { item: TournamentItem; index
    Main Component
    ──────────────────────────────────────────────────────── */
 
-type TabFilter = "all" | "tournaments" | "events";
+type TabFilter = "all" | "tournaments" | "events" | "completed";
 
 export default function TournamentEventCards({ items }: { items: TournamentItem[] }) {
   const [tab, setTab] = useState<TabFilter>("all");
@@ -467,6 +467,7 @@ export default function TournamentEventCards({ items }: { items: TournamentItem[
   const filtered = items.filter((item) => {
     if (tab === "tournaments") return item.type === "TOURNAMENT";
     if (tab === "events") return item.type === "EVENT";
+    if (tab === "completed") return item.status === "COMPLETED";
     return true;
   });
 
@@ -475,11 +476,13 @@ export default function TournamentEventCards({ items }: { items: TournamentItem[
 
   const tournamentCount = items.filter(i => i.type === "TOURNAMENT").length;
   const eventCount = items.filter(i => i.type === "EVENT").length;
+  const completedCount = items.filter(i => i.status === "COMPLETED").length;
 
   const tabs: { id: TabFilter; label: string; count: number; icon: string }[] = [
     { id: "all", label: "All", count: items.length, icon: "🎯" },
     { id: "tournaments", label: "Tournaments", count: tournamentCount, icon: "🏆" },
     { id: "events", label: "Events", count: eventCount, icon: "🎪" },
+    { id: "completed", label: "Completed", count: completedCount, icon: "✓" },
   ];
 
   return (

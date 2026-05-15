@@ -12,6 +12,8 @@ export const metadata = {
     "Chess tournaments, events, and competitive experiences for players at every level across Ghana.",
 };
 
+export const dynamic = "force-dynamic";
+
  
 async function getData(): Promise<TournamentItem[]> {
   try {
@@ -49,6 +51,7 @@ export default async function TournamentsPage() {
   const items = await getData();
 
   const upcomingCount = items.filter((i) => i.status === "UPCOMING" || i.status === "ONGOING").length;
+  const completedCount = items.filter((i) => i.status === "COMPLETED").length;
   const tournamentCount = items.filter((i) => i.type === "TOURNAMENT").length;
   const eventCount = items.filter((i) => i.type === "EVENT").length;
 
@@ -97,6 +100,7 @@ export default async function TournamentsPage() {
               {[
                 { value: items.length, label: "Total", icon: "📊" },
                 { value: upcomingCount, label: "Upcoming", icon: "🔥" },
+                { value: completedCount, label: "Completed", icon: "✓" },
                 { value: tournamentCount, label: "Tournaments", icon: "🏆" },
                 { value: eventCount, label: "Events", icon: "🎪" },
               ].map((stat) => (
