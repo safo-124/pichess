@@ -304,10 +304,34 @@ export default async function HomePage() {
             <span className="text-[#c9a84c] text-xs font-bold uppercase tracking-[0.3em]">By the Numbers</span>
           </AnimatedSection>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
-            <StatsCounter end={500} label="Students Trained" suffix="+" color="gold" />
-            <StatsCounter end={50} label="Tournaments Hosted" suffix="+" color="gold" />
-            <StatsCounter end={200} label="Lives Impacted" suffix="+" color="gold" />
-            <StatsCounter end={15} label="Expert Coaches" color="gold" />
+            <Link
+              href="/academy"
+              aria-label="View PiChess Academy programs"
+              className="focus-ring block rounded-xl px-2 py-3 transition-all duration-300 hover:-translate-y-1 hover:bg-white/80 hover:shadow-lg hover:shadow-[#c9a84c]/10"
+            >
+              <StatsCounter end={500} label="Students Trained" suffix="+" color="gold" />
+            </Link>
+            <Link
+              href="/tournaments"
+              aria-label="View PiChess tournaments"
+              className="focus-ring block rounded-xl px-2 py-3 transition-all duration-300 hover:-translate-y-1 hover:bg-white/80 hover:shadow-lg hover:shadow-[#c9a84c]/10"
+            >
+              <StatsCounter end={50} label="Tournaments Hosted" suffix="+" color="gold" />
+            </Link>
+            <Link
+              href="/ngo"
+              aria-label="View PiChess Foundation impact"
+              className="focus-ring block rounded-xl px-2 py-3 transition-all duration-300 hover:-translate-y-1 hover:bg-white/80 hover:shadow-lg hover:shadow-[#c9a84c]/10"
+            >
+              <StatsCounter end={200} label="Lives Impacted" suffix="+" color="gold" />
+            </Link>
+            <Link
+              href="/academy/team"
+              aria-label="Meet the PiChess expert coaches"
+              className="focus-ring block rounded-xl px-2 py-3 transition-all duration-300 hover:-translate-y-1 hover:bg-white/80 hover:shadow-lg hover:shadow-[#c9a84c]/10"
+            >
+              <StatsCounter end={15} label="Expert Coaches" color="gold" />
+            </Link>
           </div>
         </div>
       </section>
