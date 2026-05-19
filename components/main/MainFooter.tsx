@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import BrandLogo from "@/components/shared/BrandLogo";
 import {
   Mail, Phone, MapPin, Clock, ChevronRight,
-  Facebook, Instagram, Youtube,
+  Facebook, Instagram, MessageCircle, Youtube,
 } from "lucide-react";
 
 interface FooterData {
@@ -13,7 +13,7 @@ interface FooterData {
   contact: { email: string; phone: string; location: string };
   social: {
     facebook: string; instagram: string; twitter: string;
-    youtube: string; tiktok: string; linkedin: string;
+    youtube: string; tiktok: string; linkedin: string; whatsapp: string;
   };
   hours: string;
   cta: string;
@@ -24,7 +24,7 @@ const DEFAULTS: FooterData = {
   description:
     "Ghana\u2019s premier chess platform \u2014 training champions, building communities, and inspiring the next generation of strategic thinkers.",
   contact: { email: "info@pichess.com", phone: "+233 XX XXX XXXX", location: "Accra, Ghana" },
-  social: { facebook: "", instagram: "", twitter: "", youtube: "", tiktok: "", linkedin: "" },
+  social: { facebook: "", instagram: "", twitter: "", youtube: "", tiktok: "", linkedin: "", whatsapp: "" },
   hours: "Mon \u2013 Sat: 9 AM \u2013 6 PM",
   cta: "Join the PiChess community and elevate your game today.",
   copyright: "PiChess. All rights reserved.",
@@ -71,7 +71,12 @@ const LinkedInIcon = ({ className }: { className?: string }) => (
 );
 
 export default function MainFooter({ footerData }: { footerData?: FooterData | null }) {
-  const data: FooterData = { ...DEFAULTS, ...footerData };
+  const data: FooterData = {
+    ...DEFAULTS,
+    ...footerData,
+    contact: { ...DEFAULTS.contact, ...footerData?.contact },
+    social: { ...DEFAULTS.social, ...footerData?.social },
+  };
 
   const socialItems = [
     { key: "facebook", url: data.social?.facebook, icon: Facebook, label: "Facebook" },
@@ -80,6 +85,7 @@ export default function MainFooter({ footerData }: { footerData?: FooterData | n
     { key: "youtube", url: data.social?.youtube, icon: Youtube, label: "YouTube" },
     { key: "tiktok", url: data.social?.tiktok, icon: TikTokIcon, label: "TikTok" },
     { key: "linkedin", url: data.social?.linkedin, icon: LinkedInIcon, label: "LinkedIn" },
+    { key: "whatsapp", url: data.social?.whatsapp, icon: MessageCircle, label: "WhatsApp Channel" },
   ].filter((s) => s.url);
 
   return (

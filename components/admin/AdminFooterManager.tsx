@@ -13,7 +13,7 @@ interface FooterData {
   contact: { email: string; phone: string; location: string };
   social: {
     facebook: string; instagram: string; twitter: string;
-    youtube: string; tiktok: string; linkedin: string;
+    youtube: string; tiktok: string; linkedin: string; whatsapp: string;
   };
   hours: string;
   cta: string;
@@ -24,7 +24,7 @@ const DEFAULTS: FooterData = {
   description:
     "Ghana\u2019s premier chess platform \u2014 training champions, building communities, and inspiring the next generation of strategic thinkers.",
   contact: { email: "info@pichess.com", phone: "+233 XX XXX XXXX", location: "Accra, Ghana" },
-  social: { facebook: "", instagram: "", twitter: "", youtube: "", tiktok: "", linkedin: "" },
+  social: { facebook: "", instagram: "", twitter: "", youtube: "", tiktok: "", linkedin: "", whatsapp: "" },
   hours: "Mon \u2013 Sat: 9 AM \u2013 6 PM",
   cta: "Join the PiChess community and elevate your game today.",
   copyright: "PiChess. All rights reserved.",
@@ -37,10 +37,16 @@ const socialFields: { key: keyof FooterData["social"]; label: string; icon: any;
   { key: "youtube", label: "YouTube", icon: Youtube, placeholder: "https://youtube.com/@pichess" },
   { key: "tiktok", label: "TikTok", icon: Globe, placeholder: "https://tiktok.com/@pichess" },
   { key: "linkedin", label: "LinkedIn", icon: Globe, placeholder: "https://linkedin.com/company/pichess" },
+  { key: "whatsapp", label: "WhatsApp Channel", icon: MessageCircle, placeholder: "https://whatsapp.com/channel/..." },
 ];
 
 export default function AdminFooterManager({ initialData }: { initialData: FooterData | null }) {
-  const [data, setData] = useState<FooterData>({ ...DEFAULTS, ...initialData });
+  const [data, setData] = useState<FooterData>({
+    ...DEFAULTS,
+    ...initialData,
+    contact: { ...DEFAULTS.contact, ...initialData?.contact },
+    social: { ...DEFAULTS.social, ...initialData?.social },
+  });
   const [isPending, startTransition] = useTransition();
   const [saved, setSaved] = useState(false);
 

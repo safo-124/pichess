@@ -16,6 +16,7 @@ const DEFAULT_FOOTER = {
     youtube: "",
     tiktok: "",
     linkedin: "",
+    whatsapp: "",
   },
   hours: "Mon – Sat: 9 AM – 6 PM",
   cta: "Join the PiChess community and elevate your game today.",
