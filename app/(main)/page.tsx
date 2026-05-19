@@ -9,6 +9,44 @@ import HomeShopSection from "@/components/main/HomeShopSection";
 import prisma from "@/lib/prisma";
 import { getEffectiveTournamentStatus } from "@/lib/tournament-status";
 
+type HomeStat = {
+  end: number;
+  label: string;
+  suffix?: string;
+  href: string;
+  ariaLabel?: string;
+};
+
+const defaultHomeStats: HomeStat[] = [
+  {
+    end: 500,
+    label: "Students Trained",
+    suffix: "+",
+    href: "/academy",
+    ariaLabel: "View PiChess Academy programs",
+  },
+  {
+    end: 50,
+    label: "Tournaments Hosted",
+    suffix: "+",
+    href: "/tournaments",
+    ariaLabel: "View PiChess tournaments",
+  },
+  {
+    end: 200,
+    label: "Lives Impacted",
+    suffix: "+",
+    href: "/ngo",
+    ariaLabel: "View PiChess Foundation impact",
+  },
+  {
+    end: 15,
+    label: "Expert Coaches",
+    href: "/academy/team",
+    ariaLabel: "Meet the PiChess expert coaches",
+  },
+];
+
 /* ── data fetchers ─────────────────────────────────────────── */
 async function getTournaments() {
   try {
@@ -58,15 +96,34 @@ async function getHeroData() {
   } catch { return null; }
 }
 
+async function getHomeStats(): Promise<HomeStat[]> {
+  try {
+    const row = await (prisma as any).siteContent.findUnique({ where: { key: "home_stats" } });
+    const parsed = row?.value ? JSON.parse(row.value) : null;
+    if (!Array.isArray(parsed) || parsed.length === 0) return defaultHomeStats;
+
+    return parsed.map((stat, index) => ({
+      end: Number(stat.end) || defaultHomeStats[index]?.end || 0,
+      label: String(stat.label || defaultHomeStats[index]?.label || "Stat"),
+      suffix: stat.suffix ? String(stat.suffix) : "",
+      href: String(stat.href || defaultHomeStats[index]?.href || "/"),
+      ariaLabel: stat.ariaLabel
+        ? String(stat.ariaLabel)
+        : defaultHomeStats[index]?.ariaLabel || `View ${stat.label || "stat"} details`,
+    }));
+  } catch { return defaultHomeStats; }
+}
+
 /* ── page ──────────────────────────────────────────────────── */
 export default async function HomePage() {
   const whatsApp = (process.env.ADMIN_WHATSAPP || "233554534646").replace(/\D/g, "");
-  const [tournaments, partners, testimonials, ngoStats, heroData] = await Promise.all([
+  const [tournaments, partners, testimonials, ngoStats, heroData, homeStats] = await Promise.all([
     getTournaments(),
     getPartners(),
     getTestimonials(),
     getNGOStats(),
     getHeroData(),
+    getHomeStats(),
   ]);
 
   return (
@@ -304,38 +361,17 @@ export default async function HomePage() {
             <span className="text-[#c9a84c] text-xs font-bold uppercase tracking-[0.3em]">By the Numbers</span>
           </AnimatedSection>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
-            <Link
-              href="/academy"
-              aria-label="View PiChess Academy programs"
-              className="focus-ring group relative block rounded-2xl border border-[#c9a84c]/15 bg-white/70 px-2 py-5 shadow-sm shadow-[#c9a84c]/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a84c]/40 hover:bg-white hover:shadow-lg hover:shadow-[#c9a84c]/10"
-            >
-              <span className="absolute right-4 top-3 text-sm font-black text-[#c9a84c]/45 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#c9a84c]">↗</span>
-              <StatsCounter end={500} label="Students Trained" suffix="+" color="gold" />
-            </Link>
-            <Link
-              href="/tournaments"
-              aria-label="View PiChess tournaments"
-              className="focus-ring group relative block rounded-2xl border border-[#c9a84c]/15 bg-white/70 px-2 py-5 shadow-sm shadow-[#c9a84c]/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a84c]/40 hover:bg-white hover:shadow-lg hover:shadow-[#c9a84c]/10"
-            >
-              <span className="absolute right-4 top-3 text-sm font-black text-[#c9a84c]/45 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#c9a84c]">↗</span>
-              <StatsCounter end={50} label="Tournaments Hosted" suffix="+" color="gold" />
-            </Link>
-            <Link
-              href="/ngo"
-              aria-label="View PiChess Foundation impact"
-              className="focus-ring group relative block rounded-2xl border border-[#c9a84c]/15 bg-white/70 px-2 py-5 shadow-sm shadow-[#c9a84c]/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a84c]/40 hover:bg-white hover:shadow-lg hover:shadow-[#c9a84c]/10"
-            >
-              <span className="absolute right-4 top-3 text-sm font-black text-[#c9a84c]/45 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#c9a84c]">↗</span>
-              <StatsCounter end={200} label="Lives Impacted" suffix="+" color="gold" />
-            </Link>
-            <Link
-              href="/academy/team"
-              aria-label="Meet the PiChess expert coaches"
-              className="focus-ring group relative block rounded-2xl border border-[#c9a84c]/15 bg-white/70 px-2 py-5 shadow-sm shadow-[#c9a84c]/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a84c]/40 hover:bg-white hover:shadow-lg hover:shadow-[#c9a84c]/10"
-            >
-              <span className="absolute right-4 top-3 text-sm font-black text-[#c9a84c]/45 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#c9a84c]">↗</span>
-              <StatsCounter end={15} label="Expert Coaches" color="gold" />
-            </Link>
+            {homeStats.map((stat) => (
+              <Link
+                key={`${stat.label}-${stat.href}`}
+                href={stat.href}
+                aria-label={stat.ariaLabel || `View ${stat.label}`}
+                className="focus-ring group relative block rounded-2xl border border-[#c9a84c]/15 bg-white/70 px-2 py-5 shadow-sm shadow-[#c9a84c]/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a84c]/40 hover:bg-white hover:shadow-lg hover:shadow-[#c9a84c]/10"
+              >
+                <span className="absolute right-4 top-3 text-sm font-black text-[#c9a84c]/45 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#c9a84c]">↗</span>
+                <StatsCounter end={stat.end} label={stat.label} suffix={stat.suffix} color="gold" />
+              </Link>
+            ))}
           </div>
         </div>
       </section>

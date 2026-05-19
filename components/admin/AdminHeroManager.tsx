@@ -18,6 +18,14 @@ interface HeroData {
   stats: { val: string; label: string }[];
 }
 
+interface HomeStat {
+  end: number;
+  suffix: string;
+  label: string;
+  href: string;
+  ariaLabel: string;
+}
+
 const DEFAULTS: HeroData = {
   background: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=1600&h=900&fit=crop&q=80",
   images: [
@@ -35,6 +43,13 @@ const DEFAULTS: HeroData = {
     { val: "15+", label: "Coaches" },
   ],
 };
+
+const DEFAULT_HOME_STATS: HomeStat[] = [
+  { end: 500, suffix: "+", label: "Students Trained", href: "/academy", ariaLabel: "View PiChess Academy programs" },
+  { end: 50, suffix: "+", label: "Tournaments Hosted", href: "/tournaments", ariaLabel: "View PiChess tournaments" },
+  { end: 200, suffix: "+", label: "Lives Impacted", href: "/ngo", ariaLabel: "View PiChess Foundation impact" },
+  { end: 15, suffix: "", label: "Expert Coaches", href: "/academy/team", ariaLabel: "Meet the PiChess expert coaches" },
+];
 
 const inputCls = "w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm focus:ring-2 focus:ring-pink-400/40 focus:border-pink-400/40 outline-none transition-all placeholder:text-zinc-300";
 const btnCls = "px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-pink-600 text-white text-sm font-semibold hover:shadow-lg hover:shadow-pink-500/20 transition-all";
@@ -112,8 +127,28 @@ function ImageUploadField({
   );
 }
 
-export default function AdminHeroManager({ initialData }: { initialData: HeroData | null }) {
+export default function AdminHeroManager({
+  initialData,
+  initialHomeStats,
+}: {
+  initialData: HeroData | null;
+  initialHomeStats?: HomeStat[] | null;
+}) {
   const [data, setData] = useState<HeroData>(initialData || DEFAULTS);
+  const [homeStats, setHomeStats] = useState<HomeStat[]>(() =>
+    initialHomeStats?.length
+      ? initialHomeStats.map((stat, index) => {
+          const fallback = DEFAULT_HOME_STATS[index] || DEFAULT_HOME_STATS[0];
+          return {
+            end: Number(stat.end) || fallback.end,
+            suffix: stat.suffix ?? fallback.suffix,
+            label: stat.label || fallback.label,
+            href: stat.href || fallback.href,
+            ariaLabel: stat.ariaLabel || fallback.ariaLabel,
+          };
+        })
+      : DEFAULT_HOME_STATS
+  );
   const [isPending, startTransition] = useTransition();
   const [saved, setSaved] = useState(false);
 
@@ -134,9 +169,22 @@ export default function AdminHeroManager({ initialData }: { initialData: HeroDat
     update({ stats: newStats });
   }
 
+  function updateHomeStat(index: number, field: keyof HomeStat, value: string) {
+    const newStats = [...homeStats];
+    newStats[index] = {
+      ...newStats[index],
+      [field]: field === "end" ? Number(value) : value,
+    };
+    setHomeStats(newStats);
+    setSaved(false);
+  }
+
   function handleSave() {
     startTransition(async () => {
-      await saveSiteContent("home_hero", JSON.stringify(data));
+      await Promise.all([
+        saveSiteContent("home_hero", JSON.stringify(data)),
+        saveSiteContent("home_stats", JSON.stringify(homeStats)),
+      ]);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     });
@@ -144,6 +192,7 @@ export default function AdminHeroManager({ initialData }: { initialData: HeroDat
 
   function handleReset() {
     setData(DEFAULTS);
+    setHomeStats(DEFAULT_HOME_STATS);
     setSaved(false);
   }
 
@@ -152,8 +201,8 @@ export default function AdminHeroManager({ initialData }: { initialData: HeroDat
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-3xl font-black text-zinc-900 tracking-tight">Homepage Hero</h1>
-          <p className="text-zinc-400 mt-1 text-sm">Manage the hero section — background, images, text & stats.</p>
+          <h1 className="text-3xl font-black text-zinc-900 tracking-tight">Homepage</h1>
+          <p className="text-zinc-400 mt-1 text-sm">Manage the hero section and the public homepage stats.</p>
         </div>
         <div className="flex gap-2">
           <button onClick={handleReset} className="px-4 py-2.5 rounded-xl border border-zinc-200 bg-white text-zinc-600 text-sm font-semibold hover:bg-zinc-50 transition-all">
@@ -257,7 +306,7 @@ export default function AdminHeroManager({ initialData }: { initialData: HeroDat
       <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 space-y-4">
         <h2 className="text-lg font-bold text-zinc-800 flex items-center gap-2">
           <span className="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center text-pink-500 text-sm">📊</span>
-          Stats
+          Hero Stats
         </h2>
         <div className="grid sm:grid-cols-3 gap-4">
           {data.stats.map((s, i) => (
@@ -269,6 +318,78 @@ export default function AdminHeroManager({ initialData }: { initialData: HeroDat
               <div>
                 <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">Label</label>
                 <input className={inputCls} value={s.label} onChange={(e) => updateStat(i, "label", e.target.value)} placeholder="Students" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Homepage Stats */}
+      <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 space-y-4">
+        <div>
+          <h2 className="text-lg font-bold text-zinc-800 flex items-center gap-2">
+            <span className="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center text-pink-500 text-sm">🔗</span>
+            By the Numbers
+          </h2>
+          <p className="mt-1 text-xs text-zinc-400">
+            These four cards power the public homepage statistics: value, suffix, label, and click destination.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-4">
+          {homeStats.map((s, i) => (
+            <div key={i} className="space-y-3 p-4 rounded-xl border border-zinc-100 bg-zinc-50/50">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs font-black uppercase tracking-wider text-zinc-400">Stat {i + 1}</span>
+                <span className="text-xs font-semibold text-[#c9a84c]">{s.href}</span>
+              </div>
+              <div className="grid grid-cols-[1fr_90px] gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">Value</label>
+                  <input
+                    type="number"
+                    className={inputCls}
+                    value={s.end}
+                    onChange={(e) => updateHomeStat(i, "end", e.target.value)}
+                    placeholder="500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">Suffix</label>
+                  <input
+                    className={inputCls}
+                    value={s.suffix}
+                    onChange={(e) => updateHomeStat(i, "suffix", e.target.value)}
+                    placeholder="+"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">Label</label>
+                <input
+                  className={inputCls}
+                  value={s.label}
+                  onChange={(e) => updateHomeStat(i, "label", e.target.value)}
+                  placeholder="Students Trained"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">Link</label>
+                <input
+                  className={inputCls}
+                  value={s.href}
+                  onChange={(e) => updateHomeStat(i, "href", e.target.value)}
+                  placeholder="/academy"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">Accessible Link Label</label>
+                <input
+                  className={inputCls}
+                  value={s.ariaLabel}
+                  onChange={(e) => updateHomeStat(i, "ariaLabel", e.target.value)}
+                  placeholder="View PiChess Academy programs"
+                />
               </div>
             </div>
           ))}

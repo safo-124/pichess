@@ -4,6 +4,13 @@ import AdminHeroManager from "@/components/admin/AdminHeroManager";
 
 export const metadata = { title: "Homepage | Admin" };
 
+const defaultHomeStats = [
+  { end: 500, suffix: "+", label: "Students Trained", href: "/academy", ariaLabel: "View PiChess Academy programs" },
+  { end: 50, suffix: "+", label: "Tournaments Hosted", href: "/tournaments", ariaLabel: "View PiChess tournaments" },
+  { end: 200, suffix: "+", label: "Lives Impacted", href: "/ngo", ariaLabel: "View PiChess Foundation impact" },
+  { end: 15, suffix: "", label: "Expert Coaches", href: "/academy/team", ariaLabel: "Meet the PiChess expert coaches" },
+];
+
 async function getHeroData() {
   try {
     const row = await (prisma as any).siteContent.findUnique({ where: { key: "home_hero" } });
@@ -13,7 +20,20 @@ async function getHeroData() {
   }
 }
 
+async function getHomeStats() {
+  try {
+    const row = await (prisma as any).siteContent.findUnique({ where: { key: "home_stats" } });
+    return row?.value ? JSON.parse(row.value) : defaultHomeStats;
+  } catch {
+    return defaultHomeStats;
+  }
+}
+
 export default async function AdminHomepagePage() {
-  const heroData = await getHeroData();
-  return <AdminHeroManager initialData={heroData} />;
+  const [heroData, homeStats] = await Promise.all([
+    getHeroData(),
+    getHomeStats(),
+  ]);
+
+  return <AdminHeroManager initialData={heroData} initialHomeStats={homeStats} />;
 }
