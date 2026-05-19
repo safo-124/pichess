@@ -307,29 +307,33 @@ export default async function HomePage() {
             <Link
               href="/academy"
               aria-label="View PiChess Academy programs"
-              className="focus-ring block rounded-xl px-2 py-3 transition-all duration-300 hover:-translate-y-1 hover:bg-white/80 hover:shadow-lg hover:shadow-[#c9a84c]/10"
+              className="focus-ring group relative block rounded-2xl border border-[#c9a84c]/15 bg-white/70 px-2 py-5 shadow-sm shadow-[#c9a84c]/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a84c]/40 hover:bg-white hover:shadow-lg hover:shadow-[#c9a84c]/10"
             >
+              <span className="absolute right-4 top-3 text-sm font-black text-[#c9a84c]/45 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#c9a84c]">↗</span>
               <StatsCounter end={500} label="Students Trained" suffix="+" color="gold" />
             </Link>
             <Link
               href="/tournaments"
               aria-label="View PiChess tournaments"
-              className="focus-ring block rounded-xl px-2 py-3 transition-all duration-300 hover:-translate-y-1 hover:bg-white/80 hover:shadow-lg hover:shadow-[#c9a84c]/10"
+              className="focus-ring group relative block rounded-2xl border border-[#c9a84c]/15 bg-white/70 px-2 py-5 shadow-sm shadow-[#c9a84c]/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a84c]/40 hover:bg-white hover:shadow-lg hover:shadow-[#c9a84c]/10"
             >
+              <span className="absolute right-4 top-3 text-sm font-black text-[#c9a84c]/45 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#c9a84c]">↗</span>
               <StatsCounter end={50} label="Tournaments Hosted" suffix="+" color="gold" />
             </Link>
             <Link
               href="/ngo"
               aria-label="View PiChess Foundation impact"
-              className="focus-ring block rounded-xl px-2 py-3 transition-all duration-300 hover:-translate-y-1 hover:bg-white/80 hover:shadow-lg hover:shadow-[#c9a84c]/10"
+              className="focus-ring group relative block rounded-2xl border border-[#c9a84c]/15 bg-white/70 px-2 py-5 shadow-sm shadow-[#c9a84c]/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a84c]/40 hover:bg-white hover:shadow-lg hover:shadow-[#c9a84c]/10"
             >
+              <span className="absolute right-4 top-3 text-sm font-black text-[#c9a84c]/45 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#c9a84c]">↗</span>
               <StatsCounter end={200} label="Lives Impacted" suffix="+" color="gold" />
             </Link>
             <Link
               href="/academy/team"
               aria-label="Meet the PiChess expert coaches"
-              className="focus-ring block rounded-xl px-2 py-3 transition-all duration-300 hover:-translate-y-1 hover:bg-white/80 hover:shadow-lg hover:shadow-[#c9a84c]/10"
+              className="focus-ring group relative block rounded-2xl border border-[#c9a84c]/15 bg-white/70 px-2 py-5 shadow-sm shadow-[#c9a84c]/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a84c]/40 hover:bg-white hover:shadow-lg hover:shadow-[#c9a84c]/10"
             >
+              <span className="absolute right-4 top-3 text-sm font-black text-[#c9a84c]/45 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#c9a84c]">↗</span>
               <StatsCounter end={15} label="Expert Coaches" color="gold" />
             </Link>
           </div>

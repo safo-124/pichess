@@ -1,5 +1,5 @@
 "use client";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef } from "react";
 
 interface Props {
@@ -19,9 +19,8 @@ export default function StatsCounter({
   duration = 2,
   color = "white",
 }: Props) {
-  const count = useMotionValue(0);
-  const rounded = useTransform(count, (v) => Math.round(v));
-  const spring = useSpring(count, { duration: duration * 1000, bounce: 0 });
+  const spring = useSpring(0, { duration: duration * 1000, bounce: 0 });
+  const rounded = useTransform(spring, (v) => Math.round(v));
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
