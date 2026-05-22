@@ -432,6 +432,12 @@ export async function deleteNGOStory(fd: FormData) {
 
 // ─── PARTNERS ───────────────────────────────────────────────────────────────
 
+function revalidatePartnerPaths() {
+  revalidatePath("/admin");
+  revalidatePath("/admin/extras");
+  revalidatePath("/");
+}
+
 export async function createPartner(fd: FormData) {
   await (prisma as any).partner.create({
     data: {
@@ -441,15 +447,27 @@ export async function createPartner(fd: FormData) {
       order: Number(fd.get("order") || 0),
     },
   });
-  revalidatePath("/admin");
-  revalidatePath("/");
+  revalidatePartnerPaths();
+}
+
+export async function updatePartner(fd: FormData) {
+  const id = Number(fd.get("id"));
+  await (prisma as any).partner.update({
+    where: { id },
+    data: {
+      name: fd.get("name") as string,
+      logo: (fd.get("logo") as string) || null,
+      website: (fd.get("website") as string) || null,
+      order: Number(fd.get("order") || 0),
+    },
+  });
+  revalidatePartnerPaths();
 }
 
 export async function deletePartner(fd: FormData) {
   const id = Number(fd.get("id"));
   await (prisma as any).partner.delete({ where: { id } });
-  revalidatePath("/admin");
-  revalidatePath("/");
+  revalidatePartnerPaths();
 }
 
 // ─── DAILY PUZZLE ───────────────────────────────────────────────────────────

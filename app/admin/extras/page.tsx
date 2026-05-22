@@ -1,6 +1,6 @@
  
 import prisma from "@/lib/prisma";
-import { createPartner, deletePartner, createPuzzle, deletePuzzle } from "@/lib/actions/admin";
+import { createPartner, updatePartner, deletePartner, createPuzzle, deletePuzzle } from "@/lib/actions/admin";
 import AdminTabs from "@/components/admin/AdminTabs";
 
 export const metadata = { title: "Partners & Extras | Admin" };
@@ -80,19 +80,23 @@ export default async function AdminExtrasPage() {
             ) : (
               <div className="divide-y divide-zinc-50">
                 {partners.map((p: any) => (
-                  <div key={p.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-zinc-50/50 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600 text-sm font-bold shrink-0">
-                        {p.name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-zinc-800 text-sm">{p.name}</p>
-                        <p className="text-zinc-400 text-[11px]">{p.website || "No website"} · Order: {p.order}</p>
-                      </div>
+                  <div key={p.id} className="grid gap-3 px-5 py-4 hover:bg-zinc-50/50 transition-colors lg:grid-cols-[44px_1fr_auto] lg:items-start">
+                    <div className="w-11 h-11 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600 text-sm font-bold shrink-0">
+                      {p.name.charAt(0)}
                     </div>
-                    <form action={deletePartner}>
+                    <form action={updatePartner} className="grid gap-3 md:grid-cols-2 xl:grid-cols-[1fr_1.15fr_1.15fr_96px_auto]">
                       <input type="hidden" name="id" value={p.id} />
-                      <button type="submit" className="text-[11px] bg-red-50 text-red-500 px-2 py-1 rounded-lg hover:bg-red-100 font-semibold">Delete</button>
+                      <input name="name" required defaultValue={p.name} placeholder="Partner name *" className={inputCls} />
+                      <input name="website" defaultValue={p.website || ""} placeholder="Website URL" className={inputCls} />
+                      <input name="logo" defaultValue={p.logo || ""} placeholder="Logo URL" className={inputCls} />
+                      <input name="order" type="number" defaultValue={p.order} placeholder="Order" className={inputCls} />
+                      <button type="submit" className="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-cyan-600">
+                        Save
+                      </button>
+                    </form>
+                    <form action={deletePartner} className="lg:pt-1">
+                      <input type="hidden" name="id" value={p.id} />
+                      <button type="submit" className="w-full rounded-xl bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-500 transition-colors hover:bg-red-100 lg:w-auto">Delete</button>
                     </form>
                   </div>
                 ))}
