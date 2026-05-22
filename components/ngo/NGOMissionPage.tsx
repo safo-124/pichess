@@ -11,6 +11,10 @@ import NGOStatsBand from "@/components/ngo/NGOStatsBand";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
+function normalizeCtaText(text: string) {
+  return text === "Apply for Support" ? "Partner with Us" : text;
+}
+
 /* ═══ Section helper ═══ */
 function AnimSection({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef(null);
@@ -269,7 +273,7 @@ export default function NGOMissionPage({ missionHero, storySection, pillars, val
                 href={cta.cta3Link}
                 className="px-8 py-4 rounded-full border-2 border-zinc-200 text-zinc-600 hover:bg-zinc-50 font-semibold text-base transition-all duration-300 hover:scale-105"
               >
-                {cta.cta3Text}
+                {normalizeCtaText(cta.cta3Text)}
               </Link>
             </div>
           </AnimSection>
