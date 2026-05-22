@@ -751,7 +751,7 @@ export default async function HomePage() {
       {partners.length > 0 && (
         <section className="py-14 bg-white border-y border-gray-100 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 text-center">
-            <p className="text-gray-300 text-[10px] font-bold uppercase tracking-[0.3em]">Trusted By</p>
+            <p className="text-gray-300 text-[10px] font-bold uppercase tracking-[0.3em]">Brands We’ve Partnered With</p>
           </div>
           <div className="relative">
             <div className="flex animate-marquee whitespace-nowrap">
