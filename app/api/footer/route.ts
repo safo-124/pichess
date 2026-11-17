@@ -3,10 +3,10 @@ import prisma from "@/lib/prisma";
 
 const DEFAULT_FOOTER = {
   description:
-    "Ghana's premier chess platform — training champions, building communities, and inspiring the next generation of strategic thinkers.",
+    "Building Minds Through Chess — structured chess lessons for kids, teens, adults, and schools across Accra and online.",
   contact: {
-    email: "info@pichess.com",
-    phone: "+233 XX XXX XXXX",
+    email: "officialpichess@gmail.com",
+    phone: "+233 55 453 4646",
     location: "Accra, Ghana",
   },
   social: {
@@ -19,8 +19,8 @@ const DEFAULT_FOOTER = {
     whatsapp: "",
   },
   hours: "Mon – Sat: 9 AM – 6 PM",
-  cta: "Join the PiChess community and elevate your game today.",
-  copyright: "PiChess. All rights reserved.",
+  cta: "Join the Pi Chess community and elevate your game today.",
+  copyright: "Pi Chess. All rights reserved.",
 };
 
 export async function GET() {

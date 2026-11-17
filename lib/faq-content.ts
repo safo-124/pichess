@@ -25,7 +25,7 @@ export const defaultFAQContent: FAQPageContent = {
   heading: "Frequently Asked",
   headingHighlight: "Questions",
   subtitle:
-    "Find answers to common questions about PiChess — from our Academy and Foundation programs to tournaments, the shop, and more.",
+    "Find answers to common questions about Pi Chess — from our Academy and Foundation programs to tournaments, the shop, and more.",
   categories: [
     {
       id: "general",
@@ -35,19 +35,19 @@ export const defaultFAQContent: FAQPageContent = {
       items: [
         {
           id: "g1",
-          question: "What is PiChess?",
+          question: "What is Pi Chess?",
           answer:
-            "PiChess is Ghana's premier chess platform combining an Academy for chess education, a Foundation (NGO) for community impact, tournaments for competitive play, and a shop for chess equipment.",
+            "Pi Chess is Ghana's premier chess platform combining an Academy for chess education, a Foundation (NGO) for community impact, tournaments for competitive play, and a shop for chess equipment.",
         },
         {
           id: "g2",
-          question: "Who can join PiChess?",
+          question: "Who can join Pi Chess?",
           answer:
             "Anyone! We welcome players of all ages and skill levels — from complete beginners to advanced competitors. Our programs are designed for children, teens, and adults alike.",
         },
         {
           id: "g3",
-          question: "Where is PiChess located?",
+          question: "Where is Pi Chess located?",
           answer:
             "We are based in Accra, Ghana. We offer both in-person and online programs to reach chess enthusiasts across the country and beyond.",
         },
@@ -93,7 +93,7 @@ export const defaultFAQContent: FAQPageContent = {
         },
         {
           id: "n2",
-          question: "How can I volunteer with PiChess Foundation?",
+          question: "How can I volunteer with Pi Chess Foundation?",
           answer:
             "Head to the Volunteer page under our Foundation section. Fill out the volunteer form with your details and skills, and our team will match you with the right program.",
         },
@@ -135,7 +135,7 @@ export const defaultFAQContent: FAQPageContent = {
           id: "s1",
           question: "What products do you sell?",
           answer:
-            "We sell chess boards, pieces, clocks, books, and branded PiChess merchandise. Check out our Shop page for the full catalog.",
+            "We sell chess boards, pieces, clocks, books, and branded Pi Chess merchandise. Check out our Shop page for the full catalog.",
         },
         {
           id: "s2",

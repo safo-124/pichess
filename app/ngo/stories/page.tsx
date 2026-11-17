@@ -4,9 +4,9 @@ import { getSiteContent } from "@/lib/actions/admin";
 import { defaultNGOStoriesContent, type NGOStoriesContent } from "@/lib/ngo-content";
 
 export const metadata = {
-  title: "Our Stories | PiChess Foundation",
+  title: "Our Stories | Pi Chess Foundation",
   description:
-    "Read inspiring stories from children, families, and communities transformed through chess. Every move tells a story at PiChess Foundation.",
+    "Read inspiring stories from children, families, and communities transformed through chess. Every move tells a story at Pi Chess Foundation.",
 };
 
 function parse<T>(raw: string | null, fallback: T): T {

@@ -224,7 +224,7 @@ function TournamentForm({
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="col-span-full">
               <label className={labelCls}>Title *</label>
-              <input name="title" required defaultValue={initial?.title} className={inputCls} placeholder="PiChess Academy Juniors Cup" />
+              <input name="title" required defaultValue={initial?.title} className={inputCls} placeholder="Pi Chess Academy Juniors Cup" />
             </div>
 
             <div>
@@ -261,7 +261,7 @@ function TournamentForm({
 
             <div>
               <label className={labelCls}>Venue</label>
-              <input name="venue" defaultValue={initial?.venue ?? ""} className={inputCls} placeholder="PiChess Academy Hall" />
+              <input name="venue" defaultValue={initial?.venue ?? ""} className={inputCls} placeholder="Pi Chess Academy Hall" />
             </div>
 
             <div className="col-span-full">
@@ -436,7 +436,7 @@ function RegistrationsPanel({
 
   function registrantWhatsAppLink(r: Registration, message?: string) {
     const phone = (r.whatsApp || r.phone).replace(/\D/g, "");
-    const text = message ?? `Hi ${r.fullName}, this is PiChess about your registration for ${tournament.title}.`;
+    const text = message ?? `Hi ${r.fullName}, this is Pi Chess about your registration for ${tournament.title}.`;
     return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
   }
 

@@ -3,12 +3,12 @@ import TextReveal from "@/components/shared/TextReveal";
 import MagneticButton from "@/components/shared/MagneticButton";
 import TournamentEventCards, { type TournamentItem } from "@/components/academy/TournamentEventCards";
 import prisma from "@/lib/prisma";
-import Link from "next/link";
 import { getEffectiveTournamentStatus } from "@/lib/tournament-status";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { ArrowRight, BadgeCheck, Handshake, Megaphone, Trophy, Users } from "lucide-react";
 
 export const metadata = {
-  title: "Tournaments & Events — PiChess",
+  title: "Tournaments & Events — Pi Chess",
   description:
     "Chess tournaments, events, and competitive experiences for players at every level across Ghana.",
 };
@@ -111,7 +111,7 @@ export default async function TournamentsPage() {
           <AnimatedSection delay={0.2}>
             <p className="text-gray-500 mt-6 max-w-2xl mx-auto text-lg leading-relaxed">
               From exclusive competitions to special chess events — test your skills,
-              earn recognition, and be part of the PiChess community.
+              earn recognition, and be part of the Pi Chess community.
             </p>
           </AnimatedSection>
 
@@ -182,7 +182,7 @@ export default async function TournamentsPage() {
             />
 
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">
-              Sponsor PiChess tournaments and help create sharper events, stronger prizes,
+              Sponsor Pi Chess tournaments and help create sharper events, stronger prizes,
               and memorable competition days for players, schools, families, and fans.
             </p>
 
@@ -203,20 +203,24 @@ export default async function TournamentsPage() {
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <MagneticButton>
-                <Link
-                  href="/contact"
+                <a
+                  href={buildWhatsAppUrl("Hi Pi Chess, I'd like to discuss sponsoring an upcoming chess tournament.")}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-[#d8b84f] px-8 py-4 text-sm font-black text-gray-950 shadow-xl shadow-black/20 transition-all hover:bg-[#e5c866] hover:scale-[1.02] active:scale-[0.98]"
                 >
-                  Sponsor a Tournament
+                  Sponsor via WhatsApp
                   <ArrowRight className="h-4 w-4" />
-                </Link>
+                </a>
               </MagneticButton>
-              <Link
-                href="/contact"
+              <a
+                href={buildWhatsAppUrl("Hi Pi Chess, please send us your tournament sponsorship options.")}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center rounded-full border border-white/15 px-8 py-4 text-sm font-bold text-white transition-all hover:border-white/30 hover:bg-white/5"
               >
-                Request a proposal
-              </Link>
+                Request Sponsorship Info
+              </a>
             </div>
           </AnimatedSection>
 
@@ -234,7 +238,7 @@ export default async function TournamentsPage() {
 
                 <div className="absolute left-6 right-6 top-6 flex items-center justify-between">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#d8bb62]">PiChess Partner</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#d8bb62]">Pi Chess Partner</p>
                     <p className="mt-1 text-sm font-semibold text-white/80">Tournament sponsorship deck</p>
                   </div>
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#c9a84c]/25 bg-[#c9a84c]/15 text-[#d8bb62]">

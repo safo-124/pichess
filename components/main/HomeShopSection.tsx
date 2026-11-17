@@ -29,7 +29,7 @@ function formatPrice(price: number) {
 }
 
 function productMessage(product: Product) {
-  return `Hi PiChess, I'm interested in: ${product.name} (${formatPrice(product.price)})`;
+  return `Hi Pi Chess, I'm interested in: ${product.name} (${formatPrice(product.price)})`;
 }
 
 export default function HomeShopSection({ whatsApp }: { whatsApp: string }) {
@@ -71,7 +71,7 @@ export default function HomeShopSection({ whatsApp }: { whatsApp: string }) {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-14 gap-4">
           <div>
-            <span className="text-xs font-bold text-amber-600 uppercase tracking-[0.25em]">PiChess Store</span>
+            <span className="text-xs font-bold text-amber-600 uppercase tracking-[0.25em]">Pi Chess Store</span>
             <h2 className="text-3xl sm:text-5xl font-black text-gray-900 mt-2 tracking-tight">
               Gear Up for <span className="text-amber-600">Victory.</span>
             </h2>

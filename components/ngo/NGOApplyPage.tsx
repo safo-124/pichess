@@ -95,7 +95,7 @@ export default function ApplyPage({ content, partners = [] }: { content: NGOAppl
         <div className="absolute inset-0">
           <Image
             src={content.heroImage}
-            alt="Partner with PiChess"
+            alt="Partner with Pi Chess"
             fill
             priority
             className="object-cover"

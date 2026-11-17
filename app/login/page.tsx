@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const metadata = { title: "Login | PiChess" };
+export const metadata = { title: "Login | Pi Chess" };
 
 export default function LoginPage() {
   return (
@@ -13,7 +13,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <span className="text-4xl">♟️</span>
-            <span className="text-3xl font-black text-white tracking-tight">PiChess</span>
+            <span className="text-3xl font-black text-white tracking-tight">Pi Chess</span>
           </div>
           <p className="text-zinc-400 text-sm">Sign in to access the admin panel</p>
         </div>
@@ -32,7 +32,7 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 required
-                placeholder="admin@pichess.com"
+                placeholder="officialpichess@gmail.com"
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-all text-sm"
               />
             </div>
@@ -77,7 +77,7 @@ export default function LoginPage() {
         {/* Back link */}
         <div className="text-center mt-6">
           <Link href="/" className="text-zinc-500 text-sm hover:text-white transition-colors">
-            ← Back to PiChess
+            ← Back to Pi Chess
           </Link>
         </div>
       </div>

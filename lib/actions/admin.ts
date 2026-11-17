@@ -140,7 +140,7 @@ export async function confirmRegistrationAndGetWhatsApp(registrationId: number) 
     `📅 ${eventDate}\n` +
     `📍 ${reg.tournament.location}${reg.tournament.venue ? ` · ${reg.tournament.venue}` : ""}\n\n` +
     `We look forward to seeing you there! ♟️\n\n` +
-    `— PiChess Team`
+    `— Pi Chess Team`
   );
 
   return {

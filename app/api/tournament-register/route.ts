@@ -7,9 +7,9 @@ const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "pichessacademy@gmail.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "officialpichess@gmail.com";
 const ADMIN_WHATSAPP = process.env.ADMIN_WHATSAPP || "233554534646";
-const FROM_EMAIL = process.env.FROM_EMAIL || "PiChess <onboarding@resend.dev>";
+const FROM_EMAIL = process.env.FROM_EMAIL || "Pi Chess <onboarding@resend.dev>";
 
  
 
@@ -169,7 +169,7 @@ function buildRegistrantEmail(data: {
   return `
     <div style="max-width:600px;margin:0 auto;font-family:'Segoe UI',Arial,sans-serif;background:#0a0a0a;color:#fff;border-radius:16px;overflow:hidden;">
       <div style="background:linear-gradient(135deg,#c9a84c,#b8942f);padding:32px 24px;text-align:center;">
-        <h1 style="margin:0;font-size:28px;color:#000;">♟️ PiChess</h1>
+        <h1 style="margin:0;font-size:28px;color:#000;">♟️ Pi Chess</h1>
         <p style="margin:8px 0 0;font-size:14px;color:#000;opacity:0.7;">Registration ${isWaitlisted ? "Waitlisted" : isPending ? "Pending Review" : "Confirmed"}</p>
       </div>
       <div style="padding:32px 24px;">
@@ -193,7 +193,7 @@ function buildRegistrantEmail(data: {
         </p>
       </div>
       <div style="background:#050505;padding:20px 24px;text-align:center;border-top:1px solid #1a1a1a;">
-        <p style="margin:0;font-size:12px;color:#444;">© ${new Date().getFullYear()} PiChess Academy · Ghana's Premier Chess Platform</p>
+        <p style="margin:0;font-size:12px;color:#444;">© ${new Date().getFullYear()} Pi Chess Academy · Ghana's Premier Chess Platform</p>
       </div>
     </div>
   `;

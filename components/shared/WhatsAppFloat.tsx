@@ -14,21 +14,21 @@ function buildLink(phone: string, message: string) {
 
 function getPrimaryMessage(pathname: string) {
   if (pathname.startsWith("/academy")) {
-    return "Hi PiChess Academy, I’m interested in chess lessons. Please help me choose the right program.";
+    return "Hi Pi Chess Academy, I’m interested in chess lessons. Please help me choose the right program.";
   }
   if (pathname.startsWith("/ngo")) {
-    return "Hi PiChess Foundation, I’d like to partner, donate, volunteer, or learn more about your programs.";
+    return "Hi Pi Chess Foundation, I’d like to partner, donate, volunteer, or learn more about your programs.";
   }
   if (pathname.startsWith("/tournaments") || pathname.startsWith("/register")) {
-    return "Hi PiChess, I need help with tournament or event registration.";
+    return "Hi Pi Chess, I need help with tournament or event registration.";
   }
   if (pathname.startsWith("/shop")) {
-    return "Hi PiChess, I’d like to order chess equipment.";
+    return "Hi Pi Chess, I’d like to order chess equipment.";
   }
   if (pathname.startsWith("/contact")) {
-    return "Hi PiChess, I’d like to make an enquiry.";
+    return "Hi Pi Chess, I’d like to make an enquiry.";
   }
-  return "Hi PiChess, I’d like to make an enquiry.";
+  return "Hi Pi Chess, I’d like to make an enquiry.";
 }
 
 function WhatsAppLogo({ className = "" }: { className?: string }) {
@@ -62,22 +62,22 @@ export default function WhatsAppFloat({ phone }: { phone?: string }) {
       {
         label: "Academy Lessons",
         icon: HelpCircle,
-        message: "Hi PiChess Academy, I’m interested in chess lessons. Please share available programs, fees, and schedule.",
+        message: "Hi Pi Chess Academy, I’m interested in chess lessons. Please share available programs, fees, and schedule.",
       },
       {
         label: "Foundation",
         icon: HeartHandshake,
-        message: "Hi PiChess Foundation, I’d like to partner, donate, volunteer, or support your chess outreach work.",
+        message: "Hi Pi Chess Foundation, I’d like to partner, donate, volunteer, or support your chess outreach work.",
       },
       {
         label: "Tournaments",
         icon: Trophy,
-        message: "Hi PiChess, I need help with tournament registration or event details.",
+        message: "Hi Pi Chess, I need help with tournament registration or event details.",
       },
       {
         label: "Shop Order",
         icon: ShoppingBag,
-        message: "Hi PiChess, I’d like to order chess equipment. Please help me with available products.",
+        message: "Hi Pi Chess, I’d like to order chess equipment. Please help me with available products.",
       },
     ],
     [pathname]
@@ -88,7 +88,7 @@ export default function WhatsAppFloat({ phone }: { phone?: string }) {
       {open && (
         <div className="mb-3 w-[min(320px,calc(100vw-2rem))] overflow-hidden rounded-lg border border-emerald-200 bg-white shadow-2xl shadow-emerald-950/15">
           <div className="border-b border-emerald-100 bg-emerald-50 px-4 py-3">
-            <p className="text-sm font-black text-emerald-900">Chat with PiChess</p>
+            <p className="text-sm font-black text-emerald-900">Chat with Pi Chess</p>
             <p className="mt-0.5 text-xs text-emerald-700/80">Choose what you need and WhatsApp will open with a ready message.</p>
           </div>
           <div className="p-2">

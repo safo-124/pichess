@@ -4,9 +4,9 @@ import { defaultNGOApply, type NGOApplyContent } from "@/lib/ngo-content";
 import prisma from "@/lib/prisma";
 
 export const metadata = {
-  title: "Partner with Us | PiChess Foundation",
+  title: "Partner with Us | Pi Chess Foundation",
   description:
-    "Apply for free chess equipment, coaching, scholarships, and mentorship through the PiChess Foundation.",
+    "Apply for free chess equipment, coaching, scholarships, and mentorship through the Pi Chess Foundation.",
 };
 
 function parse<T>(raw: string | null, fallback: T): T {

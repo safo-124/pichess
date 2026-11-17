@@ -4,9 +4,14 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import BrandLogo from "@/components/shared/BrandLogo";
 import {
-  Mail, Phone, MapPin, Clock, ChevronRight,
+  Mail, Phone, MapPin, Clock, MessageCircle,
   Facebook, Instagram, Youtube,
 } from "lucide-react";
+import {
+  PICHESS_EMAIL,
+  PICHESS_PHONE_INTL,
+  buildLessonWhatsAppUrl,
+} from "@/lib/whatsapp";
 
 interface FooterData {
   description: string;
@@ -22,12 +27,12 @@ interface FooterData {
 
 const DEFAULTS: FooterData = {
   description:
-    "Ghana\u2019s premier chess platform \u2014 training champions, building communities, and inspiring the next generation of strategic thinkers.",
-  contact: { email: "info@pichess.com", phone: "+233 XX XXX XXXX", location: "Accra, Ghana" },
+    "Building Minds Through Chess — structured chess lessons for kids, teens, adults, and schools across Accra and online, alongside tournaments and community outreach.",
+  contact: { email: PICHESS_EMAIL, phone: PICHESS_PHONE_INTL, location: "Accra, Ghana" },
   social: { facebook: "", instagram: "", twitter: "", youtube: "", tiktok: "", linkedin: "", whatsapp: "" },
-  hours: "Mon \u2013 Sat: 9 AM \u2013 6 PM",
-  cta: "Join the PiChess community and elevate your game today.",
-  copyright: "PiChess. All rights reserved.",
+  hours: "Mon – Sat: 9 AM – 6 PM",
+  cta: "Ready to start chess lessons for your child or yourself? Message us on WhatsApp.",
+  copyright: "Pi Chess. All rights reserved.",
 };
 
 const platformLinks = [
@@ -39,7 +44,7 @@ const platformLinks = [
 
 const zoneLinks = [
   ["Academy", "/academy"],
-  ["Enquire", "/academy/enquire"],
+  ["Lesson Programs", "/academy/lessons"],
   ["NGO Foundation", "/ngo"],
   ["Donate", "/ngo/donate"],
   ["Volunteer", "/ngo/volunteer"],
@@ -49,7 +54,7 @@ const companyLinks = [
   ["About", "/about"],
   ["Contact", "/contact"],
   ["FAQ", "/faq"],
-  ["Login", "/login"],
+  ["Free Practice", "/learning-tools"],
 ];
 
 const TikTokIcon = ({ className }: { className?: string }) => (
@@ -77,12 +82,29 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 export default function MainFooter({ footerData }: { footerData?: FooterData | null }) {
+  const rawPhone = footerData?.contact?.phone || "";
+  const safePhone = !rawPhone || rawPhone.includes("XX") ? PICHESS_PHONE_INTL : rawPhone;
+  const rawEmail = footerData?.contact?.email || "";
+  const safeEmail =
+    !rawEmail || rawEmail === "info@pichess.com" || rawEmail === "pichessacademy@gmail.com"
+      ? PICHESS_EMAIL
+      : rawEmail;
+  const rawCopyright = footerData?.copyright || DEFAULTS.copyright;
+  const safeCopyright = rawCopyright.replace(/Pi\x43hess/g, "Pi Chess");
+
   const data: FooterData = {
     ...DEFAULTS,
     ...footerData,
-    contact: { ...DEFAULTS.contact, ...footerData?.contact },
+    copyright: safeCopyright,
+    contact: {
+      ...DEFAULTS.contact,
+      ...footerData?.contact,
+      phone: safePhone,
+      email: safeEmail,
+    },
     social: { ...DEFAULTS.social, ...footerData?.social },
   };
+  const whatsAppHref = buildLessonWhatsAppUrl();
 
   const socialItems = [
     { key: "facebook", url: data.social?.facebook, icon: Facebook, label: "Facebook" },
@@ -112,16 +134,18 @@ export default function MainFooter({ footerData }: { footerData?: FooterData | n
       {data.cta && (
         <div className="relative border-b border-white/5">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-white/70 text-sm sm:text-base font-medium text-center sm:text-left">
+            <p className="text-white/75 text-sm sm:text-base font-medium text-center sm:text-left">
               {data.cta}
             </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 bg-[#c9a84c] hover:bg-[#b8993f] text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-all duration-200 whitespace-nowrap shadow-lg shadow-[#c9a84c]/20"
+            <a
+              href={whatsAppHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-gray-950 text-sm font-bold px-6 py-2.5 rounded-lg transition-all duration-200 whitespace-nowrap shadow-lg shadow-emerald-950/30"
             >
-              Get Started
-              <ChevronRight className="w-4 h-4" />
-            </Link>
+              <MessageCircle className="w-4 h-4" />
+              Chat on WhatsApp
+            </a>
           </div>
         </div>
       )}
@@ -133,30 +157,39 @@ export default function MainFooter({ footerData }: { footerData?: FooterData | n
           {/* Brand + Contact — spans 4 cols */}
           <div className="lg:col-span-4">
             <div className="mb-5">
-              <BrandLogo tone="dark" size="sm" />
+              <BrandLogo tone="dark" size="sm" sublabel="Building Minds" />
             </div>
-            <p className="text-white/40 text-sm leading-relaxed mb-6 max-w-xs">
+            <p className="text-white/50 text-sm leading-relaxed mb-6 max-w-xs">
               {data.description}
             </p>
 
             {/* Contact Info */}
             <div className="space-y-3">
-              {data.contact?.email && (
-                <a
-                  href={`mailto:${data.contact.email}`}
-                  className="flex items-center gap-2.5 text-white/40 hover:text-[#c9a84c] transition-colors text-sm group"
-                >
-                  <Mail className="w-4 h-4 text-[#c9a84c]/60 group-hover:text-[#c9a84c]" />
-                  {data.contact.email}
-                </a>
-              )}
               {data.contact?.phone && (
                 <a
                   href={`tel:${data.contact.phone.replace(/\s/g, "")}`}
-                  className="flex items-center gap-2.5 text-white/40 hover:text-[#c9a84c] transition-colors text-sm group"
+                  className="flex items-center gap-2.5 text-white/60 hover:text-[#c9a84c] transition-colors text-sm group"
                 >
-                  <Phone className="w-4 h-4 text-[#c9a84c]/60 group-hover:text-[#c9a84c]" />
+                  <Phone className="w-4 h-4 text-[#c9a84c]/70 group-hover:text-[#c9a84c]" />
                   {data.contact.phone}
+                </a>
+              )}
+              <a
+                href={whatsAppHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 text-emerald-400 hover:text-emerald-300 transition-colors text-sm font-semibold group"
+              >
+                <MessageCircle className="w-4 h-4" />
+                WhatsApp: 055 453 4646
+              </a>
+              {data.contact?.email && (
+                <a
+                  href={`mailto:${data.contact.email}`}
+                  className="flex items-center gap-2.5 text-white/50 hover:text-[#c9a84c] transition-colors text-sm group"
+                >
+                  <Mail className="w-4 h-4 text-[#c9a84c]/70 group-hover:text-[#c9a84c]" />
+                  {data.contact.email}
                 </a>
               )}
               {data.contact?.location && (

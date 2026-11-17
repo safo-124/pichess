@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import RegistrationForm from "@/components/shared/RegistrationForm";
+import { buildTournamentWhatsAppUrl } from "@/lib/whatsapp";
 
 /* ────────────────────────────────────────────────────────
    Types
@@ -136,7 +136,6 @@ function SpotsIndicator({ maxSpots, registeredCount }: { maxSpots: number | null
 
 function DetailModal({ item, onClose }: { item: TournamentItem; onClose: () => void }) {
   const sc = statusConfig[item.status] ?? statusConfig.UPCOMING;
-  const [showRegister, setShowRegister] = useState(false);
   const heroImage = item.flyer || item.photos[0]?.url;
 
   return (
@@ -269,33 +268,22 @@ function DetailModal({ item, onClose }: { item: TournamentItem; onClose: () => v
 
           {/* CTA */}
           {(item.status === "UPCOMING" || item.status === "ONGOING") && (
-            <button
-              onClick={(e) => { e.stopPropagation(); setShowRegister(true); }}
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#dbb95d] text-white text-sm font-black hover:from-[#dbb95d] hover:to-[#c9a84c] transition-all hover:scale-105 hover:shadow-xl hover:shadow-[#c9a84c]/20 active:scale-95"
+            <a
+              href={buildTournamentWhatsAppUrl({
+                title: item.title,
+                dateLabel: formatDateRange(item.date, item.endDate),
+                isWaitlist: Boolean(item.maxSpots && item.registeredCount >= item.maxSpots),
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#25D366] hover:bg-[#1ebe5d] text-white text-sm font-black transition-all hover:scale-105 hover:shadow-xl hover:shadow-[#25D366]/25 active:scale-95"
             >
-              {item.maxSpots && item.registeredCount >= item.maxSpots ? "Join Waitlist" : "Register Now"}
-              <span className="text-white/60">→</span>
-            </button>
+              {item.maxSpots && item.registeredCount >= item.maxSpots ? "Join Waitlist on WhatsApp" : "Register on WhatsApp"}
+              <span className="text-white/80">→</span>
+            </a>
           )}
         </div>
-
-        {/* Inline registration form */}
-        {showRegister && (
-          <RegistrationForm
-            tournament={{
-              id: item.id,
-              title: item.title,
-              date: item.date,
-              location: item.location,
-              venue: item.venue,
-              type: item.type,
-              maxSpots: item.maxSpots,
-              registeredCount: item.registeredCount,
-              flyer: item.flyer,
-            }}
-            onClose={() => setShowRegister(false)}
-          />
-        )}
       </motion.div>
     </motion.div>
   );
@@ -424,17 +412,27 @@ function TournamentCard({ item, index, onSelect }: { item: TournamentItem; index
 
         {/* Bottom bar */}
         <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-          <span className="text-xs text-gray-300 group-hover:text-[#c9a84c]/60 transition-colors">
-            Click for details →
+          <span className="text-xs text-gray-400 group-hover:text-[#c9a84c] transition-colors">
+            View details →
           </span>
           {(isUpcoming || isOngoing) && (
-            <span className={`text-xs font-bold px-3 py-1 rounded-full ${
-              item.maxSpots && item.registeredCount >= item.maxSpots
-                ? "text-red-500 bg-red-50"
-                : "text-[#c9a84c] bg-[#c9a84c]/10"
-            }`}>
-              {item.maxSpots && item.registeredCount >= item.maxSpots ? "Waitlist" : "Register Open"}
-            </span>
+            <a
+              href={buildTournamentWhatsAppUrl({
+                title: item.title,
+                dateLabel: formatDateRange(item.date, item.endDate),
+                isWaitlist: Boolean(item.maxSpots && item.registeredCount >= item.maxSpots),
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className={`text-xs font-bold px-3.5 py-1.5 rounded-full transition-colors ${
+                item.maxSpots && item.registeredCount >= item.maxSpots
+                  ? "text-red-600 bg-red-50 hover:bg-red-100"
+                  : "text-white bg-[#25D366] hover:bg-[#1ebe5d]"
+              }`}
+            >
+              {item.maxSpots && item.registeredCount >= item.maxSpots ? "Waitlist on WhatsApp →" : "Register on WhatsApp →"}
+            </a>
           )}
           {item.photos.length > 0 && (
             <span className="text-xs text-gray-300 flex items-center gap-1">

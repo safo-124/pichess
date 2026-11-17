@@ -5,10 +5,10 @@ import AdminHeroManager from "@/components/admin/AdminHeroManager";
 export const metadata = { title: "Homepage | Admin" };
 
 const defaultHomeStats = [
-  { end: 500, suffix: "+", label: "Students Trained", href: "/academy", ariaLabel: "View PiChess Academy programs" },
-  { end: 50, suffix: "+", label: "Tournaments Hosted", href: "/tournaments", ariaLabel: "View PiChess tournaments" },
-  { end: 200, suffix: "+", label: "Lives Impacted", href: "/ngo", ariaLabel: "View PiChess Foundation impact" },
-  { end: 15, suffix: "", label: "Expert Coaches", href: "/academy/team", ariaLabel: "Meet the PiChess expert coaches" },
+  { end: 500, suffix: "+", label: "Students Trained", href: "/academy", ariaLabel: "View Pi Chess Academy programs" },
+  { end: 50, suffix: "+", label: "Tournaments Hosted", href: "/tournaments", ariaLabel: "View Pi Chess tournaments" },
+  { end: 200, suffix: "+", label: "Lives Impacted", href: "/ngo", ariaLabel: "View Pi Chess Foundation impact" },
+  { end: 15, suffix: "", label: "Expert Coaches", href: "/academy/team", ariaLabel: "Meet the Pi Chess expert coaches" },
 ];
 
 async function getHeroData() {

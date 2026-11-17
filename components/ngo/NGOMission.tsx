@@ -19,7 +19,7 @@ const pillars = [
   {
     icon: "🎓",
     title: "Scholarships",
-    desc: "Pathways to funded PiChess Academy training for talented youth.",
+    desc: "Pathways to funded Pi Chess Academy training for talented youth.",
   },
   {
     icon: "🤝",

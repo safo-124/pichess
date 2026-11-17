@@ -9,14 +9,16 @@ import {
   BriefcaseBusiness,
   Building2,
   GraduationCap,
+  MessageCircle,
   School,
   Target,
   Trophy,
   UserRound,
   Users,
 } from "lucide-react";
-import type { AcademyLesson } from "@/lib/academy-content";
+import { getLessonAudienceTab, type AcademyLesson } from "@/lib/academy-content";
 import { getAcademyLessonDetails } from "@/lib/academy-program-details";
+import { buildLessonWhatsAppUrl } from "@/lib/whatsapp";
 
 type Choice = {
   id: string;
@@ -119,7 +121,13 @@ export default function AcademyProgramFinder({ lessons }: { lessons: AcademyLess
   if (!recommended) return null;
 
   const details = getAcademyLessonDetails(recommended);
-  const enquiryHref = `/academy/enquire?program=${encodeURIComponent(recommended.title)}`;
+  const audienceTab = getLessonAudienceTab(recommended);
+  const whatsAppHref = buildLessonWhatsAppUrl({
+    program: recommended.title,
+    age,
+    level,
+    goal,
+  });
 
   return (
     <section className="relative bg-white px-4 py-24">
@@ -180,15 +188,18 @@ export default function AcademyProgramFinder({ lessons }: { lessons: AcademyLess
             </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href={enquiryHref}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#c9a84c] px-6 py-4 text-sm font-black text-white transition-all hover:bg-[#b8963f]"
+              <a
+                href={whatsAppHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-4 text-sm font-black text-gray-950 transition-all hover:bg-[#1ebe5d]"
               >
-                Enquire for this program
+                <MessageCircle className="h-4 w-4" />
+                Get Fees &amp; Class Times on WhatsApp
                 <ArrowRight className="h-4 w-4" />
-              </Link>
+              </a>
               <Link
-                href="/academy/lessons"
+                href={`/academy/lessons?tab=${audienceTab}`}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 px-6 py-4 text-sm font-black text-white transition-all hover:bg-white/10"
               >
                 View all programs

@@ -3,19 +3,23 @@ import TextReveal from "@/components/shared/TextReveal";
 import MagneticButton from "@/components/shared/MagneticButton";
 import LessonCards from "@/components/academy/LessonCards";
 import prisma from "@/lib/prisma";
-import Link from "next/link";
 import Image from "next/image";
 import {
   defaultLessons,
   defaultLessonsHero,
+  getLessonAudienceTab,
+  type AcademyAudienceTab,
   type AcademyLesson,
   type AcademyLessonsHero,
 } from "@/lib/academy-content";
+import { buildLessonWhatsAppUrl, PICHESS_PHONE_LOCAL } from "@/lib/whatsapp";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Lesson Packages — PiChess Academy",
+  title: "Lesson Packages — Pi Chess Academy",
   description:
-    "From private coaching to group classes — find the perfect lesson format for every player.",
+    "From kids & teen clubs to adult coaching and school programs — find the right chess class at Pi Chess Academy.",
 };
 
  
@@ -34,10 +38,20 @@ async function getData(): Promise<{ lessons: AcademyLesson[]; lessonsHero: Acade
   }
 }
 
-export default async function LessonsPage() {
+export default async function LessonsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ tab?: string }>;
+}) {
+  const resolvedSearchParams = await searchParams;
+  const rawTab = resolvedSearchParams?.tab;
+  const initialTab: AcademyAudienceTab =
+    rawTab === "kids" || rawTab === "adults" || rawTab === "schools" ? rawTab : "kids";
+
   const { lessons, lessonsHero } = await getData();
-  const coreLessons = lessons.filter((l) => l.category === "core");
-  const institutional = lessons.filter((l) => l.category === "institutional");
+  const kidsCount = lessons.filter((l) => getLessonAudienceTab(l) === "kids").length;
+  const adultsCount = lessons.filter((l) => getLessonAudienceTab(l) === "adults").length;
+  const schoolsCount = lessons.filter((l) => getLessonAudienceTab(l) === "schools").length;
 
   return (
     <div className="overflow-x-hidden">
@@ -85,17 +99,17 @@ export default async function LessonsPage() {
 
           <AnimatedSection delay={0.3}>
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 mt-8">
-              <div className="flex items-center gap-2 text-sm text-gray-400">
+              <div className="flex items-center gap-2 text-sm text-gray-500 font-medium">
                 <span className="w-3 h-3 rounded-full bg-gradient-to-br from-[#c9a84c]/40 to-[#dbb95d]/30 border border-[#c9a84c]/30" />
-                <span>{coreLessons.length} Core Programs</span>
+                <span>{kidsCount} Kids &amp; Teens</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-400">
+              <div className="flex items-center gap-2 text-sm text-gray-500 font-medium">
                 <span className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-400/40 to-cyan-400/30 border border-blue-400/30" />
-                <span>{institutional.length} Institutional Programs</span>
+                <span>{adultsCount} Adults &amp; 1-on-1</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-br from-gray-300/40 to-gray-200/30 border border-gray-300" />
-                <span>{lessons.length} Total</span>
+              <div className="flex items-center gap-2 text-sm text-gray-500 font-medium">
+                <span className="w-3 h-3 rounded-full bg-gradient-to-br from-emerald-400/40 to-teal-300/30 border border-emerald-400/40" />
+                <span>{schoolsCount} Schools &amp; Companies</span>
               </div>
             </div>
           </AnimatedSection>
@@ -110,7 +124,7 @@ export default async function LessonsPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.02),transparent_60%)]" />
 
         <div className="max-w-6xl mx-auto relative">
-          <LessonCards lessons={lessons} />
+          <LessonCards lessons={lessons} initialTab={initialTab} />
         </div>
       </section>
 
@@ -142,9 +156,9 @@ export default async function LessonsPage() {
               },
               {
                 step: "02",
-                title: "Submit an Enquiry",
-                desc: "Fill out a quick form and our team will reach out within 24 hours to schedule you.",
-                icon: "✉️",
+                title: "Chat on WhatsApp",
+                desc: "Tap any program to open WhatsApp with your details filled in — our coaches reply with current fees and times.",
+                icon: "💬",
               },
               {
                 step: "03",
@@ -193,20 +207,22 @@ export default async function LessonsPage() {
                 />
                 <AnimatedSection delay={0.2}>
                   <p className="text-gray-400 mt-4 mb-8 max-w-md mx-auto">
-                    Submit an enquiry and a coach will get back to you within 24 hours
-                    to get you started.
+                    Message our coaching team on WhatsApp for current fees, available class days,
+                    and help choosing the right group.
                   </p>
                 </AnimatedSection>
                 <MagneticButton>
-                  <Link
-                    href="/academy/enquire"
+                  <a
+                    href={buildLessonWhatsAppUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group relative inline-flex items-center gap-2 px-10 py-5 rounded-full text-base font-black transition-all overflow-hidden"
                   >
                     <span className="absolute inset-0 bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#dbb95d] group-hover:from-[#dbb95d] group-hover:to-[#c9a84c] transition-all" />
                     <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.25),transparent_70%)]" />
-                    <span className="relative z-10 text-white">Enquire Now</span>
+                    <span className="relative z-10 text-white">Chat on WhatsApp ({PICHESS_PHONE_LOCAL})</span>
                     <span className="relative z-10 text-white/60 group-hover:translate-x-1 transition-transform">→</span>
-                  </Link>
+                  </a>
                 </MagneticButton>
               </div>
             </div>

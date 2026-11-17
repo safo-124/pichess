@@ -3,8 +3,8 @@ import { defaultFAQContent, type FAQPageContent } from "@/lib/faq-content";
 import FAQClient from "./FAQClient";
 
 export const metadata = {
-  title: "FAQ | PiChess",
-  description: "Find answers to frequently asked questions about PiChess Academy, Foundation, tournaments, shop, and more.",
+  title: "FAQ | Pi Chess",
+  description: "Find answers to frequently asked questions about Pi Chess Academy, Foundation, tournaments, shop, and more.",
 };
 
 export default async function FAQPage() {

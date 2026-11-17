@@ -6,6 +6,8 @@ import AcademyAchievements from "@/components/academy/AcademyAchievements";
 import AcademyJourney from "@/components/academy/AcademyJourney";
 import AcademyProgramFinder from "@/components/academy/AcademyProgramFinder";
 import AcademyStatsBand from "@/components/academy/AcademyStatsBand";
+import LessonCards from "@/components/academy/LessonCards";
+import { buildLessonWhatsAppUrl } from "@/lib/whatsapp";
 import prisma from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,7 +16,7 @@ import {
   type AcademyHero, type AcademyStat, type AcademyLesson, type AcademyFeature, type AcademyCTA,
 } from "@/lib/academy-content";
 
-export const metadata = { title: "PiChess Academy" };
+export const metadata = { title: "Pi Chess Academy" };
 export const dynamic = "force-dynamic";
 
  
@@ -99,22 +101,24 @@ export default async function AcademyPage() {
               <AnimatedSection delay={0.4}>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <MagneticButton>
-                    <Link
-                      href="/academy/enquire"
+                    <a
+                      href={buildLessonWhatsAppUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="group relative inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-bold transition-all overflow-hidden"
                     >
                       <span className="absolute inset-0 bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#dbb95d] group-hover:from-[#dbb95d] group-hover:to-[#c9a84c] transition-all" />
                       <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2),transparent_70%)]" />
-                      <span className="relative z-10 text-white font-bold">Enquire Now</span>
+                      <span className="relative z-10 text-white font-bold">Chat on WhatsApp to Start</span>
                       <span className="relative z-10 text-white/70 group-hover:translate-x-1 transition-transform">→</span>
-                    </Link>
+                    </a>
                   </MagneticButton>
                   <MagneticButton>
                     <Link
-                      href="/academy/team"
+                      href="#lessons"
                       className="px-8 py-4 rounded-full border border-gray-300 text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-semibold text-base transition-all backdrop-blur-sm"
                     >
-                      Meet Our Coaches
+                      Browse Programs ↓
                     </Link>
                   </MagneticButton>
                 </div>
@@ -127,8 +131,8 @@ export default async function AcademyPage() {
                 <ParallaxSection speed={0.15} direction="down">
                   <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl shadow-black/10 border border-gray-200">
                     <Image
-                      src={hero.sideImage}
-                      alt="Students training at PiChess Academy"
+                      src={hero.sideImage && !hero.sideImage.includes("photo-1586165368502") ? hero.sideImage : defaultHero.sideImage}
+                      alt="Students training at Pi Chess Academy"
                       fill
                       className="object-cover"
                     />
@@ -211,56 +215,8 @@ export default async function AcademyPage() {
             </AnimatedSection>
           </div>
 
-          {/* Preview grid — show first 4 lessons as cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-            {lessons.slice(0, 4).map((lesson, i) => (
-              <AnimatedSection key={lesson.title} delay={i * 0.08}>
-                <Link href="/academy/lessons" className="group block rounded-2xl border border-gray-200 bg-white overflow-hidden transition-all duration-500 hover:border-[#c9a84c]/30 hover:shadow-lg hover:shadow-[#c9a84c]/10 hover:-translate-y-1">
-                  {/* Image or gradient header */}
-                  {lesson.image ? (
-                    <div className="relative h-28 overflow-hidden">
-                      <Image src={lesson.image} alt={lesson.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent" />
-                    </div>
-                  ) : (
-                    <div className="relative h-20 bg-gradient-to-br from-[#c9a84c]/10 to-[#dbb95d]/5">
-                      <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent opacity-70" />
-                    </div>
-                  )}
-                  <div className="p-4 text-center -mt-6 relative">
-                    <span className="text-3xl inline-block group-hover:scale-110 transition-transform duration-300 drop-shadow-lg">
-                      {lesson.icon}
-                    </span>
-                    <h3 className="text-sm font-bold text-gray-900 mt-2 group-hover:text-[#c9a84c] transition-colors">
-                      {lesson.title}
-                    </h3>
-                    <p className="text-gray-400 text-xs mt-1 line-clamp-2">{lesson.desc}</p>
-                  </div>
-                </Link>
-              </AnimatedSection>
-            ))}
-          </div>
-
-          {/* "View all" + count */}
-          <AnimatedSection delay={0.3}>
-            <div className="text-center">
-              <p className="text-gray-400 text-sm mb-5">
-                {lessons.length} lesson packages available — including private coaching, group classes, and institutional programs.
-              </p>
-              <MagneticButton>
-                <Link
-                  href="/academy/lessons"
-                  className="group relative inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-bold transition-all overflow-hidden"
-                >
-                  <span className="absolute inset-0 bg-gradient-to-r from-[#c9a84c]/10 to-[#dbb95d]/10 border border-[#c9a84c]/25 rounded-full group-hover:from-[#c9a84c]/20 group-hover:to-[#dbb95d]/20 transition-all" />
-                  <span className="relative z-10 text-[#c9a84c] group-hover:text-[#b8963f] transition-colors">
-                    View All Lessons
-                  </span>
-                  <span className="relative z-10 text-[#c9a84c]/60 group-hover:translate-x-1 transition-transform">→</span>
-                </Link>
-              </MagneticButton>
-            </div>
-          </AnimatedSection>
+          {/* Grouped 3-tab interactive programs */}
+          <LessonCards lessons={lessons} />
         </div>
       </section>
 
@@ -380,15 +336,17 @@ export default async function AcademyPage() {
                   </p>
                 </AnimatedSection>
                 <MagneticButton>
-                  <Link
-                    href="/academy/enquire"
+                  <a
+                    href={buildLessonWhatsAppUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group relative inline-flex items-center gap-2 px-10 py-5 rounded-full text-base font-black transition-all overflow-hidden"
                   >
                     <span className="absolute inset-0 bg-gradient-to-r from-[#c9a84c] via-[#d4b15a] to-[#dbb95d] group-hover:from-[#dbb95d] group-hover:to-[#c9a84c] transition-all" />
                     <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.25),transparent_70%)]" />
                     <span className="relative z-10 text-white">{cta.buttonText}</span>
                     <span className="relative z-10 text-white/60 group-hover:translate-x-1 transition-transform">→</span>
-                  </Link>
+                  </a>
                 </MagneticButton>
               </div>
             </div>

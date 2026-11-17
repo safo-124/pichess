@@ -8,9 +8,9 @@ import {
 } from "@/lib/ngo-content";
 
 export const metadata = {
-  title: "Our Programs | PiChess Foundation",
+  title: "Our Programs | Pi Chess Foundation",
   description:
-    "Discover the six programs that power the PiChess Foundation — from free chess equipment and school programs to scholarships, mentorship, community hubs, and tournaments.",
+    "Discover the six programs that power the Pi Chess Foundation — from free chess equipment and school programs to scholarships, mentorship, community hubs, and tournaments.",
 };
 
 function parse<T>(raw: string | null, fallback: T): T {

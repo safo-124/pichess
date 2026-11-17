@@ -53,8 +53,11 @@ async function main() {
   // ─── Testimonials ──────────────────────────────────────────────────────────
   const testimonials = await Promise.all([
     prisma.academy_Testimonial.upsert({
-      where: { id: 1 }, update: {},
-      create: { name: "Ama Sarpong", content: "PiChess Academy transformed my game. I went from beginner to winning regional competitions in 6 months!", rating: 5, program: "Intermediate Program", published: true },
+      where: { id: 1 },
+      update: {
+        content: "Pi Chess Academy transformed my game. I went from beginner to winning regional competitions in 6 months!",
+      },
+      create: { name: "Ama Sarpong", content: "Pi Chess Academy transformed my game. I went from beginner to winning regional competitions in 6 months!", rating: 5, program: "Intermediate Program", published: true },
     }),
     prisma.academy_Testimonial.upsert({
       where: { id: 2 }, update: {},
@@ -66,30 +69,58 @@ async function main() {
   // ─── Tournaments ──────────────────────────────────────────────────────────
   const tournaments = await Promise.all([
     prisma.tournament.upsert({
-      where: { id: 1 }, update: {},
-      create: {
-        title: "PiChess National Open 2025",
-        description: "Ghana's premier open chess tournament. All levels welcome.",
-        date: new Date("2025-11-15"),
+      where: { id: 1 },
+      update: {
+        title: "Pi Chess National Rapid & Open 2026",
+        description: "Ghana's premier open chess championship in Accra. Open, Intermediate, and Junior sections welcome.",
+        date: new Date("2026-12-12"),
         location: "Accra, Ghana",
-        venue: "Best Western Plus Hotel",
-        registrationLink: "https://forms.gle/example",
-        tags: ["open", "national"],
+        venue: "Accra Sports Stadium / Osu Centre",
+        flyer: "/uploads/1775035492024-Google_festival.jpg",
+        registrationLink: null,
+        tags: ["open", "national", "accra"],
         status: "UPCOMING",
         featured: true,
+        maxSpots: 64,
+      },
+      create: {
+        title: "Pi Chess National Rapid & Open 2026",
+        description: "Ghana's premier open chess championship in Accra. Open, Intermediate, and Junior sections welcome.",
+        date: new Date("2026-12-12"),
+        location: "Accra, Ghana",
+        venue: "Accra Sports Stadium / Osu Centre",
+        flyer: "/uploads/1775035492024-Google_festival.jpg",
+        tags: ["open", "national", "accra"],
+        status: "UPCOMING",
+        featured: true,
+        maxSpots: 64,
       },
     }),
     prisma.tournament.upsert({
-      where: { id: 2 }, update: {},
-      create: {
-        title: "PiChess Academy Juniors Cup",
-        description: "Exclusive tournament for academy students under 18.",
-        date: new Date("2025-09-20"),
-        location: "Kumasi, Ghana",
-        venue: "Kumasi City Hotel",
-        tags: ["academy", "juniors"],
+      where: { id: 2 },
+      update: {
+        title: "Pi Chess Academy Juniors Cup 2027",
+        description: "Fun, friendly competitive tournament for academy students and school players aged 5–17.",
+        date: new Date("2027-01-24"),
+        location: "Accra, Ghana",
+        venue: "Pi Chess Academy Hub, Accra",
+        flyer: "/uploads/1778865742192-CLP_PICHESS.jpg",
+        tags: ["academy", "juniors", "kids"],
         status: "UPCOMING",
-        featured: false,
+        featured: true,
+        maxSpots: 40,
+      },
+      create: {
+        title: "Pi Chess Academy Juniors Cup 2027",
+        description: "Fun, friendly competitive tournament for academy students and school players aged 5–17.",
+        date: new Date("2027-01-24"),
+        location: "Accra, Ghana",
+        venue: "Pi Chess Academy Hub, Accra",
+        flyer: "/uploads/1778865742192-CLP_PICHESS.jpg",
+        tags: ["academy", "juniors", "kids"],
+        status: "UPCOMING",
+        featured: true,
+        maxSpots: 40,
       },
     }),
     prisma.tournament.upsert({

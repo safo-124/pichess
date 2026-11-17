@@ -1,9 +1,25 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { subscribeToNewsletter, submitContactMessage } from "@/lib/actions/contact";
+import { subscribeToNewsletter } from "@/lib/actions/contact";
 import type { ContactPageContent } from "@/lib/contact-content";
-import type { JSX } from "react";  
+import type { JSX } from "react";
+import {
+  buildWhatsAppUrl,
+  PICHESS_EMAIL,
+  PICHESS_PHONE_INTL,
+  PICHESS_PHONE_LOCAL,
+} from "@/lib/whatsapp";
+
+const CHAT_TOPICS = [
+  "Kids & Teens Lessons",
+  "Adults & 1-on-1 Coaching",
+  "Schools & Companies",
+  "Tournament Registration",
+  "Foundation / Donation",
+  "Shop & Chess Sets",
+  "General Question",
+] as const;
 
 /* ── Animations ─────────────────────────────────────────── */
 const fadeUp = {
@@ -60,22 +76,36 @@ const ICON_MAP: Record<string, JSX.Element> = {
 
 export default function ContactPage({ content }: { content: ContactPageContent }) {
   const { hero, contactItems, quickLinks, faqs, cta, mapInfo } = content;
-  const [contactStatus, setContactStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [topic, setTopic] = useState<string>(CHAT_TOPICS[0]);
+  const [senderName, setSenderName] = useState("");
+  const [senderNote, setSenderNote] = useState("");
   const [subStatus, setSubStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  async function handleContactSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setContactStatus("loading");
-    const fd = new FormData(e.currentTarget);
-    try {
-      const res = await submitContactMessage(fd);
-      if (res?.error) { setContactStatus("error"); return; }
-      setContactStatus("success");
-      (e.target as HTMLFormElement).reset();
-      setTimeout(() => setContactStatus("idle"), 5000);
-    } catch { setContactStatus("error"); }
-  }
+  const visibleContactItems = contactItems
+    .filter((item) => !item.href?.includes("YOUR_CHANNEL_ID"))
+    .map((item) => {
+      const normalizedValue = item.value
+        .replace(/Pi\x43hess/g, "Pi Chess")
+        .replace(/pichess\x61cademy@gmail\.com|hello@pichess\.com|info@pichess\.com/gi, PICHESS_EMAIL);
+      const normalizedDesc = item.desc.replace(/Pi\x43hess/g, "Pi Chess");
+      if (item.value.includes("XX")) {
+        return { ...item, value: PICHESS_PHONE_LOCAL, desc: normalizedDesc, href: "https://wa.me/233554534646" };
+      }
+      if (/pichess\x61cademy@gmail\.com|hello@pichess\.com|info@pichess\.com/i.test(item.href || "")) {
+        return { ...item, value: PICHESS_EMAIL, desc: normalizedDesc, href: `mailto:${PICHESS_EMAIL}` };
+      }
+      return { ...item, value: normalizedValue, desc: normalizedDesc };
+    });
+
+  const whatsAppMessage = [
+    `Hi Pi Chess, I'd like help with: ${topic}.`,
+    senderName.trim() ? `Name: ${senderName.trim()}` : "",
+    senderNote.trim() ? `Details: ${senderNote.trim()}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+  const whatsAppHref = buildWhatsAppUrl(whatsAppMessage);
 
   async function handleNewsletterSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -146,11 +176,13 @@ export default function ContactPage({ content }: { content: ContactPageContent }
       {/* ═══ CONTACT CARDS ═══ */}
       <section className="py-8 sm:py-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {contactItems.map((item, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {visibleContactItems.map((item, i) => (
               <motion.a
                 key={item.label}
                 href={item.href || "#"}
+                target={item.href?.startsWith("http") ? "_blank" : undefined}
+                rel={item.href?.startsWith("http") ? "noopener noreferrer" : undefined}
                 custom={i}
                 initial="hidden"
                 whileInView="visible"
@@ -164,18 +196,18 @@ export default function ContactPage({ content }: { content: ContactPageContent }
                 </div>
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{item.label}</p>
                 <p className="font-semibold text-gray-900 text-sm">{item.value}</p>
-                <p className="text-[11px] text-gray-400 mt-1 hidden sm:block">{item.desc}</p>
+                <p className="text-[11px] text-gray-400 mt-1">{item.desc}</p>
               </motion.a>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══ MAIN: FORM + MAP/INFO ═══ */}
+      {/* ═══ MAIN: WHATSAPP CHAT HUB + MAP/INFO ═══ */}
       <section className="py-12 sm:py-20 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
-            {/* Contact Form — takes 3 cols */}
+            {/* Direct WhatsApp Chat Hub — takes 3 cols */}
             <motion.div
               className="lg:col-span-3"
               initial="hidden"
@@ -185,107 +217,91 @@ export default function ContactPage({ content }: { content: ContactPageContent }
             >
               <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 lg:p-10">
                 <div className="mb-8">
-                  <h2 className="text-2xl sm:text-3xl font-black mb-2">Send a Message</h2>
-                  <p className="text-gray-400 text-sm">Fill out the form and we&apos;ll get back to you shortly.</p>
+                  <span className="inline-block px-3 py-1 rounded-full bg-[#25D366]/10 text-[#1d9f4d] text-xs font-bold uppercase tracking-wider mb-3">
+                    Instant Reply on WhatsApp
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-black mb-2">Chat With Our Team</h2>
+                  <p className="text-gray-500 text-sm">
+                    Pick a topic below and tap the green button — it opens WhatsApp ({PICHESS_PHONE_LOCAL}) with your message ready to send.
+                  </p>
                 </div>
 
-                <form onSubmit={handleContactSubmit} className="space-y-5">
-                  <div className="grid sm:grid-cols-2 gap-5">
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Name *</label>
-                      <input
-                        name="name"
-                        type="text"
-                        required
-                        placeholder="Your full name"
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/30 focus:border-[#c9a84c] transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Email *</label>
-                      <input
-                        name="email"
-                        type="email"
-                        required
-                        placeholder="your@email.com"
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/30 focus:border-[#c9a84c] transition-all"
-                      />
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">
+                      What can we help you with?
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {CHAT_TOPICS.map((item) => {
+                        const active = topic === item;
+                        return (
+                          <button
+                            key={item}
+                            type="button"
+                            onClick={() => setTopic(item)}
+                            className={`px-3.5 py-2 rounded-full text-xs font-semibold transition-all border ${
+                              active
+                                ? "bg-gray-900 text-white border-gray-900 shadow-sm"
+                                : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#c9a84c]/50"
+                            }`}
+                          >
+                            {item}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Subject</label>
-                    <select
-                      name="subject"
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/30 focus:border-[#c9a84c] transition-all appearance-none"
-                    >
-                      <option value="general">General Inquiry</option>
-                      <option value="academy">Academy &amp; Lessons</option>
-                      <option value="tournament">Tournaments</option>
-                      <option value="foundation">Foundation / NGO</option>
-                      <option value="partnership">Partnerships &amp; Sponsorship</option>
-                      <option value="shop">Shop &amp; Orders</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Message *</label>
-                    <textarea
-                      name="message"
-                      required
-                      rows={5}
-                      placeholder="Tell us what's on your mind..."
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/30 focus:border-[#c9a84c] transition-all resize-none"
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                      Your Name (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={senderName}
+                      onChange={(e) => setSenderName(e.target.value)}
+                      placeholder="e.g. Ama Mensah"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#25D366]/30 focus:border-[#25D366] transition-all"
                     />
                   </div>
 
-                  <motion.button
-                    type="submit"
-                    disabled={contactStatus === "loading"}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full sm:w-auto px-10 py-3.5 rounded-xl bg-[#c9a84c] hover:bg-[#b89a3e] text-white font-bold text-sm transition-all disabled:opacity-60 shadow-lg shadow-[#c9a84c]/20"
-                  >
-                    {contactStatus === "loading" ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                        </svg>
-                        Sending...
-                      </span>
-                    ) : "Send Message →"}
-                  </motion.button>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                      Short Note / Question (Optional)
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={senderNote}
+                      onChange={(e) => setSenderNote(e.target.value)}
+                      placeholder="e.g. Looking for weekend kids chess classes for my 8-year-old..."
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#25D366]/30 focus:border-[#25D366] transition-all resize-none"
+                    />
+                  </div>
 
-                  <AnimatePresence>
-                    {contactStatus === "success" && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="flex items-center gap-2 text-emerald-600 text-sm bg-emerald-50 rounded-xl px-4 py-3"
-                      >
-                        <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Message sent successfully! We&apos;ll respond within 24 hours.
-                      </motion.div>
-                    )}
-                    {contactStatus === "error" && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="flex items-center gap-2 text-red-600 text-sm bg-red-50 rounded-xl px-4 py-3"
-                      >
-                        <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                        </svg>
-                        Something went wrong. Please try again.
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </form>
+                  <div className="pt-1 flex flex-col sm:flex-row sm:items-center gap-3">
+                    <a
+                      href={whatsAppHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#25D366] hover:bg-[#1ebe5d] text-white font-black text-sm shadow-lg shadow-[#25D366]/20 transition-all"
+                    >
+                      Chat With Us on WhatsApp ({PICHESS_PHONE_LOCAL}) →
+                    </a>
+                    <a
+                      href={`tel:${PICHESS_PHONE_INTL.replace(/\s+/g, "")}`}
+                      className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl border border-gray-200 hover:border-gray-300 text-gray-700 font-semibold text-sm transition-colors"
+                    >
+                      Call {PICHESS_PHONE_LOCAL}
+                    </a>
+                  </div>
+
+                  <p className="text-xs text-gray-400">
+                    Prefer email? Write us at{" "}
+                    <a href={`mailto:${PICHESS_EMAIL}`} className="text-[#c9a84c] font-semibold hover:underline">
+                      {PICHESS_EMAIL}
+                    </a>
+                  </p>
+                </div>
               </div>
             </motion.div>
 

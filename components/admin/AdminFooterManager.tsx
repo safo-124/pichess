@@ -23,11 +23,11 @@ interface FooterData {
 const DEFAULTS: FooterData = {
   description:
     "Ghana\u2019s premier chess platform \u2014 training champions, building communities, and inspiring the next generation of strategic thinkers.",
-  contact: { email: "info@pichess.com", phone: "+233 XX XXX XXXX", location: "Accra, Ghana" },
+  contact: { email: "officialpichess@gmail.com", phone: "+233 55 453 4646", location: "Accra, Ghana" },
   social: { facebook: "", instagram: "", twitter: "", youtube: "", tiktok: "", linkedin: "", whatsapp: "" },
   hours: "Mon \u2013 Sat: 9 AM \u2013 6 PM",
-  cta: "Join the PiChess community and elevate your game today.",
-  copyright: "PiChess. All rights reserved.",
+  cta: "Join the Pi Chess community and elevate your game today.",
+  copyright: "Pi Chess. All rights reserved.",
 };
 
 const socialFields: { key: keyof FooterData["social"]; label: string; icon: any; placeholder: string }[] = [
@@ -114,7 +114,7 @@ export default function AdminFooterManager({ initialData }: { initialData: Foote
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-gradient-to-br from-[#c9a84c] to-[#a8893d] rounded-lg flex items-center justify-center font-black text-white text-sm">♟</div>
             <span className="font-black text-white text-lg">
-              Pi<span className="text-[#c9a84c]">Chess</span>
+              Pi <span className="text-[#c9a84c]">Chess</span>
             </span>
           </div>
           <p className="text-white/40 text-sm max-w-md">{data.description || "Your description here…"}</p>
@@ -147,7 +147,7 @@ export default function AdminFooterManager({ initialData }: { initialData: Foote
               onChange={(e) => update("description", e.target.value)}
               rows={3}
               className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#c9a84c]/30 focus:border-[#c9a84c] outline-none transition-all resize-none"
-              placeholder="Brief description about PiChess…"
+              placeholder="Brief description about Pi Chess…"
             />
           </div>
           <div>
@@ -168,7 +168,7 @@ export default function AdminFooterManager({ initialData }: { initialData: Foote
               value={data.copyright}
               onChange={(e) => update("copyright", e.target.value)}
               className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#c9a84c]/30 focus:border-[#c9a84c] outline-none transition-all"
-              placeholder="PiChess. All rights reserved."
+              placeholder="Pi Chess. All rights reserved."
             />
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function AdminFooterManager({ initialData }: { initialData: Foote
               value={data.contact.email}
               onChange={(e) => updateContact("email", e.target.value)}
               className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#c9a84c]/30 focus:border-[#c9a84c] outline-none transition-all"
-              placeholder="info@pichess.com"
+              placeholder="officialpichess@gmail.com"
             />
           </div>
           <div>

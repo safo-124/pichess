@@ -18,7 +18,7 @@ export interface NGOHeroData {
 }
 
 export const defaultNGOHero: NGOHeroData = {
-  badge: "PiChess Foundation",
+  badge: "Pi Chess Foundation",
   title1: "Chess for",
   title2: "Every Child.",
   subtitle:
@@ -35,7 +35,7 @@ export const defaultNGOHero: NGOHeroData = {
     { src: "https://images.unsplash.com/photo-1560174038-da43ac74f01b?w=400&q=80", alt: "Community chess tournament" },
     { src: "https://images.unsplash.com/photo-1604948501466-4e9c339b9c24?w=400&q=80", alt: "Young chess player celebrating" },
     { src: "https://images.unsplash.com/photo-1586165368502-1bad197a6461?w=400&q=80", alt: "Chess pieces close-up" },
-    { src: "https://images.unsplash.com/photo-1611195974226-a6a9be4a5b1e?w=400&q=80", alt: "Students learning chess" },
+    { src: "/uploads/1772297013069-i.jpg", alt: "Students learning chess" },
   ],
 };
 
@@ -120,7 +120,7 @@ export const defaultNGOPillars: NGOPillar[] = [
   {
     icon: "🎓",
     title: "Scholarships",
-    desc: "Talented players from underserved backgrounds receive fully funded spots at the PiChess Academy for advanced training.",
+    desc: "Talented players from underserved backgrounds receive fully funded spots at the Pi Chess Academy for advanced training.",
     image: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=600&q=80",
   },
   {
@@ -159,7 +159,7 @@ export interface NGOStorySection {
 export const defaultNGOStorySection: NGOStorySection = {
   heading: "From a Single Board to a National Movement",
   paragraphs: [
-    "PiChess Foundation started with a simple idea: every child in Ghana deserves the chance to learn chess. In 2021, we began with one chess set and a small group of eager students in Accra.",
+    "Pi Chess Foundation started with a simple idea: every child in Ghana deserves the chance to learn chess. In 2021, we began with one chess set and a small group of eager students in Accra.",
     "Today, we serve over 200 beneficiaries across 10 communities, running free programs in schools, community centres, and public spaces. Our coaches — many of whom were once students themselves — lead sessions that teach far more than the game.",
     "Chess teaches patience, critical thinking, and resilience. For many of our students, it becomes a pathway to scholarships, competitions, and futures they never imagined possible.",
   ],
@@ -202,8 +202,8 @@ export const defaultNGOPrograms: NGOProgram[] = [
   {
     id: "scholarships", badge: "Talent Development", icon: "🎓", title: "Chess Scholarships",
     subtitle: "Investing in exceptional talent",
-    desc: "Talented players from underserved backgrounds receive fully funded spots at the PiChess Academy for advanced training. Our scholarship covers coaching fees, tournament entry, travel, and all equipment.",
-    details: ["Full PiChess Academy tuition coverage", "National & international tournament sponsorship", "Travel & accommodation for competitions", "Ongoing mentorship & career guidance"],
+    desc: "Talented players from underserved backgrounds receive fully funded spots at the Pi Chess Academy for advanced training. Our scholarship covers coaching fees, tournament entry, travel, and all equipment.",
+    details: ["Full Pi Chess Academy tuition coverage", "National & international tournament sponsorship", "Travel & accommodation for competitions", "Ongoing mentorship & career guidance"],
     impact: "30+ scholars funded",
     image: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=800&q=80", color: "#3a9970",
   },
@@ -227,7 +227,7 @@ export const defaultNGOPrograms: NGOProgram[] = [
     id: "tournaments", badge: "Competition", icon: "🏆", title: "Foundation Tournaments",
     subtitle: "Competitive play for everyone",
     desc: "We organise free-to-enter tournaments exclusively for foundation beneficiaries, giving underserved players their first taste of competitive chess in a supportive, encouraging environment.",
-    details: ["Quarterly regional tournaments", "Annual PiChess Foundation Championship", "Prizes, medals & certificates for all", "Talent scouting for scholarship program"],
+    details: ["Quarterly regional tournaments", "Annual Pi Chess Foundation Championship", "Prizes, medals & certificates for all", "Talent scouting for scholarship program"],
     impact: "12 events per year",
     image: "https://images.unsplash.com/photo-1611329857570-f02f340e7378?w=800&q=80", color: "#1a6847",
   },
@@ -341,7 +341,7 @@ export interface NGOApplyContent {
 
 export const defaultNGOApply: NGOApplyContent = {
   heroImage: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=80",
-  heroBadge: "PiChess Foundation",
+  heroBadge: "Pi Chess Foundation",
   heading: "Partner with Us",
   subtitle:
     "Every child deserves the chance to learn chess. Fill out our application and we'll match you with the right program — completely free.",
@@ -351,7 +351,7 @@ export const defaultNGOApply: NGOApplyContent = {
   benefits: [
     { icon: "♟", title: "Free Equipment", desc: "Chess sets, boards, clocks & materials" },
     { icon: "🏫", title: "School Programs", desc: "Regular coaching at your school" },
-    { icon: "🎓", title: "Scholarships", desc: "Funded spots at PiChess Academy" },
+    { icon: "🎓", title: "Scholarships", desc: "Funded spots at Pi Chess Academy" },
     { icon: "🤝", title: "Mentorship", desc: "Paired with experienced players" },
   ],
   impactGallery: {
@@ -399,10 +399,10 @@ export const defaultNGOApply: NGOApplyContent = {
   submitButtonText: "Submit Application 🌱",
   requiredNote: "Fields marked with * are required",
   successHeading: "Application Received!",
-  successMessage: "We'll review your application and get back to you within 7 working days. Thank you for reaching out to PiChess Foundation!",
+  successMessage: "We'll review your application and get back to you within 7 working days. Thank you for reaching out to Pi Chess Foundation!",
   faqs: [
     { q: "Who can apply?", a: "Anyone aged 5-25 who wants to learn or improve their chess skills. We prioritise applicants from underserved communities." },
-    { q: "Is there a fee?", a: "No. All PiChess Foundation programs are completely free. We cover equipment, coaching, and tournament fees." },
+    { q: "Is there a fee?", a: "No. All Pi Chess Foundation programs are completely free. We cover equipment, coaching, and tournament fees." },
     { q: "How long until I hear back?", a: "We review applications weekly. You'll receive an email response within 7 working days." },
     { q: "What if I don't have equipment?", a: "Don't worry! If accepted, we provide everything you need — chess set, board, workbook, and clock." },
     { q: "Can a parent apply on behalf of a child?", a: "Absolutely. Fill in the child's details and your own in the guardian section." },
@@ -459,8 +459,8 @@ export const defaultNGODonate: NGODonateContent = {
     { amount: "GH₵ 500", desc: "Funds a 3-month program" },
     { amount: "Any amount", desc: "Every cedi makes a difference" },
   ],
-  momoDetails: "MTN MoMo: 0XX XXX XXXX\nName: PiChess Foundation\nReference: DONATE",
-  bankDetails: "GCB Bank\nAccount Name: PiChess Foundation Ltd\nAccount No: XXXX XXXX XXXX",
+  momoDetails: "",
+  bankDetails: "",
   materialNote: "We also accept chess sets, boards, clocks, and books in good condition.",
 };
 
@@ -482,7 +482,7 @@ export const defaultNGOStoriesContent: NGOStoriesContent = {
     { src: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=600&q=80", alt: "Chess lesson" },
     { src: "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=600&q=80", alt: "Charity event" },
     { src: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&q=80", alt: "Young players" },
-    { src: "https://images.unsplash.com/photo-1547347298-4f21aa2dfaee?w=600&q=80", alt: "Tournament" },
+    { src: "/uploads/1773531163801-photo_2026-03-14_23-30-27.jpg", alt: "Tournament" },
     { src: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=600&q=80", alt: "Volunteers" },
     { src: "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=600&q=80", alt: "School program" },
   ],

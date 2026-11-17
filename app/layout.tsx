@@ -14,11 +14,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "PiChess | Chess Academy, NGO & Tournaments",
-    template: "%s | PiChess",
+    default: "Pi Chess | Chess Academy, NGO & Tournaments",
+    template: "%s | Pi Chess",
   },
   description:
-    "PiChess — Ghana's premier chess academy, NGO, and tournament platform. Train. Compete. Impact.",
+    "Pi Chess — Ghana's premier chess academy, NGO, and tournament platform. Train. Compete. Impact.",
 };
 
 export default function RootLayout({

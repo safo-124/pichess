@@ -1,9 +1,9 @@
  
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import InlineRegistrationForm from "@/components/shared/InlineRegistrationForm";
 import Link from "next/link";
 import { getEffectiveTournamentStatus } from "@/lib/tournament-status";
+import { buildTournamentWhatsAppUrl, PICHESS_PHONE_LOCAL } from "@/lib/whatsapp";
 
 interface Props {
   params: Promise<{ tournamentId: string }>;
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props) {
     select: { title: true },
   });
   return {
-    title: tournament ? `Register — ${tournament.title}` : "Register — PiChess",
+    title: tournament ? `Register — ${tournament.title}` : "Register — Pi Chess",
   };
 }
 
@@ -69,7 +69,7 @@ export default async function RegisterPage({ params }: Props) {
         {/* Logo / brand */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
-            <h1 className="text-2xl font-black text-white tracking-tight">♟️ PiChess</h1>
+            <h1 className="text-2xl font-black text-white tracking-tight">♟️ Pi Chess</h1>
           </Link>
         </div>
 
@@ -133,17 +133,31 @@ export default async function RegisterPage({ params }: Props) {
             </Link>
           </div>
         ) : (
-          <InlineRegistrationForm tournament={{
-            id: tournament.id,
-            title: tournament.title,
-            date: tournament.date,
-            location: tournament.location,
-            venue: tournament.venue,
-            type: tournament.type,
-            maxSpots: tournament.maxSpots,
-            registeredCount: tournament.registeredCount,
-            flyer: tournament.flyer,
-          }} />
+          <div className="rounded-2xl bg-white/[0.04] border border-[#c9a84c]/25 p-8 text-center">
+            <span className="text-4xl mb-3 block">💬</span>
+            <h3 className="text-xl font-black text-white mb-2">
+              {tournament.maxSpots && tournament.registeredCount >= tournament.maxSpots
+                ? "Join the WhatsApp Waitlist"
+                : "Register in 1 Tap on WhatsApp"}
+            </h3>
+            <p className="text-white/60 text-sm mb-6 max-w-sm mx-auto leading-relaxed">
+              Send your player name and age group straight to our tournament coordinator on WhatsApp ({PICHESS_PHONE_LOCAL}) — we&apos;ll confirm your spot right away.
+            </p>
+            <a
+              href={buildTournamentWhatsAppUrl({
+                title: tournament.title,
+                dateLabel: eventDate,
+                isWaitlist: Boolean(tournament.maxSpots && tournament.registeredCount >= tournament.maxSpots),
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 rounded-full bg-[#25D366] hover:bg-[#1ebe5d] text-white font-black text-sm shadow-xl shadow-[#25D366]/20 transition-all"
+            >
+              {tournament.maxSpots && tournament.registeredCount >= tournament.maxSpots
+                ? "Join Waitlist on WhatsApp →"
+                : "Register on WhatsApp →"}
+            </a>
+          </div>
         )}
 
         <div className="text-center mt-8">

@@ -33,10 +33,10 @@ const shimmer = {
 export default function HeroPhotoGrid({ images }: { images: HeroImage[] }) {
   // Use provided images or defaults
   const photos = images?.length >= 4 ? images : [
-    { src: "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=600&h=700&fit=crop&q=80", alt: "Kids learning chess" },
-    { src: "https://images.unsplash.com/photo-1560174038-da43ac74f01b?w=600&h=400&fit=crop&q=80", alt: "Chess pieces" },
-    { src: "https://images.unsplash.com/photo-1604948501466-4e9c339b9c24?w=600&h=700&fit=crop&q=80", alt: "Player concentrating" },
-    { src: "https://images.unsplash.com/photo-1586165368502-1bad197a6461?w=600&h=400&fit=crop&q=80", alt: "Chess coaching" },
+    { src: "/uploads/1772297013069-i.jpg", alt: "Pi Chess coach guiding students at the board" },
+    { src: "/uploads/1773531163801-photo_2026-03-14_23-30-27.jpg", alt: "Young Pi Chess student recording moves at a tournament" },
+    { src: "/uploads/1772293918159-photo_5848045058580922524_y.jpg", alt: "Focused young player with digital chess clock" },
+    { src: "/uploads/1772296915445-k.jpg", alt: "Pi Chess competitor planning her next move" },
   ];
 
   return (

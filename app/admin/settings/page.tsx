@@ -1,7 +1,7 @@
 import { getSiteContent } from "@/lib/actions/admin";
 import AdminSettingsManager from "@/components/admin/AdminSettingsManager";
 
-export const metadata = { title: "Settings | Admin | PiChess" };
+export const metadata = { title: "Settings | Admin | Pi Chess" };
 
 export default async function AdminSettingsPage() {
   let settingsData = null;

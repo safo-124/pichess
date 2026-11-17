@@ -3,7 +3,7 @@ import { getSiteContent } from "@/lib/actions/admin";
 import { defaultNGOVolunteer, type NGOVolunteerContent } from "@/lib/ngo-content";
 
 export const metadata = {
-  title: "Volunteer | PiChess Foundation",
+  title: "Volunteer | Pi Chess Foundation",
   description:
     "Share your passion, skills, and time to help us bring chess to more children across Ghana.",
 };

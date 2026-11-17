@@ -55,7 +55,7 @@ export interface AboutTeamMember {
 
 export const defaultHero: AboutHero = {
   title: "About",
-  highlight: "PiChess",
+  highlight: "Pi Chess",
   subtitle: "We believe chess is more than a game. It's a discipline, a language, and a path to excellence — for everyone.",
   backgroundImage: "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=1920&q=80",
 };
@@ -64,7 +64,7 @@ export const defaultStory: AboutStory = {
   label: "Our Story",
   title: "Born in Ghana. Built for Africa.",
   paragraphs: [
-    "PiChess was founded with a single belief: that every young person in Ghana deserves access to world-class chess education.",
+    "Pi Chess was founded with a single belief: that every young person in Ghana deserves access to world-class chess education.",
     "From a small club to a national platform, we've grown into an ecosystem that serves students, communities, and champions.",
     "Our three pillars — the Academy, the Foundation, and Tournaments — work together to build future leaders through the board.",
   ],
@@ -96,16 +96,11 @@ export const defaultValues: AboutValue[] = [
 ];
 
 export const defaultTimeline: AboutTimeline[] = [
-  { year: "2017", title: "The Beginning", description: "PiChess started as a small chess club with just 10 passionate players in Accra." },
+  { year: "2017", title: "The Beginning", description: "Pi Chess started as a small chess club with just 10 passionate players in Accra." },
   { year: "2019", title: "Academy Launch", description: "We launched our structured coaching academy, bringing professional training to young players." },
-  { year: "2021", title: "Foundation Born", description: "The PiChess Foundation was established to bring chess to underserved communities." },
+  { year: "2021", title: "Foundation Born", description: "The Pi Chess Foundation was established to bring chess to underserved communities." },
   { year: "2023", title: "National Reach", description: "Expanded to multiple regions, hosting over 50 tournaments across Ghana." },
   { year: "2025", title: "Digital Era", description: "Launched our digital platform connecting players, coaches, and events nationwide." },
 ];
 
-export const defaultTeam: AboutTeamMember[] = [
-  { name: "John Doe", role: "Founder & CEO", bio: "Visionary leader who founded PiChess with a passion for using chess to empower Ghana's youth.", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" },
-  { name: "Jane Smith", role: "Head of Academy", bio: "International chess master and educator with over 15 years of coaching experience.", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80" },
-  { name: "Michael Owusu", role: "Foundation Director", bio: "Dedicated to expanding chess access to underserved communities across Ghana.", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80" },
-  { name: "Sarah Mensah", role: "Tournament Director", bio: "Organizes world-class chess events that bring together the best players nationwide.", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80" },
-];
+export const defaultTeam: AboutTeamMember[] = [];

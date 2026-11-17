@@ -102,7 +102,7 @@ export default function AdminSidebar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <div className="font-black text-white text-sm tracking-tight">PiChess</div>
+              <div className="font-black text-white text-sm tracking-tight">Pi Chess</div>
               <div className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-medium">Admin Panel</div>
             </motion.div>
           )}

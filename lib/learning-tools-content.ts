@@ -155,7 +155,7 @@ export const defaultTips: LearningTip[] = [
 export const defaultCTA: LearningToolsCTA = {
   heading: "Ready to Train?",
   subtitle:
-    "Join PiChess Academy for structured coaching, weekly tournaments, and a community of passionate players.",
+    "Join Pi Chess Academy for structured coaching, weekly tournaments, and a community of passionate players.",
   primaryLabel: "Join the Academy",
   primaryHref: "/academy",
   secondaryLabel: "Get in Touch",

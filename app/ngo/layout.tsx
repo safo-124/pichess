@@ -1,10 +1,10 @@
-import NGONav from "@/components/ngo/NGONav";
+import MainNav from "@/components/main/MainNav";
 import ScrollPawn from "@/components/shared/ScrollPawn";
 import MainFooter from "@/components/main/MainFooter";
 import WhatsAppFloat from "@/components/shared/WhatsAppFloat";
 import { getSiteContent } from "@/lib/actions/admin";
 
-export const metadata = { title: "Foundation | PiChess NGO" };
+export const metadata = { title: "Foundation | Pi Chess NGO" };
 
 export default async function NGOLayout({ children }: { children: React.ReactNode }) {
   let footerData = null;
@@ -12,7 +12,7 @@ export default async function NGOLayout({ children }: { children: React.ReactNod
   try {
     const raw = await getSiteContent("site_footer");
     if (raw) footerData = JSON.parse(raw);
-    
+
     const rawLogo = await getSiteContent("site_logo");
     if (rawLogo) {
       const parsed = JSON.parse(rawLogo);
@@ -22,9 +22,9 @@ export default async function NGOLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-white text-zinc-900 flex flex-col">
-      <NGONav logoUrl={logoUrl} />
+      <MainNav logoUrl={logoUrl} />
       <ScrollPawn color="#2e7d5b" light />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pt-12">{children}</main>
       <WhatsAppFloat phone={process.env.ADMIN_WHATSAPP} />
       <MainFooter footerData={footerData} />
     </div>

@@ -90,7 +90,7 @@ export default function InlineRegistrationForm({ tournament }: Props) {
         </p>
         <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 p-4">
           <p className="text-amber-300 text-xs font-semibold">
-            📱 Keep an eye on your WhatsApp for the confirmation message from PiChess!
+            📱 Keep an eye on your WhatsApp for the confirmation message from Pi Chess!
           </p>
         </div>
         <button

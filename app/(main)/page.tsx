@@ -1,56 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
 import AnimatedSection from "@/components/shared/AnimatedSection";
-import StatsCounter from "@/components/shared/StatsCounter";
 import TextReveal from "@/components/shared/TextReveal";
-import MagneticButton from "@/components/shared/MagneticButton";
 import HeroSection from "@/components/main/HeroSection";
 import HomeShopSection from "@/components/main/HomeShopSection";
 import prisma from "@/lib/prisma";
 import { getEffectiveTournamentStatus } from "@/lib/tournament-status";
-
-type HomeStat = {
-  end: number;
-  label: string;
-  suffix?: string;
-  href: string;
-  ariaLabel?: string;
-};
-
-const defaultHomeStats: HomeStat[] = [
-  {
-    end: 500,
-    label: "Students Trained",
-    suffix: "+",
-    href: "/academy",
-    ariaLabel: "View PiChess Academy programs",
-  },
-  {
-    end: 50,
-    label: "Tournaments Hosted",
-    suffix: "+",
-    href: "/tournaments",
-    ariaLabel: "View PiChess tournaments",
-  },
-  {
-    end: 200,
-    label: "Lives Impacted",
-    suffix: "+",
-    href: "/ngo",
-    ariaLabel: "View PiChess Foundation impact",
-  },
-  {
-    end: 15,
-    label: "Expert Coaches",
-    href: "/academy/team",
-    ariaLabel: "Meet the PiChess expert coaches",
-  },
-];
+import { buildLessonWhatsAppUrl, buildTournamentWhatsAppUrl } from "@/lib/whatsapp";
 
 /* ── data fetchers ─────────────────────────────────────────── */
 async function getTournaments() {
   try {
-    const rows = await prisma.tournament.findMany({
+    const featuredRows = await prisma.tournament.findMany({
       where: { featured: true, status: { in: ["UPCOMING", "ONGOING"] } },
       include: {
         photos: { take: 1 },
@@ -59,13 +20,34 @@ async function getTournaments() {
       orderBy: { date: "asc" },
       take: 4,
     });
-    return rows.filter((t) => getEffectiveTournamentStatus({ status: t.status, date: t.date, endDate: t.endDate }) !== "COMPLETED");
-  } catch { return []; }
+    const activeFeatured = featuredRows.filter(
+      (t) => getEffectiveTournamentStatus({ status: t.status, date: t.date, endDate: t.endDate }) !== "COMPLETED"
+    );
+    if (activeFeatured.length > 0) return activeFeatured;
+
+    const allRows = await prisma.tournament.findMany({
+      where: { status: { in: ["UPCOMING", "ONGOING"] } },
+      include: {
+        photos: { take: 1 },
+        registrations: { where: { status: "CONFIRMED" }, select: { id: true } },
+      },
+      orderBy: { date: "asc" },
+      take: 4,
+    });
+    return allRows.filter(
+      (t) => getEffectiveTournamentStatus({ status: t.status, date: t.date, endDate: t.endDate }) !== "COMPLETED"
+    );
+  } catch {
+    return [];
+  }
 }
 
 async function getPartners() {
-  try { return await prisma.partner.findMany({ orderBy: { order: "asc" } }); }
-  catch { return []; }
+  try {
+    return await prisma.partner.findMany({ orderBy: { order: "asc" } });
+  } catch {
+    return [];
+  }
 }
 
 async function getTestimonials() {
@@ -75,7 +57,9 @@ async function getTestimonials() {
       take: 3,
       orderBy: { createdAt: "desc" },
     });
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 async function getNGOStats() {
@@ -85,74 +69,90 @@ async function getNGOStats() {
       prisma.nGO_Volunteer.count(),
       prisma.nGO_Donation.aggregate({ _sum: { amount: true }, _count: true }),
     ]);
-    return { apps, volunteers, totalDonated: donations._sum?.amount ?? 0, donorCount: donations._count ?? 0 };
-  } catch { return { apps: 0, volunteers: 0, totalDonated: 0, donorCount: 0 }; }
+    return {
+      apps,
+      volunteers,
+      totalDonated: donations._sum?.amount ?? 0,
+      donorCount: donations._count ?? 0,
+    };
+  } catch {
+    return { apps: 0, volunteers: 0, totalDonated: 0, donorCount: 0 };
+  }
 }
 
 async function getHeroData() {
   try {
     const row = await (prisma as any).siteContent.findUnique({ where: { key: "home_hero" } });
     return row?.value ? JSON.parse(row.value) : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
-async function getHomeStats(): Promise<HomeStat[]> {
-  try {
-    const row = await (prisma as any).siteContent.findUnique({ where: { key: "home_stats" } });
-    const parsed = row?.value ? JSON.parse(row.value) : null;
-    if (!Array.isArray(parsed) || parsed.length === 0) return defaultHomeStats;
-
-    return parsed.map((stat, index) => ({
-      end: Number(stat.end) || defaultHomeStats[index]?.end || 0,
-      label: String(stat.label || defaultHomeStats[index]?.label || "Stat"),
-      suffix: stat.suffix ? String(stat.suffix) : "",
-      href: String(stat.href || defaultHomeStats[index]?.href || "/"),
-      ariaLabel: stat.ariaLabel
-        ? String(stat.ariaLabel)
-        : defaultHomeStats[index]?.ariaLabel || `View ${stat.label || "stat"} details`,
-    }));
-  } catch { return defaultHomeStats; }
-}
+const audiencePrograms = [
+  {
+    tab: "kids",
+    badge: "Most Popular",
+    title: "Kids & Teens",
+    subtitle: "Ages 5–17 · Beginner to competitive",
+    desc: "Fun, structured weekly lessons that build patience, focus, and confidence — plus adaptive classes and youth tournament prep.",
+    image: "/uploads/1773531163801-photo_2026-03-14_23-30-27.jpg",
+    programName: "Kids & Teens Chess Classes",
+  },
+  {
+    tab: "adults",
+    badge: "Flexible Schedule",
+    title: "Adults & 1-on-1 Coaching",
+    subtitle: "Complete beginners to serious players",
+    desc: "Learn from scratch in a relaxed adult class or train 1-on-1 with a dedicated coach around your own schedule.",
+    image: "/uploads/1772296915445-k.jpg",
+    programName: "Adult & 1-on-1 Chess Coaching",
+  },
+  {
+    tab: "schools",
+    badge: "Organizations",
+    title: "Schools & Companies",
+    subtitle: "After-school clubs & team workshops",
+    desc: "We supply trained coaches, chess boards, and organized inter-school or workplace competitions across Ghana.",
+    image: "/uploads/1775035492024-Google_festival.jpg",
+    programName: "School or Company Chess Program",
+  },
+];
 
 /* ── page ──────────────────────────────────────────────────── */
 export default async function HomePage() {
   const whatsApp = (process.env.ADMIN_WHATSAPP || "233554534646").replace(/\D/g, "");
-  const [tournaments, partners, testimonials, ngoStats, heroData, homeStats] = await Promise.all([
+  const [tournaments, partners, testimonials, ngoStats, heroData] = await Promise.all([
     getTournaments(),
     getPartners(),
     getTestimonials(),
     getNGOStats(),
     getHeroData(),
-    getHomeStats(),
   ]);
+
+  const generalLessonWhatsApp = buildLessonWhatsAppUrl();
 
   return (
     <div className="relative">
-
-      {/* ═══════════════════════════════════════════════════════
-          HERO — Background image with photo grid
-      ═══════════════════════════════════════════════════════ */}
+      {/* 1. HERO — Clear promise for parents, adult learners & schools */}
       <HeroSection heroData={heroData} />
 
-
-      {/* ═══════════════════════════════════════════════════════
-          TICKER — Scrolling achievements (gold accent)
-      ═══════════════════════════════════════════════════════ */}
-      <section className="py-4 bg-gray-50 border-t border-gray-200 overflow-hidden">
+      {/* 2. TRUST TICKER */}
+      <section className="py-4 bg-gray-50 border-y border-gray-200 overflow-hidden">
         <div className="flex animate-ticker whitespace-nowrap">
           {[...Array(2)].map((_, setIdx) => (
             <div key={setIdx} className="flex items-center">
               {[
-                "🏆 National Champions 2024",
                 "♟ 500+ Students Trained",
-                "🌍 Community Impact Award",
-                "📚 FIDE Affiliated Academy",
-                "❤️ 200+ Lives Transformed",
-                "🎯 Expert-Led Training",
+                "📍 In-Person in Accra & Live Online",
+                "🧒 Kids (Ages 5–17) & Adult Classes",
+                "🏫 School Clubs & Workplace Workshops",
+                "🏆 Rated & Open Tournaments",
+                "🛒 Official Boards, Clocks & Gear",
               ].map((item, i) => (
-                <span key={`${setIdx}-${i}`} className="flex items-center gap-3 mx-8 text-gray-600 text-sm font-bold">
+                <span key={`${setIdx}-${i}`} className="flex items-center gap-3 mx-8 text-gray-700 text-sm font-bold">
                   {item}
-                  <span className="w-1 h-1 rounded-full bg-[#c9a84c]/50" />
+                  <span className="w-1 h-1 rounded-full bg-[#c9a84c]/60" />
                 </span>
               ))}
             </div>
@@ -160,258 +160,119 @@ export default async function HomePage() {
         </div>
       </section>
 
-
-      {/* ═══════════════════════════════════════════════════════
-          ABOUT — Elegant intro with visual cards
-      ═══════════════════════════════════════════════════════ */}
-      <section className="py-28 sm:py-36 bg-white relative overflow-hidden">
-        {/* Subtle background accent */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#c9a84c]/[0.03] blur-[150px] pointer-events-none" />
-
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <AnimatedSection>
-            <p className="text-[#c9a84c] text-xs font-bold uppercase tracking-[0.3em] mb-6">About PiChess</p>
-          </AnimatedSection>
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-gray-900 tracking-tight leading-[1.1] mb-8">
-            <TextReveal text="Building Africa's Strongest" delay={0.1} />
-            <br className="hidden sm:block" />
-            <TextReveal text="Chess Ecosystem" delay={0.3} />
-          </h2>
-          <AnimatedSection delay={0.2}>
-            <p className="text-lg sm:text-xl text-gray-500 leading-relaxed max-w-3xl mx-auto">
-              Founded in Accra, PiChess brings together{" "}
-              <span className="text-[#c9a84c] font-semibold">elite training</span>,{" "}
-              <span className="text-[#2e7d5b] font-semibold">community outreach</span>, and{" "}
-              <span className="text-amber-600 font-semibold">premium chess gear</span>{" "}
-              under one vision — chess as a tool for discipline, strategy, and excellence.
-            </p>
-          </AnimatedSection>
-
-          {/* Three pillar icons */}
-          <AnimatedSection delay={0.3}>
-            <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-14 max-w-2xl mx-auto">
-              {[
-                { icon: "♔", label: "Academy", color: "#c9a84c" },
-                { icon: "❤️", label: "Foundation", color: "#2e7d5b" },
-                { icon: "♟", label: "Shop", color: "#d97706" },
-              ].map((p) => (
-                <div key={p.label} className="flex flex-col items-center gap-3">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl" style={{ backgroundColor: `${p.color}10`, border: `1px solid ${p.color}20` }}>
-                    {p.icon}
-                  </div>
-                  <span className="text-xs font-bold uppercase tracking-wider" style={{ color: p.color }}>{p.label}</span>
-                </div>
-              ))}
-            </div>
-          </AnimatedSection>
-
-          {/* Decorative line */}
-          <AnimatedSection delay={0.4}>
-            <div className="mx-auto mt-14 w-20 h-[2px] bg-gradient-to-r from-transparent via-[#c9a84c]/50 to-transparent" />
-          </AnimatedSection>
-        </div>
-      </section>
-
-
-      {/* ═══════════════════════════════════════════════════════
-          ACADEMY — Premium card showcase
-      ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-gray-50 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-[700px] h-[700px] rounded-full bg-[#c9a84c]/[0.04] blur-[200px] pointer-events-none" />
-
+      {/* 3. ACADEMY — 3 Clear Tracks (Kids & Teens, Adults & 1-on-1, Schools & Companies) */}
+      <section className="py-20 sm:py-28 bg-white relative overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Section header */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 mb-16">
+          <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 mb-12">
             <AnimatedSection>
-              <span className="text-xs font-bold text-[#c9a84c] uppercase tracking-[0.25em]">Academy</span>
-              <h2 className="text-3xl min-[400px]:text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 mt-3 tracking-tight">
-                <TextReveal text="Train Like a" /><br className="hidden min-[400px]:block" />
-                <span className="gradient-text-gold inline-block mt-1 sm:mt-0"><TextReveal text="Grandmaster." delay={0.2} /></span>
+              <span className="text-xs font-bold text-[#a77d1b] uppercase tracking-[0.25em]">Pi Chess Academy</span>
+              <h2 className="text-3xl sm:text-5xl font-black text-gray-950 mt-2 tracking-tight">
+                <TextReveal text="Programs Built for" />{" "}
+                <span className="text-[#c9a84c]">Every Learner.</span>
               </h2>
             </AnimatedSection>
-            <AnimatedSection delay={0.15}>
-              <p className="text-gray-500 text-base sm:text-lg max-w-md leading-relaxed">
-                Structured programs for beginners to advanced players, guided by Ghana&apos;s finest coaches.
+            <AnimatedSection delay={0.1}>
+              <p className="text-gray-600 text-base sm:text-lg max-w-md leading-relaxed">
+                Pick the group that fits best, then message us on WhatsApp for current class times and fees.
               </p>
             </AnimatedSection>
           </div>
 
-          {/* Program cards — 3 column featured layout */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
-            {/* Card 1 — Flagship (gradient instead of image) */}
-            <AnimatedSection delay={0} className="md:row-span-2">
-              <div className="group relative h-full min-h-[400px] md:min-h-[520px] rounded-3xl overflow-hidden card-shine bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-                {/* Chess pattern overlay */}
-                <div className="absolute inset-0 opacity-[0.06]" style={{
-                  backgroundImage: `
-                    linear-gradient(rgba(201,168,76,0.5) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(201,168,76,0.5) 1px, transparent 1px)
-                  `,
-                  backgroundSize: "40px 40px",
-                }} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                {/* Large chess piece accent */}
-                <div className="absolute top-8 right-8 text-[120px] leading-none text-[#c9a84c]/10 font-serif pointer-events-none select-none">♔</div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 z-10">
-                  <span className="inline-block px-3 py-1 rounded-full bg-[#c9a84c]/20 text-[#c9a84c] text-[10px] font-bold uppercase tracking-wider mb-3 backdrop-blur-sm border border-[#c9a84c]/20">
-                    Flagship Program
-                  </span>
-                  <h3 className="text-2xl sm:text-3xl font-black text-white mb-2">Elite Chess Academy</h3>
-                  <p className="text-white/50 text-sm leading-relaxed max-w-sm">
-                    From opening theory to endgame mastery — our coaches prepare students
-                    for national and international competition.
-                  </p>
-                  <Link
-                    href="/academy"
-                    className="inline-flex items-center gap-2 mt-4 text-[#c9a84c] text-sm font-bold group-hover:gap-3 transition-all"
-                  >
-                    Learn more <span>→</span>
-                  </Link>
-                </div>
-              </div>
-            </AnimatedSection>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {audiencePrograms.map((card, i) => (
+              <AnimatedSection key={card.tab} delay={i * 0.1}>
+                <div className="group flex h-full flex-col overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-[#c9a84c]/50 hover:shadow-xl">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+                    <Image
+                      src={card.image}
+                      alt={card.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent" />
+                    <span className="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 text-[11px] font-bold text-gray-900 shadow-sm">
+                      {card.badge}
+                    </span>
+                    <div className="absolute bottom-4 left-5 right-5">
+                      <h3 className="text-2xl font-black text-white">{card.title}</h3>
+                      <p className="text-white/80 text-xs font-semibold mt-0.5">{card.subtitle}</p>
+                    </div>
+                  </div>
 
-            {/* Card 2 — Junior */}
-            <AnimatedSection delay={0.12}>
-              <div className="group relative h-60 md:h-full min-h-[240px] rounded-3xl overflow-hidden card-shine">
-                <Image
-                  src="https://images.unsplash.com/photo-1528819622765-d6bcf132f793?w=800&q=80"
-                  alt="Junior chess program"
-                  fill
-                  className="object-cover img-zoom"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                <div className="absolute top-4 right-4">
-                  <span className="px-2.5 py-1 rounded-full bg-[#c9a84c]/90 text-black text-[10px] font-bold uppercase tracking-wider">
-                    Popular
-                  </span>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
-                  <h4 className="text-lg font-black text-white mb-1">Junior Program</h4>
-                  <p className="text-white/50 text-sm">Ages 6–14 · Fundamentals &amp; tactics</p>
-                </div>
-              </div>
-            </AnimatedSection>
-
-            {/* Card 3 — Tournament Prep */}
-            <AnimatedSection delay={0.24}>
-              <div className="group relative h-60 md:h-full min-h-[240px] rounded-3xl overflow-hidden card-shine">
-                <Image
-                  src="https://images.unsplash.com/photo-1586165368502-1bad9a092098?w=800&q=80"
-                  alt="Tournament preparation"
-                  fill
-                  className="object-cover img-zoom"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
-                  <h4 className="text-lg font-black text-white mb-1">Tournament Prep</h4>
-                  <p className="text-white/50 text-sm">Competition strategy &amp; mental game</p>
-                </div>
-              </div>
-            </AnimatedSection>
-          </div>
-
-          {/* Features row */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-            {[
-              { icon: "🎯", title: "Personalized Plans", desc: "Tailored to your skill level" },
-              { icon: "🏆", title: "Tournaments", desc: "Regular competitive events" },
-              { icon: "📊", title: "Progress Tracking", desc: "Watch your rating climb" },
-              { icon: "👥", title: "Small Groups", desc: "Maximum attention per student" },
-            ].map((f, i) => (
-              <AnimatedSection key={f.title} delay={0.08 * i}>
-                <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 hover:border-[#c9a84c]/40 hover:shadow-lg transition-all duration-500 h-full">
-                  <span className="text-2xl block mb-3">{f.icon}</span>
-                  <h4 className="font-bold text-gray-900 text-sm mb-1">{f.title}</h4>
-                  <p className="text-gray-400 text-xs leading-relaxed">{f.desc}</p>
+                  <div className="flex flex-1 flex-col p-6">
+                    <p className="text-gray-600 text-sm leading-relaxed flex-1">{card.desc}</p>
+                    <div className="mt-6 flex flex-col gap-2.5">
+                      <a
+                        href={buildLessonWhatsAppUrl({ program: card.programName })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-950 hover:bg-[#c9a84c] text-white hover:text-gray-950 px-4 py-3 text-xs font-bold transition-all"
+                      >
+                        Ask Fees &amp; Times on WhatsApp →
+                      </a>
+                      <Link
+                        href={`/academy/lessons?tab=${card.tab}`}
+                        className="inline-flex items-center justify-center rounded-xl border border-gray-200 px-4 py-2.5 text-xs font-bold text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-all"
+                      >
+                        See Included Classes
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </AnimatedSection>
             ))}
           </div>
 
-          {/* CTA row */}
-          <AnimatedSection delay={0.2} className="mt-12 flex flex-col sm:flex-row items-center gap-4">
-            <Link
-              href="/academy"
-              className="px-8 py-3.5 rounded-full bg-gray-900 hover:bg-black text-white font-bold text-sm transition-all hover:shadow-lg hover:scale-[1.03] active:scale-[0.97]"
+          <AnimatedSection delay={0.2} className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href={generalLessonWhatsApp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto text-center px-8 py-4 rounded-full bg-[#25D366] hover:bg-[#1ebe5d] text-gray-950 font-black text-sm transition-all shadow-md"
             >
-              Explore Programs →
-            </Link>
+              Chat on WhatsApp for Fees &amp; Class Times →
+            </a>
             <Link
-              href="/academy/enquire"
-              className="px-8 py-3.5 rounded-full border border-gray-300 text-gray-700 hover:bg-white font-semibold text-sm transition-all"
+              href="/academy/lessons"
+              className="w-full sm:w-auto text-center px-8 py-4 rounded-full border border-gray-300 text-gray-800 hover:bg-gray-50 font-bold text-sm transition-all"
             >
-              Enquire Now
+              View All 9 Academy Programs
             </Link>
           </AnimatedSection>
         </div>
       </section>
 
-
-      {/* ═══════════════════════════════════════════════════════
-          STATS — Dramatic counter strip (pure CSS, no image)
-      ═══════════════════════════════════════════════════════ */}
-      <section className="relative py-20 sm:py-28 overflow-hidden bg-gray-50">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(201,168,76,0.04),transparent)]" />
-        {/* Accent lines */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/15 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/15 to-transparent" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimatedSection className="text-center mb-12">
-            <span className="text-[#c9a84c] text-xs font-bold uppercase tracking-[0.3em]">By the Numbers</span>
-          </AnimatedSection>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
-            {homeStats.map((stat) => (
-              <Link
-                key={`${stat.label}-${stat.href}`}
-                href={stat.href}
-                aria-label={stat.ariaLabel || `View ${stat.label}`}
-                className="focus-ring group relative block rounded-2xl border border-[#c9a84c]/15 bg-white/70 px-2 py-5 shadow-sm shadow-[#c9a84c]/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a84c]/40 hover:bg-white hover:shadow-lg hover:shadow-[#c9a84c]/10"
-              >
-                <span className="absolute right-4 top-3 text-sm font-black text-[#c9a84c]/45 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#c9a84c]">↗</span>
-                <StatsCounter end={stat.end} label={stat.label} suffix={stat.suffix} color="gold" />
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* ═══════════════════════════════════════════════════════
-          TESTIMONIALS — Bold quote cards
-      ═══════════════════════════════════════════════════════ */}
+      {/* 4. TESTIMONIALS */}
       {testimonials.length > 0 && (
-        <section className="py-24 sm:py-32 bg-white relative">
+        <section className="py-20 sm:py-24 bg-gray-50 relative">
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <AnimatedSection className="text-center mb-14">
-              <span className="text-xs font-bold text-[#c9a84c] uppercase tracking-[0.25em]">Testimonials</span>
-              <h2 className="text-3xl sm:text-5xl font-black text-gray-900 mt-3 tracking-tight">
-                What Our Students Say
+            <AnimatedSection className="text-center mb-12">
+              <span className="text-xs font-bold text-[#a77d1b] uppercase tracking-[0.25em]">Trusted by Families</span>
+              <h2 className="text-3xl sm:text-5xl font-black text-gray-950 mt-2 tracking-tight">
+                What Parents &amp; Students Say
               </h2>
             </AnimatedSection>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {testimonials.map((t, i) => (
                 <AnimatedSection key={t.id} delay={i * 0.1}>
-                  <div className="group rounded-3xl border border-gray-100 bg-gray-50 p-7 sm:p-8 h-full flex flex-col hover:border-[#c9a84c]/30 hover:shadow-xl hover:bg-white transition-all duration-500">
-                    {/* Stars */}
-                    <div className="flex gap-1 mb-5">
+                  <div className="group rounded-3xl border border-gray-200 bg-white p-7 sm:p-8 h-full flex flex-col hover:border-[#c9a84c]/40 hover:shadow-lg transition-all duration-300">
+                    <div className="flex gap-1 mb-4">
                       {Array.from({ length: t.rating }).map((_, si) => (
                         <span key={si} className="text-[#c9a84c] text-sm">★</span>
                       ))}
                     </div>
-                    {/* Quote */}
-                    <p className="text-gray-600 text-[15px] leading-relaxed flex-1">
+                    <p className="text-gray-700 text-[15px] leading-relaxed flex-1">
                       &ldquo;{t.content}&rdquo;
                     </p>
-                    {/* Author */}
-                    <div className="mt-6 pt-5 border-t border-gray-200/80 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#c9a84c]/20 to-[#c9a84c]/5 flex items-center justify-center text-[#c9a84c] text-sm font-bold ring-2 ring-[#c9a84c]/10">
+                    <div className="mt-6 pt-5 border-t border-gray-100 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-[#c9a84c]/15 flex items-center justify-center text-[#a77d1b] text-sm font-bold">
                         {t.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-gray-900 text-sm font-semibold">{t.name}</p>
-                        {t.program && <p className="text-gray-400 text-xs">{t.program}</p>}
+                        <p className="text-gray-900 text-sm font-bold">{t.name}</p>
+                        {t.program && <p className="text-gray-500 text-xs">{t.program}</p>}
                       </div>
                     </div>
                   </div>
@@ -422,117 +283,21 @@ export default async function HomePage() {
         </section>
       )}
 
-
-      {/* ═══════════════════════════════════════════════════════
-          FOUNDATION — Split layout with emotional imagery
-      ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-gray-50 relative overflow-hidden">
-        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full bg-[#2e7d5b]/5 blur-[200px] pointer-events-none" />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Left — Image composition */}
-            <AnimatedSection direction="left">
-              <div className="relative">
-                {/* Main image */}
-                <div className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-xl shadow-black/5 ring-1 ring-gray-100">
-                  <Image
-                    src="https://images.unsplash.com/photo-1604948501466-4e9c339b9c24?w=1000&q=80"
-                    alt="Children learning chess"
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#2e7d5b]/20 to-transparent" />
-                </div>
-                {/* Floating stat card */}
-                <div className="absolute -bottom-5 -right-4 sm:-right-6 rounded-2xl bg-gradient-to-br from-[#2e7d5b] to-[#1f5c40] text-white p-5 sm:p-6 shadow-2xl shadow-[#2e7d5b]/25">
-                  <p className="text-3xl sm:text-4xl font-black leading-none">{ngoStats.apps + ngoStats.volunteers}+</p>
-                  <p className="text-white/80 text-xs font-semibold mt-1.5 uppercase tracking-wider">Lives Touched</p>
-                </div>
-                {/* Secondary image — hidden on mobile */}
-                <div className="hidden sm:block absolute -top-5 -left-5 w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden ring-4 ring-white shadow-xl">
-                  <Image
-                    src="https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?w=400&q=80"
-                    alt="Chess piece closeup"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                {/* Decorative ring */}
-                <div className="absolute -z-10 inset-0 -translate-x-4 translate-y-4 rounded-3xl border border-[#2e7d5b]/15" />
-              </div>
-            </AnimatedSection>
-
-            {/* Right — Content */}
-            <AnimatedSection direction="right">
-              <span className="text-xs font-bold text-[#2e7d5b] uppercase tracking-[0.25em]">Foundation</span>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 mt-3 tracking-tight leading-[1.05]">
-                <TextReveal text="Chess Changes" />
-                <br />
-                <span className="gradient-text-green"><TextReveal text="Lives." delay={0.2} /></span>
-              </h2>
-              <p className="text-gray-500 mt-6 text-base sm:text-lg leading-relaxed max-w-lg">
-                Our foundation uses chess as a vehicle for education, discipline, and
-                opportunity. We bring structured chess programs to underserved communities
-                across Ghana, empowering young minds to think strategically about their futures.
-              </p>
-
-              {/* Impact metrics */}
-              <div className="grid grid-cols-3 gap-4 mt-10">
-                {[
-                  { value: `${ngoStats.apps}+`, label: "Beneficiaries" },
-                  { value: `${ngoStats.volunteers}+`, label: "Volunteers" },
-                  { value: `GH₵${Math.round(ngoStats.totalDonated).toLocaleString()}`, label: "Raised" },
-                ].map((m) => (
-                  <div key={m.label}>
-                    <p className="text-2xl sm:text-3xl font-black text-[#2e7d5b]">{m.value}</p>
-                    <p className="text-gray-400 text-xs font-medium mt-1 uppercase tracking-wider">{m.label}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Action buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 mt-10">
-                <Link
-                  href="/ngo/donate"
-                  className="px-8 py-3.5 rounded-full bg-[#2e7d5b] hover:bg-[#3a9a73] text-white font-bold text-sm transition-all hover:shadow-lg hover:scale-[1.03] active:scale-[0.97] text-center"
-                >
-                  Donate Now ❤️
-                </Link>
-                <Link
-                  href="/ngo/volunteer"
-                  className="px-8 py-3.5 rounded-full border border-[#2e7d5b]/30 text-[#2e7d5b] hover:bg-[#2e7d5b]/5 font-semibold text-sm transition-all text-center"
-                >
-                  Become a Volunteer
-                </Link>
-                <Link
-                  href="/ngo/apply"
-                  className="px-8 py-3.5 rounded-full border border-gray-300 text-gray-500 hover:bg-gray-50 font-semibold text-sm transition-all text-center"
-                >
-                  Partner with Us
-                </Link>
-              </div>
-            </AnimatedSection>
-          </div>
-        </div>
-      </section>
-
-
-      {/* ═══════════════════════════════════════════════════════
-          TOURNAMENTS — Featured events & tournaments
-      ═══════════════════════════════════════════════════════ */}
+      {/* 5. TOURNAMENTS — 1-Click WhatsApp Sign-Up */}
       {tournaments.length > 0 && (
-        <section className="py-24 sm:py-32 bg-white relative overflow-hidden">
+        <section className="py-20 sm:py-28 bg-white relative overflow-hidden">
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <AnimatedSection className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-14 gap-4">
+            <AnimatedSection className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-12 gap-4">
               <div>
-                <span className="text-xs font-bold text-[#c9a84c] uppercase tracking-[0.25em]">Featured</span>
-                <h2 className="text-3xl sm:text-5xl font-black text-gray-900 mt-2 tracking-tight">
-                  Tournaments & Events
+                <span className="text-xs font-bold text-[#a77d1b] uppercase tracking-[0.25em]">Compete &amp; Grow</span>
+                <h2 className="text-3xl sm:text-5xl font-black text-gray-950 mt-2 tracking-tight">
+                  Upcoming Tournaments &amp; Events
                 </h2>
-                <p className="text-gray-400 mt-2 text-base max-w-lg">Don&apos;t miss out — register early for limited spots.</p>
+                <p className="text-gray-600 mt-2 text-base max-w-lg">
+                  Reserve your seat in one click on WhatsApp — open to juniors and adults.
+                </p>
               </div>
-              <Link href="/tournaments" className="text-[#c9a84c] text-sm font-bold hover:underline hidden sm:block whitespace-nowrap">
+              <Link href="/tournaments" className="text-[#a77d1b] text-sm font-bold hover:underline hidden sm:block whitespace-nowrap">
                 See all events →
               </Link>
             </AnimatedSection>
@@ -545,120 +310,99 @@ export default async function HomePage() {
                 const isLive = t.status === "ONGOING";
                 const regCount = (t as any).registrations?.length ?? 0;
                 const spotsLeft = t.maxSpots ? Math.max(0, t.maxSpots - regCount) : null;
+                const dateLabel = eventDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+                const regWhatsAppHref = buildTournamentWhatsAppUrl({
+                  title: t.title,
+                  dateLabel,
+                  isWaitlist: spotsLeft === 0,
+                });
 
                 return (
-                  <AnimatedSection key={t.id} delay={i * 0.1}>
-                    <div className="group rounded-3xl border border-gray-200 bg-white overflow-hidden hover:border-[#c9a84c]/40 transition-all duration-500 hover-lift h-full flex flex-col hover:shadow-lg">
-                      {/* Flyer / Image Hero */}
+                  <AnimatedSection key={t.id} delay={i * 0.08}>
+                    <div className="group rounded-3xl border border-gray-200 bg-white overflow-hidden hover:border-[#c9a84c]/50 transition-all duration-300 h-full flex flex-col hover:shadow-lg">
                       <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
                         {t.flyer ? (
                           <img
                             src={t.flyer}
                             alt={t.title}
-                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           />
                         ) : (
-                          <div className="absolute inset-0 bg-gradient-to-br from-[#c9a84c]/10 via-gray-100 to-gray-200 flex items-center justify-center">
-                            <span className="text-7xl opacity-15 group-hover:opacity-25 group-hover:scale-110 transition-all duration-700">
-                              {t.type === "EVENT" ? "🎪" : "♔"}
-                            </span>
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#c9a84c]/15 via-gray-100 to-gray-200 flex items-center justify-center">
+                            <span className="text-6xl opacity-25">{t.type === "EVENT" ? "🎪" : "♔"}</span>
                           </div>
                         )}
-                        {/* Gradient overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-
-                        {/* Top badges */}
                         <div className="absolute top-3 left-3 flex items-center gap-1.5">
-                          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider backdrop-blur-md ${
-                            isLive
-                              ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                              : "bg-white/80 text-gray-700 border border-white/60"
-                          }`}>
-                            {isLive ? "● Live Now" : t.status}
-                          </span>
-                          <span className="text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-black/40 text-white/90 border border-black/20 backdrop-blur-md">
-                            {t.type === "EVENT" ? "Event" : "Tournament"}
+                          <span
+                            className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
+                              isLive ? "bg-emerald-500 text-white" : "bg-white/90 text-gray-800"
+                            }`}
+                          >
+                            {isLive ? "Live Now" : "Upcoming"}
                           </span>
                         </div>
-
-                        {/* Countdown badge */}
                         {!isLive && daysUntil > 0 && daysUntil <= 60 && (
-                          <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/80 backdrop-blur-md border border-white/60">
-                            <span className="text-[10px] font-bold text-gray-700">
-                              {daysUntil === 1 ? "Tomorrow" : `${daysUntil}d`}
-                            </span>
+                          <div className="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-white/90 text-[10px] font-bold text-gray-800">
+                            {daysUntil === 1 ? "Tomorrow" : `${daysUntil} days left`}
                           </div>
                         )}
-
-                        {/* Featured star */}
-                        <div className="absolute bottom-3 right-3">
-                          <span className="text-lg text-amber-400 drop-shadow-lg animate-pulse-dot">★</span>
-                        </div>
                       </div>
 
-                      {/* Content */}
                       <div className="p-5 flex flex-col flex-1">
-                        <h3 className="font-black text-gray-900 text-base mb-2.5 group-hover:text-[#c9a84c] transition-colors leading-tight line-clamp-2">
+                        <h3 className="font-black text-gray-900 text-base mb-2.5 group-hover:text-[#a77d1b] transition-colors leading-tight line-clamp-2">
                           {t.title}
                         </h3>
 
-                        <div className="space-y-1.5 mb-4 flex-1">
-                          <p className="text-gray-400 text-xs flex items-center gap-1.5">
-                            <span className="text-sm">📅</span>
-                            {eventDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                        <div className="space-y-1.5 mb-5 flex-1 text-xs text-gray-600">
+                          <p className="flex items-center gap-1.5">
+                            <span>📅</span>
+                            {dateLabel}
                             {t.endDate && (
-                              <span className="text-gray-300">
+                              <span className="text-gray-400">
                                 {" "}– {new Date(t.endDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
                               </span>
                             )}
                           </p>
-                          <p className="text-gray-400 text-xs flex items-center gap-1.5">
-                            <span className="text-sm">📍</span>
+                          <p className="flex items-center gap-1.5">
+                            <span>📍</span>
                             {t.location}
                           </p>
                           {t.venue && (
-                            <p className="text-gray-300 text-xs flex items-center gap-1.5">
-                              <span className="text-sm">🏛</span>
+                            <p className="flex items-center gap-1.5 text-gray-500">
+                              <span>🏛</span>
                               {t.venue}
                             </p>
                           )}
                         </div>
 
-                        {/* Spots indicator */}
-                        {t.maxSpots ? (
+                        {t.maxSpots && (
                           <div className="mb-4">
                             <div className="flex items-center justify-between mb-1">
-                              <span className="text-[10px] text-gray-400 font-semibold">{regCount} / {t.maxSpots} spots</span>
-                              <span className={`text-[10px] font-bold ${
-                                spotsLeft === 0 ? "text-red-500" : spotsLeft !== null && spotsLeft <= 5 ? "text-amber-500" : "text-gray-400"
-                              }`}>
-                                {spotsLeft === 0 ? "Full" : `${spotsLeft} left`}
+                              <span className="text-[11px] text-gray-500 font-semibold">{regCount} / {t.maxSpots} spots</span>
+                              <span className={`text-[11px] font-bold ${spotsLeft === 0 ? "text-red-600" : "text-emerald-700"}`}>
+                                {spotsLeft === 0 ? "Full" : `${spotsLeft} spots left`}
                               </span>
                             </div>
                             <div className="w-full h-1.5 rounded-full bg-gray-100 overflow-hidden">
                               <div
-                                className={`h-full rounded-full transition-all ${
-                                  regCount / t.maxSpots >= 0.9 ? "bg-red-400" :
-                                  regCount / t.maxSpots >= 0.7 ? "bg-amber-400" : "bg-emerald-400"
+                                className={`h-full rounded-full ${
+                                  regCount / t.maxSpots >= 0.9 ? "bg-red-500" : "bg-emerald-500"
                                 }`}
                                 style={{ width: `${Math.min(100, (regCount / t.maxSpots) * 100)}%` }}
                               />
                             </div>
                           </div>
-                        ) : regCount > 0 ? (
-                          <p className="text-gray-300 text-[10px] font-semibold mb-4">
-                            👥 {regCount} registered
-                          </p>
-                        ) : null}
+                        )}
 
-                        <Link
-                          href="/tournaments"
-                          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-black hover:bg-gray-800 text-white text-xs font-bold transition-all w-full hover:shadow-md"
+                        <a
+                          href={regWhatsAppHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gray-950 hover:bg-[#c9a84c] text-white hover:text-gray-950 text-xs font-bold transition-all w-full"
                         >
-                          {spotsLeft === 0
-                            ? "Join Waitlist →"
-                            : isLive ? "Join Now →" : "Register Now →"}
-                        </Link>
+                          {spotsLeft === 0 ? "Join Waitlist on WhatsApp →" : "Register on WhatsApp →"}
+                        </a>
                       </div>
                     </div>
                   </AnimatedSection>
@@ -667,7 +411,7 @@ export default async function HomePage() {
             </div>
 
             <div className="mt-8 text-center sm:hidden">
-              <Link href="/tournaments" className="text-[#c9a84c] text-sm font-bold hover:underline">
+              <Link href="/tournaments" className="text-[#a77d1b] text-sm font-bold hover:underline">
                 See all events →
               </Link>
             </div>
@@ -675,92 +419,74 @@ export default async function HomePage() {
         </section>
       )}
 
-
+      {/* 6. SHOP */}
       <HomeShopSection whatsApp={whatsApp} />
 
+      {/* 7. FOUNDATION — Community Impact */}
+      <section className="py-20 sm:py-28 bg-white relative overflow-hidden">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <AnimatedSection direction="left">
+              <div className="relative">
+                <div className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-xl ring-1 ring-gray-200">
+                  <Image
+                    src="/uploads/1772297013069-i.jpg"
+                    alt="Young students learning chess through Pi Chess Foundation"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#2e7d5b]/25 to-transparent" />
+                </div>
+                <div className="absolute -bottom-5 -right-3 sm:-right-5 rounded-2xl bg-[#2e7d5b] text-white p-5 shadow-xl">
+                  <p className="text-3xl font-black leading-none">{Math.max(200, ngoStats.apps + ngoStats.volunteers)}+</p>
+                  <p className="text-white/85 text-xs font-semibold mt-1 uppercase tracking-wider">Youth Reached</p>
+                </div>
+              </div>
+            </AnimatedSection>
 
-      {/* ═══════════════════════════════════════════════════════
-          ZONE CARDS — Explore pillars
-      ═══════════════════════════════════════════════════════ */}
-      <section className="py-24 sm:py-32 bg-white relative">
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimatedSection className="text-center mb-16">
-            <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-gray-900">
-              Explore PiChess
-            </h2>
-            <p className="text-gray-400 mt-3 text-base sm:text-lg">Three pillars. One mission.</p>
-          </AnimatedSection>
+            <AnimatedSection direction="right">
+              <span className="text-xs font-bold text-[#2e7d5b] uppercase tracking-[0.25em]">Pi Chess Foundation</span>
+              <h2 className="text-3xl sm:text-5xl font-black text-gray-950 mt-2 tracking-tight leading-[1.08]">
+                Bringing Chess to <span className="text-[#2e7d5b]">Every Child in Ghana.</span>
+              </h2>
+              <p className="text-gray-600 mt-5 text-base sm:text-lg leading-relaxed max-w-lg">
+                Alongside our Academy, our charity arm provides free boards, school chess clubs, and coaching scholarships for underserved communities across Ghana.
+              </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {[
-              {
-                href: "/academy",
-                icon: "♔",
-                title: "Academy",
-                desc: "Training, tournaments, and competitive chess development for all levels.",
-                color: "#c9a84c",
-                gradient: "gradient-text-gold",
-                borderHover: "hover:border-[#c9a84c]/40",
-                glowBg: "bg-[#c9a84c]/6",
-              },
-              {
-                href: "/ngo",
-                icon: "❤️",
-                title: "Foundation",
-                desc: "Using chess to empower underprivileged communities across Ghana.",
-                color: "#2e7d5b",
-                gradient: "gradient-text-green",
-                borderHover: "hover:border-[#2e7d5b]/40",
-                glowBg: "bg-[#2e7d5b]/6",
-              },
-              {
-                href: "/shop",
-                icon: "♟",
-                title: "Shop",
-                desc: "Premium chess sets, clocks, books, apparel, and accessories.",
-                color: "#d97706",
-                gradient: "",
-                borderHover: "hover:border-amber-500/40",
-                glowBg: "bg-amber-500/6",
-              },
-            ].map((zone, i) => (
-              <AnimatedSection key={zone.title} delay={i * 0.12}>
-                <Link href={zone.href} className="group block h-full">
-                  <div className={`relative overflow-hidden rounded-3xl border border-gray-200 bg-white p-7 sm:p-9 h-full hover-lift ${zone.borderHover} transition-all duration-500 hover:shadow-lg`}>
-                    <div className={`absolute top-0 right-0 w-48 h-48 rounded-full ${zone.glowBg} blur-[80px] group-hover:scale-[2] transition-transform duration-1000 pointer-events-none`} />
-                    <span className="text-4xl sm:text-5xl block mb-5 relative z-10">{zone.icon}</span>
-                    <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-3 relative z-10">
-                      {zone.gradient ? <span className={zone.gradient}>{zone.title}</span> : <span style={{ color: zone.color }}>{zone.title}</span>}
-                    </h3>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-6 relative z-10">{zone.desc}</p>
-                    <span className="text-sm font-bold flex items-center gap-2 transition-all relative z-10" style={{ color: zone.color }}>
-                      Explore <span className="group-hover:translate-x-2 transition-transform duration-300 inline-block">→</span>
-                    </span>
-                  </div>
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-8">
+                <Link
+                  href="/ngo/donate"
+                  className="px-7 py-3.5 rounded-full bg-[#2e7d5b] hover:bg-[#236348] text-white font-bold text-sm transition-all text-center shadow-sm"
+                >
+                  Support / Donate ❤️
                 </Link>
-              </AnimatedSection>
-            ))}
+                <Link
+                  href="/ngo"
+                  className="px-7 py-3.5 rounded-full border border-gray-300 text-gray-800 hover:bg-gray-50 font-bold text-sm transition-all text-center"
+                >
+                  Explore Foundation
+                </Link>
+              </div>
+            </AnimatedSection>
           </div>
         </div>
       </section>
 
-
-      {/* ═══════════════════════════════════════════════════════
-          PARTNERS — Logo marquee
-      ═══════════════════════════════════════════════════════ */}
+      {/* 8. PARTNERS */}
       {partners.length > 0 && (
-        <section className="py-14 bg-white border-y border-gray-100 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 text-center">
-            <p className="text-gray-300 text-[10px] font-bold uppercase tracking-[0.3em]">Brands We’ve Partnered With</p>
+        <section className="py-12 bg-gray-50 border-y border-gray-200 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 text-center">
+            <p className="text-gray-500 text-xs font-bold uppercase tracking-[0.25em]">Organizations We Work With</p>
           </div>
           <div className="relative">
             <div className="flex animate-marquee whitespace-nowrap">
               {[...partners, ...partners].map((p, i) => (
                 <div key={`${p.id}-${i}`} className="flex-shrink-0 mx-8 sm:mx-12 flex items-center gap-3">
                   {p.logo ? (
-                    <img src={p.logo} alt={p.name} className="h-12 sm:h-16 object-contain transition-opacity hover:opacity-80 duration-500" />
+                    <img src={p.logo} alt={p.name} className="h-12 sm:h-16 object-contain" />
                   ) : (
-                    <span className="text-gray-600 text-base font-bold hover:text-gray-900 transition-colors duration-500">{p.name}</span>
+                    <span className="text-gray-700 text-base font-bold">{p.name}</span>
                   )}
                 </div>
               ))}
@@ -769,53 +495,31 @@ export default async function HomePage() {
         </section>
       )}
 
-
-      {/* ═══════════════════════════════════════════════════════
-          CTA — Final dramatic banner
-      ═══════════════════════════════════════════════════════ */}
-      <section className="relative py-32 sm:py-40 overflow-hidden bg-white">
-        {/* Background effects */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(201,168,76,0.06),transparent)]" />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/15 to-transparent" />
-
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
+      {/* 9. FINAL WHATSAPP CTA */}
+      <section className="py-20 sm:py-28 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <AnimatedSection>
-            <div className="mb-8">
-              <TextReveal text="Ready to Make" className="text-4xl sm:text-6xl lg:text-7xl font-black text-gray-900 tracking-tight leading-[1.05]" as="span" />
-              <br className="hidden sm:block" />
-              <TextReveal text="Your" className="text-4xl sm:text-6xl lg:text-7xl font-black text-gray-900 tracking-tight leading-[1.05]" delay={0.15} as="span" />
-              {" "}
-              <TextReveal text="Move?" className="text-4xl sm:text-6xl lg:text-7xl font-black gradient-text-gold tracking-tight leading-[1.05]" delay={0.25} as="span" />
-            </div>
-            <p className="text-gray-500 text-base sm:text-lg mb-14 max-w-xl mx-auto leading-relaxed">
-              Join hundreds of students building discipline, critical thinking, and
-              competitive excellence through the game of chess.
+            <h2 className="text-3xl sm:text-5xl font-black text-gray-950 tracking-tight mb-5">
+              Ready to Book Your First <span className="text-[#c9a84c]">Chess Lesson?</span>
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg mb-9 max-w-xl mx-auto leading-relaxed">
+              Send us a quick WhatsApp message and our team will recommend the right class, share fees, and get you or your child started this week.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <MagneticButton>
-                <Link
-                  href="/academy/enquire"
-                  className="w-full sm:w-auto px-10 py-4 rounded-full bg-[#c9a84c] hover:bg-[#dbb95d] text-black font-bold text-base transition-all hover:shadow-[0_0_40px_rgba(201,168,76,0.2)] hover:scale-[1.03] active:scale-[0.97] inline-block"
-                >
-                  Start Your Journey <span className="inline-block animate-wiggle">→</span>
-                </Link>
-              </MagneticButton>
-              <MagneticButton>
-                <Link
-                  href="/shop"
-                  className="w-full sm:w-auto px-10 py-4 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-semibold text-base transition-all inline-block"
-                >
-                  Visit the Shop
-                </Link>
-              </MagneticButton>
-              <MagneticButton>
-                <Link
-                  href="/ngo/apply"
-                  className="w-full sm:w-auto px-10 py-4 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-semibold text-base transition-all inline-block"
-                >
-                  Partner with Us
-                </Link>
-              </MagneticButton>
+              <a
+                href={generalLessonWhatsApp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto px-9 py-4 rounded-full bg-[#25D366] hover:bg-[#1ebe5d] text-gray-950 font-black text-base transition-all shadow-md"
+              >
+                Chat on WhatsApp (055 453 4646) →
+              </a>
+              <Link
+                href="/shop"
+                className="w-full sm:w-auto px-9 py-4 rounded-full border border-gray-300 text-gray-800 hover:bg-gray-50 font-bold text-base transition-all"
+              >
+                Visit the Chess Shop
+              </Link>
             </div>
           </AnimatedSection>
         </div>

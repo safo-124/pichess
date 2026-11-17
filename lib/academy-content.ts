@@ -58,22 +58,43 @@ export interface AcademyCTA {
   buttonText: string;
 }
 
+export type AcademyAudienceTab = "kids" | "adults" | "schools";
+
+export function getLessonAudienceTab(lesson: AcademyLesson): AcademyAudienceTab {
+  const title = lesson.title.toLowerCase();
+  if (
+    lesson.category === "institutional" ||
+    title.includes("school") ||
+    title.includes("compan") ||
+    title.includes("organization")
+  ) {
+    return "schools";
+  }
+  if (
+    title.includes("adult") ||
+    title.includes("private") ||
+    title.includes("grandmaster") ||
+    title.includes("elite")
+  ) {
+    return "adults";
+  }
+  return "kids";
+}
+
 /* ── Default values (current hardcoded values as fallbacks) ── */
 
 export const defaultHero: AcademyHero = {
-  badge: "Now Enrolling — 2026 Cohort",
-  title1: "Train Like a",
-  title2: "Champion.",
+  badge: "Now Enrolling — In-Person in Accra & Online",
+  title1: "Chess Lessons That",
+  title2: "Build Bright Minds.",
   description:
-    "Ghana's premier chess academy. Expert coaches, structured programs, and a proven path to competitive excellence.",
-  bgImage:
-    "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=1920&q=80",
-  sideImage:
-    "https://images.unsplash.com/photo-1586165368502-1bad9cc4be3e?w=800&q=80",
+    "From 5-year-old beginners to adults and competitive players — learn in-person in Accra or live online with Ghana's top chess coaches.",
+  bgImage: "/uploads/1772297013069-i.jpg",
+  sideImage: "/uploads/1773531163801-photo_2026-03-14_23-30-27.jpg",
   floatStat: "500+",
   floatStatLabel: "Students Trained",
   floatBadgeIcon: "♛",
-  floatBadgeLabel: "Elite",
+  floatBadgeLabel: "Accra & Online",
 };
 
 export const defaultStats: AcademyStat[] = [
@@ -87,7 +108,7 @@ export const defaultLessons: AcademyLesson[] = [
   {
     title: "Premium Lessons",
     desc: "Structured weekly sessions, homework, and progress tracking. Ideal for serious learners (Adults & Kids).",
-    longDesc: "Our Premium Lessons are the gold standard of chess education at PiChess Academy. Students receive structured weekly sessions that follow a carefully designed curriculum, progressing from foundational concepts to advanced strategies. Each session includes guided practice, tactical puzzles, and game analysis. Between sessions, students receive personalized homework assignments to reinforce what they've learned. Our progress tracking system ensures every student's development is monitored, with regular assessments and feedback reports shared with parents and guardians.",
+    longDesc: "Our Premium Lessons are the gold standard of chess education at Pi Chess Academy. Students receive structured weekly sessions that follow a carefully designed curriculum, progressing from foundational concepts to advanced strategies. Each session includes guided practice, tactical puzzles, and game analysis. Between sessions, students receive personalized homework assignments to reinforce what they've learned. Our progress tracking system ensures every student's development is monitored, with regular assessments and feedback reports shared with parents and guardians.",
     icon: "♛",
     image: "",
     category: "core",
@@ -211,10 +232,11 @@ export const defaultFeatures: AcademyFeature[] = [
 ];
 
 export const defaultCTA: AcademyCTA = {
-  title1: "Ready to Start Your",
-  title2: "Chess Journey?",
-  description: "Fill out our enquiry form and a coach will get back to you within 24 hours.",
-  buttonText: "Enquire Now",
+  title1: "Ready to Start",
+  title2: "Chess Lessons?",
+  description:
+    "Message our team on WhatsApp to get current class times, fees, and the right group for your child or yourself.",
+  buttonText: "Chat on WhatsApp",
 };
 
 export const defaultLessonsHero: AcademyLessonsHero = {

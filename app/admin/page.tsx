@@ -7,7 +7,7 @@ import {
   ArrowUpRight, Clock, TrendingUp,
 } from "lucide-react";
 
-export const metadata = { title: "Admin Dashboard | PiChess" };
+export const metadata = { title: "Admin Dashboard | Pi Chess" };
 
 async function getStats() {
   try {
@@ -65,7 +65,7 @@ export default async function AdminDashboard() {
       <div className="flex items-end justify-between">
         <div>
           <h1 className="text-3xl font-black text-zinc-900 tracking-tight">Dashboard</h1>
-          <p className="text-zinc-400 mt-1 text-sm">Welcome back. Here&apos;s an overview of PiChess.</p>
+          <p className="text-zinc-400 mt-1 text-sm">Welcome back. Here&apos;s an overview of Pi Chess.</p>
         </div>
         <div className="flex items-center gap-2 text-[11px] text-zinc-400 bg-white rounded-lg px-3 py-1.5 border border-zinc-200/80">
           <Clock size={12} />

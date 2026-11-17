@@ -5,7 +5,7 @@ import type {
   LearningToolsHero, LearningTool, LearningTip, LearningToolsCTA, LearningToolsShowcase,
 } from "@/lib/learning-tools-content";
 
-export const metadata = { title: "Learning Tools | PiChess" };
+export const metadata = { title: "Learning Tools | Pi Chess" };
 
 function parse<T>(raw: string | null): T | undefined {
   if (!raw) return undefined;

@@ -42,7 +42,7 @@ export default function AdminSettingsManager({ initialData }: { initialData: any
             />
           </div>
           <p className="text-xs text-gray-500 mt-2">
-            Upload a square or wide logo (transparent PNG or SVG recommended). If left empty, the default PiChess text logo will show.
+            Upload a square or wide logo (transparent PNG or SVG recommended). If left empty, the default Pi Chess text logo will show.
           </p>
         </div>
       </div>

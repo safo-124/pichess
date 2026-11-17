@@ -10,7 +10,7 @@ import {
   type NGOHeroData, type NGOStat, type NGOMissionTeaser, type NGOProgramsTeaser,
 } from "@/lib/ngo-content";
 
-export const metadata = { title: "PiChess Foundation" };
+export const metadata = { title: "Pi Chess Foundation" };
 export const dynamic = "force-dynamic";
 
 function parse<T>(raw: string | null, fallback: T): T {

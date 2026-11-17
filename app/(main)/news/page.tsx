@@ -102,7 +102,7 @@ export default function NewsPage() {
                 News & Insights
               </h1>
               <p className="text-gray-400 text-sm sm:text-base mt-3 max-w-lg leading-relaxed">
-                Stay updated with the latest news, blog posts, and in-depth articles from the PiChess community.
+                Stay updated with the latest news, blog posts, and in-depth articles from the Pi Chess community.
               </p>
 
               {/* Search */}
@@ -281,7 +281,7 @@ export default function NewsPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
-              href={`https://wa.me/${whatsApp}?text=${encodeURIComponent("Hi, I'd like to get PiChess updates.")}`}
+              href={`https://wa.me/${whatsApp}?text=${encodeURIComponent("Hi, I'd like to get Pi Chess updates.")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#25D366] text-white font-bold text-sm hover:bg-[#128C7E] transition-all"

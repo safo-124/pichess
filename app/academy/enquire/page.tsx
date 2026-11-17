@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import TextReveal from "@/components/shared/TextReveal";
 import { submitAcademyLead } from "@/lib/actions/academy";
+import { buildLessonWhatsAppUrl, PICHESS_PHONE_INTL, PICHESS_PHONE_LOCAL } from "@/lib/whatsapp";
 
 export default function EnquirePage() {
   return (
@@ -77,6 +78,28 @@ function EnquireForm() {
           </AnimatedSection>
         </div>
 
+        <AnimatedSection delay={0.1}>
+          <div className="mb-8 rounded-2xl border border-[#25D366]/30 bg-emerald-50/70 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-emerald-700">Fastest Reply</p>
+              <h2 className="text-lg font-black text-gray-900 mt-1">
+                Prefer WhatsApp? Message us directly on {PICHESS_PHONE_LOCAL}
+              </h2>
+              <p className="text-sm text-gray-600 mt-0.5">
+                Ask about current fees, class times, and the best level for your child or yourself.
+              </p>
+            </div>
+            <a
+              href={buildLessonWhatsAppUrl({ program: selectedProgram || undefined })}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold text-sm shadow-lg shadow-[#25D366]/20 transition-all"
+            >
+              Chat on WhatsApp →
+            </a>
+          </div>
+        </AnimatedSection>
+
         {status === "success" ? (
           <AnimatedSection>
             <motion.div
@@ -112,8 +135,8 @@ function EnquireForm() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5">Phone Number *</label>
-                  <input name="phone" type="tel" required placeholder="+233 XX XXX XXXX" className={inputClass} />
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2.5">Phone / WhatsApp Number *</label>
+                  <input name="phone" type="tel" required placeholder={PICHESS_PHONE_INTL} className={inputClass} />
                 </div>
 
                 <div>

@@ -45,10 +45,10 @@ const DEFAULTS: HeroData = {
 };
 
 const DEFAULT_HOME_STATS: HomeStat[] = [
-  { end: 500, suffix: "+", label: "Students Trained", href: "/academy", ariaLabel: "View PiChess Academy programs" },
-  { end: 50, suffix: "+", label: "Tournaments Hosted", href: "/tournaments", ariaLabel: "View PiChess tournaments" },
-  { end: 200, suffix: "+", label: "Lives Impacted", href: "/ngo", ariaLabel: "View PiChess Foundation impact" },
-  { end: 15, suffix: "", label: "Expert Coaches", href: "/academy/team", ariaLabel: "Meet the PiChess expert coaches" },
+  { end: 500, suffix: "+", label: "Students Trained", href: "/academy", ariaLabel: "View Pi Chess Academy programs" },
+  { end: 50, suffix: "+", label: "Tournaments Hosted", href: "/tournaments", ariaLabel: "View Pi Chess tournaments" },
+  { end: 200, suffix: "+", label: "Lives Impacted", href: "/ngo", ariaLabel: "View Pi Chess Foundation impact" },
+  { end: 15, suffix: "", label: "Expert Coaches", href: "/academy/team", ariaLabel: "Meet the Pi Chess expert coaches" },
 ];
 
 const inputCls = "w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm focus:ring-2 focus:ring-pink-400/40 focus:border-pink-400/40 outline-none transition-all placeholder:text-zinc-300";
@@ -388,7 +388,7 @@ export default function AdminHeroManager({
                   className={inputCls}
                   value={s.ariaLabel}
                   onChange={(e) => updateHomeStat(i, "ariaLabel", e.target.value)}
-                  placeholder="View PiChess Academy programs"
+                  placeholder="View Pi Chess Academy programs"
                 />
               </div>
             </div>

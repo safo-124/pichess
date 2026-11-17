@@ -8,7 +8,7 @@ import {
 } from "@/lib/ngo-content";
 
 export const metadata: Metadata = {
-  title: "Our Mission | PiChess Foundation",
+  title: "Our Mission | Pi Chess Foundation",
   description:
     "Empowering youth through chess — free equipment, school programs, scholarships, and mentorship across Ghana.",
 };

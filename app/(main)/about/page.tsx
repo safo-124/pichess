@@ -12,8 +12,17 @@ import {
   defaultMission, defaultValues, defaultTimeline, defaultTeam,
 } from "@/lib/about-content";
 import AboutAnimations from "@/components/about/AboutAnimations";
+import { buildLessonWhatsAppUrl } from "@/lib/whatsapp";
 
-export const metadata = { title: "About | PiChess" };
+export const dynamic = "force-dynamic";
+export const metadata = { title: "About | Pi Chess" };
+
+const PLACEHOLDER_TEAM_NAMES = new Set([
+  "john doe",
+  "jane smith",
+  "michael owusu",
+  "sarah mensah",
+]);
 
 async function getContent() {
   const keys = ["about_hero", "about_story", "about_pillars", "about_stats", "about_mission", "about_values", "about_timeline", "about_team"];
@@ -32,6 +41,9 @@ async function getContent() {
 
 export default async function AboutPage() {
   const { hero, story, pillars, stats, mission, values, timeline, team } = await getContent();
+  const validTeam = team.filter(
+    (member) => member.name && !PLACEHOLDER_TEAM_NAMES.has(member.name.trim().toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-white">
@@ -43,7 +55,7 @@ export default async function AboutPage() {
         <div className="absolute inset-0">
           <Image
             src={hero.backgroundImage}
-            alt="About PiChess"
+            alt="About Pi Chess"
             fill
             className="object-cover"
             priority
@@ -305,7 +317,7 @@ export default async function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 relative">
           <div className="text-center mb-16">
             <AnimatedSection>
-              <span className="text-xs font-bold text-[#c9a84c] uppercase tracking-[0.3em]">The People Behind PiChess</span>
+              <span className="text-xs font-bold text-[#c9a84c] uppercase tracking-[0.3em]">The People Behind Pi Chess</span>
               <h2 className="text-3xl sm:text-5xl font-black text-gray-900 mt-3 tracking-tight">
                 Meet Our Team
               </h2>
@@ -315,43 +327,59 @@ export default async function AboutPage() {
             </AnimatedSection>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member, i) => (
-              <AnimatedSection key={i} delay={i * 0.12}>
-                <div className="group text-center">
-                  {/* Photo */}
-                  <div className="relative w-48 h-48 mx-auto mb-6 rounded-3xl overflow-hidden border-2 border-gray-100 group-hover:border-[#c9a84c]/40 transition-all duration-500 group-hover:shadow-xl group-hover:shadow-[#c9a84c]/10">
-                    {member.image ? (
-                      <Image
-                        src={member.image}
-                        alt={member.name}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                        <span className="text-5xl text-gray-300">👤</span>
-                      </div>
+          {validTeam.length > 0 ? (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {validTeam.map((member, i) => (
+                <AnimatedSection key={i} delay={i * 0.12}>
+                  <div className="group text-center">
+                    {/* Photo */}
+                    <div className="relative w-48 h-48 mx-auto mb-6 rounded-3xl overflow-hidden border-2 border-gray-100 group-hover:border-[#c9a84c]/40 transition-all duration-500 group-hover:shadow-xl group-hover:shadow-[#c9a84c]/10">
+                      {member.image ? (
+                        <Image
+                          src={member.image}
+                          alt={member.name}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                          <span className="text-5xl text-gray-300">👤</span>
+                        </div>
+                      )}
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      {/* Gold accent corner */}
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#c9a84c] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    </div>
+                    {/* Info */}
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#c9a84c] transition-colors duration-300">
+                      {member.name}
+                    </h3>
+                    <p className="text-sm font-semibold text-[#c9a84c] mt-1">{member.role}</p>
+                    {member.bio && (
+                      <p className="text-gray-500 text-sm mt-2 leading-relaxed max-w-[220px] mx-auto">
+                        {member.bio}
+                      </p>
                     )}
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    {/* Gold accent corner */}
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#c9a84c] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </div>
-                  {/* Info */}
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#c9a84c] transition-colors duration-300">
-                    {member.name}
-                  </h3>
-                  <p className="text-sm font-semibold text-[#c9a84c] mt-1">{member.role}</p>
-                  {member.bio && (
-                    <p className="text-gray-500 text-sm mt-2 leading-relaxed max-w-[220px] mx-auto">
-                      {member.bio}
-                    </p>
-                  )}
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
+                </AnimatedSection>
+              ))}
+            </div>
+          ) : (
+            <div className="max-w-xl mx-auto rounded-3xl border border-gray-200 bg-gray-50 p-8 sm:p-10 text-center">
+              <div className="text-4xl mb-4">♟️</div>
+              <h3 className="text-xl font-black text-gray-900 mb-2">Guided by Certified Chess Coaches</h3>
+              <p className="text-gray-500 text-sm leading-relaxed mb-6">
+                Our titled players and youth instructors coach students across Accra and online every week.
+              </p>
+              <Link
+                href="/academy/team"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#c9a84c] hover:bg-[#dbb95d] text-black font-bold text-sm transition-all"
+              >
+                Meet Our Academy Coaches →
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 
@@ -405,18 +433,20 @@ export default async function AboutPage() {
               Ready to Make <span className="gradient-text-gold">Your Move?</span>
             </h2>
             <p className="text-white/50 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-              Whether you want to learn, compete, or give back — there&apos;s a place for you at PiChess.
+              Whether you want to learn, compete, or give back — there&apos;s a place for you at Pi Chess.
             </p>
           </AnimatedSection>
 
           <AnimatedSection delay={0.2}>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/academy"
+              <a
+                href={buildLessonWhatsAppUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-10 py-4 rounded-full bg-[#c9a84c] hover:bg-[#dbb95d] text-black font-bold text-base transition-all hover:shadow-[0_0_50px_rgba(201,168,76,0.2)] hover:scale-[1.03] active:scale-[0.97] inline-block"
               >
-                Join the Academy
-              </Link>
+                Chat on WhatsApp for Lessons →
+              </a>
               <Link
                 href="/ngo"
                 className="px-10 py-4 rounded-full border border-white/20 text-white hover:bg-white/10 font-semibold text-base transition-all backdrop-blur-sm inline-block"
